@@ -2,9 +2,11 @@
 import React from "react";
 import { Dropdown, Nav, Sidebar, Sidenav } from "rsuite";
 import Dashboard from "@rsuite/icons/legacy/Dashboard";
-import Group from "@rsuite/icons/legacy/Group";
+
 import Magic from "@rsuite/icons/legacy/Magic";
 import GearCircle from "@rsuite/icons/legacy/GearCircle";
+import TableIcon from "@rsuite/icons/Table";
+import PeoplesIcon from "@rsuite/icons/Peoples";
 
 import NavToggle from "./NavToggle";
 
@@ -16,6 +18,7 @@ const DashSidebar = () => {
         style={{
           display: "flex",
           flexDirection: "column",
+          justifyItems: "center",
           minHeight: "93vh",
           justifyContent: "space-between",
         }}
@@ -25,11 +28,14 @@ const DashSidebar = () => {
         <Sidenav expanded={expand} defaultOpenKeys={["3"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
-              <Nav.Item eventKey="1" active icon={<Dashboard />}>
+              <Nav.Item href="/" eventKey="1" active icon={<Dashboard />}>
                 Dashboard
               </Nav.Item>
-              <Nav.Item eventKey="2" icon={<Group />}>
-                User Group
+              <Nav.Item href="/table" eventKey="2" icon={<TableIcon />}>
+                Table
+              </Nav.Item>
+              <Nav.Item href="/customers" eventKey="3" icon={<PeoplesIcon />}>
+                Customers
               </Nav.Item>
               <Dropdown
                 eventKey="3"

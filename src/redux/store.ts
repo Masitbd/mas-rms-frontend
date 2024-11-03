@@ -4,6 +4,7 @@ import { baseApi } from "./api/baseApi";
 
 export const makeStore = () => {
   return configureStore({
+
     reducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false }).concat(
