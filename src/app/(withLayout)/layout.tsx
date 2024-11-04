@@ -18,9 +18,7 @@ export default function RootLayout({
               <Navbar />
             </Header>
             <Container className="rs-container-has-sidebar">
-              <Sidebar>
-                <DashSidebar />
-              </Sidebar>
+              <DashSidebar />
 
               <Content>{children}</Content>
             </Container>

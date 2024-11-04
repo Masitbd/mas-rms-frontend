@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import axios from "axios";
+import { getSession } from "next-auth/react";
 const instance = axios.create();
 instance.defaults.headers.post["Content-Type"] = "application/json";
 instance.defaults.headers["Accept"] = "application/json";
@@ -7,11 +8,13 @@ instance.defaults.timeout = 60000;
 
 // Add a request interceptor
 instance.interceptors.request.use(
-  // function (config) {
-  // Do something before request is sent
-  // const accessToken = getFromLocalStorage(authKey);
-
-  //  s
+  async function (config) {
+    const token = await getSession();
+    if (token?.token) {
+      config.headers.authorization = token?.token;
+    }
+    return config;
+  },
   function (error) {
     // Do something with request error
     return Promise.reject(error);

@@ -141,6 +141,7 @@ const handler = NextAuth({
       session.user = token.data.user;
       session.validity = token.data.validity;
       session.error = token.error;
+      session.token = token.data.tokens?.accessToken;
       return session;
     },
   },
