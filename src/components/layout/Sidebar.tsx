@@ -7,6 +7,10 @@ import Magic from "@rsuite/icons/legacy/Magic";
 import GearCircle from "@rsuite/icons/legacy/GearCircle";
 import TableIcon from "@rsuite/icons/Table";
 import PeoplesIcon from "@rsuite/icons/Peoples";
+
+import ListIcon from "@rsuite/icons/List";
+import SettingIcon from "@rsuite/icons/Setting";
+
 import PeoplesCostomizeIcon from "@rsuite/icons/PeoplesCostomize";
 
 import NavToggle from "./NavToggle";
@@ -46,6 +50,13 @@ const DashSidebar = () => {
               >
                 Customers
               </Nav.Item>
+
+              <Nav.Item href="/menu-group" eventKey="4" icon={<ListIcon />}>
+                Menu Group
+              </Nav.Item>
+              <Nav.Item href="/items" eventKey="5" icon={<SettingIcon />}>
+                Item Category
+
               <Nav.Item
                 href="/users"
                 eventKey="4"
@@ -60,7 +71,7 @@ const DashSidebar = () => {
                 icon={<PeoplesCostomizeIcon />}
                 as={NavLink}
               >
-                Users
+
               </Nav.Item>
               <Dropdown
                 eventKey="5"
