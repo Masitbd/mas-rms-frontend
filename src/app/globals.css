@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 *{
   box-sizing: border-box;
   padding: 0;
@@ -239,4 +241,42 @@
     margin-top: 64px;
     margin-left: 0px;
   }
+}
+
+
+.rs-table .rs-table-row-header :last-child {
+  background-color: #D9D9D9;
+}
+
+
+
+.rs-table .rs-table-cell-header {
+  font-size: 1rem;
+  color: black;
+
+  font-family: 'Roboto' ,"sans-serif";
+
+}
+
+.rs-table .rs-table-row {
+  font-size: 1rem;
+  color: black;
+  font-family: "Roboto";
+  border-bottom: .5px solid #DCDCDC;
+
+}
+
+.rs-table .rs-table-row .rs-table-cell-content {
+  border-left: .5px solid #DCDCDC;
+
+}
+
+.rs-table .rs-table-cell-header :last-child {
+  border-right: 1px solid #DCDCDC !important;
+
+
+}
+
+.rs-table {
+  border: .5px solid #DCDCDC !important;
 }

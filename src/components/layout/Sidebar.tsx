@@ -54,6 +54,14 @@ const DashSidebar = () => {
               >
                 Users
               </Nav.Item>
+              <Nav.Item
+                href="/raw-material-setup"
+                eventKey="7"
+                icon={<PeoplesCostomizeIcon />}
+                as={NavLink}
+              >
+                Users
+              </Nav.Item>
               <Dropdown
                 eventKey="5"
                 trigger="hover"

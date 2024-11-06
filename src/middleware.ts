@@ -17,7 +17,7 @@ export default async function middleware(req: NextRequest) {
   // blocking navigation to login page if user is authenticated
 
   const isTokenExpired =
-    Date.now() >= token?.data?.validity?.refresh_until * 1000;
+    token && Date.now() >= token?.data?.validity?.refresh_until * 1000;
   if (isTokenExpired && req.nextUrl.pathname !== "/login") {
     console.log("Token expired, redirecting to /login and clearing cookies");
     const response = NextResponse.redirect(`${req.nextUrl.origin}/login`);

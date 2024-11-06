@@ -16,15 +16,25 @@ async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
   try {
     // Get a new access token from backend using the refresh token
     const res = await axios
-      .post("localhost:4000/api/v1/auth/refresh-token")
+      .post(
+        "http://localhost:5000/api/v1/auth/refresh-token",
+        {},
+
+        {
+          headers: {
+            authorization: nextAuthJWTCookie.data.tokens.refreshToken,
+          },
+        }
+      )
       .catch((err) => {
         if (err?.response?.data?.message)
           throw Error(err.response.data.message);
         else throw Error(err);
       });
-    const accessToken: BackendAccessJWT = await res.data?.data;
 
-    const { exp }: DecodedJWT = jwtDecode(accessToken.accessToken);
+    const accessToken: BackendAccessJWT = await res.data?.data?.accessToken;
+
+    const { exp }: DecodedJWT = jwtDecode(accessToken as unknown as string);
 
     // Update the token and validity in the next-auth cookie
     nextAuthJWTCookie.data.validity.valid_until = exp;
@@ -32,6 +42,7 @@ async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
 
     return nextAuthJWTCookie;
   } catch (error) {
+    console.error(error);
     console.debug(error);
     return {
       ...nextAuthJWTCookie,
