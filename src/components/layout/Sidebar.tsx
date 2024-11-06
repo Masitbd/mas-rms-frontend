@@ -7,10 +7,14 @@ import Magic from "@rsuite/icons/legacy/Magic";
 import GearCircle from "@rsuite/icons/legacy/GearCircle";
 import TableIcon from "@rsuite/icons/Table";
 import PeoplesIcon from "@rsuite/icons/Peoples";
+
 import ListIcon from "@rsuite/icons/List";
 import SettingIcon from "@rsuite/icons/Setting";
 
+import PeoplesCostomizeIcon from "@rsuite/icons/PeoplesCostomize";
+
 import NavToggle from "./NavToggle";
+import { NavLink } from "./Navlink";
 
 const DashSidebar = () => {
   const [expand, setExpand] = React.useState(true);
@@ -30,23 +34,47 @@ const DashSidebar = () => {
         <Sidenav expanded={expand} defaultOpenKeys={["3"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
-              <Nav.Item href="/" eventKey="1" active icon={<Dashboard />}>
-                Dashboard
-              </Nav.Item>
-              <Nav.Item href="/table" eventKey="2" icon={<TableIcon />}>
+              <Nav.Item
+                href="/table"
+                eventKey="2"
+                icon={<TableIcon />}
+                as={NavLink}
+              >
                 Table
               </Nav.Item>
-              <Nav.Item href="/customers" eventKey="3" icon={<PeoplesIcon />}>
+              <Nav.Item
+                href="/customers"
+                eventKey="3"
+                icon={<PeoplesIcon />}
+                as={NavLink}
+              >
                 Customers
               </Nav.Item>
+
               <Nav.Item href="/menu-group" eventKey="4" icon={<ListIcon />}>
                 Menu Group
               </Nav.Item>
               <Nav.Item href="/items" eventKey="5" icon={<SettingIcon />}>
                 Item Category
+
+              <Nav.Item
+                href="/users"
+                eventKey="4"
+                icon={<PeoplesCostomizeIcon />}
+                as={NavLink}
+              >
+                Users
+              </Nav.Item>
+              <Nav.Item
+                href="/raw-material-setup"
+                eventKey="7"
+                icon={<PeoplesCostomizeIcon />}
+                as={NavLink}
+              >
+
               </Nav.Item>
               <Dropdown
-                eventKey="3"
+                eventKey="5"
                 trigger="hover"
                 title="Advanced"
                 icon={<Magic />}
@@ -59,7 +87,7 @@ const DashSidebar = () => {
                 <Dropdown.Item eventKey="3-5">Visit Depth</Dropdown.Item>
               </Dropdown>
               <Dropdown
-                eventKey="4"
+                eventKey="6"
                 trigger="hover"
                 title="Settings"
                 icon={<GearCircle />}
