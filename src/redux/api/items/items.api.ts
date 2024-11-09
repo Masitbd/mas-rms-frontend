@@ -3,9 +3,10 @@ import { baseApi } from "../baseApi";
 const itemsCategoryApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getItemsCategory: build.query({
-      query: () => ({
+      query: (params?: { menuGroup: string }) => ({
         url: "/item-categories",
         method: "GET",
+        params: params,
       }),
       providesTags: ["itemCategory"],
     }),
@@ -16,6 +17,7 @@ const itemsCategoryApi = baseApi.injectEndpoints({
         url: "/item-categories",
         method: "POST",
         body: data,
+        data: data,
       }),
       invalidatesTags: ["itemCategory"],
     }),
@@ -27,6 +29,7 @@ const itemsCategoryApi = baseApi.injectEndpoints({
         url: `/item-categories/${options.id}`,
         method: "PATCH",
         body: options.data,
+        data: options.data,
       }),
       invalidatesTags: ["itemCategory"],
     }),
