@@ -26,7 +26,6 @@ import { useRouter } from "next/navigation";
 const ConsumptionForm = (params: MenuItemFormProps) => {
   const routes = useRouter();
   const { formData, mode, setFormData, setMode } = params;
-  console.log(mode);
   const [open, setOpen] = useState(false);
   const [filterOption, setFilterOption] = useState({ menuGroup: "" });
   const { data: itemCategoryData, isLoading: itemCategoryLoading } =
@@ -42,8 +41,6 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
       toaster.push(<Message type="error">Please Enter Consumptions</Message>);
       return;
     }
-
-    console.log(mode);
     // Handle success
     const handleSuccess = (message: string) => {
       Swal.fire("Success", message, "success");
@@ -193,6 +190,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
             </Button>
             <Button
               className="col-start-6"
+              style={{ backgroundColor: "#194BEE" }}
               size="lg"
               appearance="primary"
               type="submit"

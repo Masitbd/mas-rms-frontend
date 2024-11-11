@@ -1,6 +1,6 @@
 /* eslint-disable react/no-children-prop */
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { Button, Table } from "rsuite";
+import { Button, Pagination, Table } from "rsuite";
 import { ConsumptionListProps, IItemConsumption } from "./TypesAndDefault";
 import { IRawMaterial } from "../raw-material-setup/TypesAndDefault";
 import EditIcon from "@rsuite/icons/Edit";
@@ -94,6 +94,7 @@ const ConsumptionListTable = (
           </Column>
         )}
       </Table>
+
       <div>
         <ConsumptionList
           formData={formData}

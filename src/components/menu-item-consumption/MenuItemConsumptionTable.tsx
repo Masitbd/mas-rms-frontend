@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 "use client";
 import React from "react";
-import { Button, Table } from "rsuite";
+import { Button, Pagination, Table } from "rsuite";
 import TrashIcon from "@rsuite/icons/Trash";
 import EditIcon from "@rsuite/icons/Edit";
 import ViewIcon from "@rsuite/icons/EyeClose";
@@ -133,6 +133,23 @@ const RawMaterialConsumptionTable = () => {
           </Cell>
         </Column>
       </Table>
+      {/* <Pagination
+        layout={["total", "-", "limit", "|", "pager", "skip"]}
+        size={"md"}
+        prev={true}
+        next={true}
+        first={true}
+        last={true}
+        ellipsis={true}
+        boundaryLinks={true}
+        total={menuItemData?.ment?.total} */}
+      {/* // limit={limit}
+        // limitOptions={limitOptions}
+        // maxButtons={maxButtons}
+        // activePage={activePage}
+        // onChangePage={setActivePage}
+        // onChangeLimit={setLimit} */}
+      {/* /> */}
     </div>
   );
 };

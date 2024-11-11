@@ -16,6 +16,7 @@ const Consumption = () => {
           color="blue"
           as={NavLink}
           href={`/consumption/new?mode=new`}
+          style={{ backgroundColor: "#194BEE" }}
         >
           Add New
         </Button>
