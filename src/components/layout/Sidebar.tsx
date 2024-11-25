@@ -15,6 +15,11 @@ import PeoplesCostomizeIcon from "@rsuite/icons/PeoplesCostomize";
 
 import NavToggle from "./NavToggle";
 import { NavLink } from "./Navlink";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { config, IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faCalculator } from "@fortawesome/free-solid-svg-icons";
+import StorageIcon from "@rsuite/icons/Storage";
+import FunnelTimeIcon from "@rsuite/icons/FunnelTime";
 
 const DashSidebar = () => {
   const [expand, setExpand] = React.useState(true);
@@ -56,6 +61,7 @@ const DashSidebar = () => {
               </Nav.Item>
               <Nav.Item href="/items" eventKey="5" icon={<SettingIcon />}>
                 Item Category
+              </Nav.Item>
 
               <Nav.Item
                 href="/users"
@@ -68,10 +74,18 @@ const DashSidebar = () => {
               <Nav.Item
                 href="/raw-material-setup"
                 eventKey="7"
-                icon={<PeoplesCostomizeIcon />}
+                icon={<FunnelTimeIcon />}
                 as={NavLink}
               >
-
+                Raw Material Setup
+              </Nav.Item>
+              <Nav.Item
+                href="/consumption"
+                eventKey="8"
+                icon={<StorageIcon />}
+                as={NavLink}
+              >
+                Menu Item And consumption
               </Nav.Item>
               <Dropdown
                 eventKey="5"
