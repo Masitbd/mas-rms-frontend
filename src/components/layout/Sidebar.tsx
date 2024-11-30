@@ -3,7 +3,7 @@ import React from "react";
 import { Dropdown, Nav, Sidebar, Sidenav } from "rsuite";
 import Dashboard from "@rsuite/icons/legacy/Dashboard";
 
-import Magic from "@rsuite/icons/legacy/Magic";
+import AdminIcon from "@rsuite/icons/Admin";
 import GearCircle from "@rsuite/icons/legacy/GearCircle";
 import TableIcon from "@rsuite/icons/Table";
 import PeoplesIcon from "@rsuite/icons/Peoples";
@@ -63,6 +63,10 @@ const DashSidebar = () => {
                 Item Category
               </Nav.Item>
 
+              <Nav.Item href="/waiter" eventKey="5" icon={<AdminIcon />}>
+                Waiter List
+              </Nav.Item>
+
               <Nav.Item
                 href="/users"
                 eventKey="4"
@@ -100,6 +104,7 @@ const DashSidebar = () => {
                 <Dropdown.Item eventKey="3-4">Loyalty</Dropdown.Item>
                 <Dropdown.Item eventKey="3-5">Visit Depth</Dropdown.Item>
               </Dropdown>
+
               <Dropdown
                 eventKey="6"
                 trigger="hover"
