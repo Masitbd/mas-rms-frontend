@@ -69,7 +69,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
         case ENUM_MODE.UPDATE:
           const updateResult = await update(submissionData).unwrap();
           if (updateResult?.success) {
-            handleSuccess("Item Consumption Setup Created Successfully");
+            handleSuccess("Item Consumption Setup Updated Successfully");
           }
           break;
         default:

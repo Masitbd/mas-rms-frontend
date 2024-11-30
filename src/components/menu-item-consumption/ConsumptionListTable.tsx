@@ -14,6 +14,7 @@ const ConsumptionListTable = (
   } & ConsumptionListProps
 ) => {
   const { formData, isOpen, mode, setFormData, setMode, setOpen } = props;
+  const [consumptionListMode, setConsumptionListMode] = useState(ENUM_MODE.NEW);
   const { Cell, Column, ColumnGroup, HeaderCell } = Table;
   const [updatableData, setUpdatableData] =
     useState<IItemConsumption<IRawMaterial>>();
@@ -26,7 +27,7 @@ const ConsumptionListTable = (
   const updateHandler = (value: IItemConsumption<IRawMaterial>) => {
     setUpdatableData(value);
     setOpen(true);
-    setMode(ENUM_MODE.UPDATE);
+    setConsumptionListMode(ENUM_MODE.UPDATE);
   };
 
   return (
@@ -99,8 +100,8 @@ const ConsumptionListTable = (
         <ConsumptionList
           formData={formData}
           setFormData={setFormData}
-          mode={mode}
-          setMode={setMode}
+          mode={consumptionListMode}
+          setMode={setConsumptionListMode}
           isOpen={isOpen}
           setOpen={setOpen}
           updatableData={updatableData}
