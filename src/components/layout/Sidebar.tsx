@@ -7,10 +7,19 @@ import AdminIcon from "@rsuite/icons/Admin";
 import GearCircle from "@rsuite/icons/legacy/GearCircle";
 import TableIcon from "@rsuite/icons/Table";
 import PeoplesIcon from "@rsuite/icons/Peoples";
+
 import ListIcon from "@rsuite/icons/List";
 import SettingIcon from "@rsuite/icons/Setting";
 
+import PeoplesCostomizeIcon from "@rsuite/icons/PeoplesCostomize";
+
 import NavToggle from "./NavToggle";
+import { NavLink } from "./Navlink";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { config, IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faCalculator } from "@fortawesome/free-solid-svg-icons";
+import StorageIcon from "@rsuite/icons/Storage";
+import FunnelTimeIcon from "@rsuite/icons/FunnelTime";
 
 const DashSidebar = () => {
   const [expand, setExpand] = React.useState(true);
@@ -30,27 +39,74 @@ const DashSidebar = () => {
         <Sidenav expanded={expand} defaultOpenKeys={["3"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
-              <Nav.Item href="/" eventKey="1" active icon={<Dashboard />}>
-                Dashboard
-              </Nav.Item>
-              <Nav.Item href="/table" eventKey="2" icon={<TableIcon />}>
+              <Nav.Item
+                href="/table"
+                eventKey="2"
+                icon={<TableIcon />}
+                as={NavLink}
+              >
                 Table
               </Nav.Item>
-              <Nav.Item href="/customers" eventKey="3" icon={<PeoplesIcon />}>
+              <Nav.Item
+                href="/customers"
+                eventKey="3"
+                icon={<PeoplesIcon />}
+                as={NavLink}
+              >
                 Customers
               </Nav.Item>
+
               <Nav.Item href="/menu-group" eventKey="4" icon={<ListIcon />}>
                 Menu Group
               </Nav.Item>
               <Nav.Item href="/items" eventKey="5" icon={<SettingIcon />}>
                 Item Category
               </Nav.Item>
+
               <Nav.Item href="/waiter" eventKey="5" icon={<AdminIcon />}>
                 Waiter List
               </Nav.Item>
 
-              <Dropdown
+              <Nav.Item
+                href="/users"
                 eventKey="4"
+                icon={<PeoplesCostomizeIcon />}
+                as={NavLink}
+              >
+                Users
+              </Nav.Item>
+              <Nav.Item
+                href="/raw-material-setup"
+                eventKey="7"
+                icon={<FunnelTimeIcon />}
+                as={NavLink}
+              >
+                Raw Material Setup
+              </Nav.Item>
+              <Nav.Item
+                href="/consumption"
+                eventKey="8"
+                icon={<StorageIcon />}
+                as={NavLink}
+              >
+                Menu Item And consumption
+              </Nav.Item>
+              <Dropdown
+                eventKey="5"
+                trigger="hover"
+                title="Advanced"
+                icon={<Magic />}
+                placement="rightStart"
+              >
+                <Dropdown.Item eventKey="3-1">Geo</Dropdown.Item>
+                <Dropdown.Item eventKey="3-2">Devices</Dropdown.Item>
+                <Dropdown.Item eventKey="3-3">Brand</Dropdown.Item>
+                <Dropdown.Item eventKey="3-4">Loyalty</Dropdown.Item>
+                <Dropdown.Item eventKey="3-5">Visit Depth</Dropdown.Item>
+              </Dropdown>
+
+              <Dropdown
+                eventKey="6"
                 trigger="hover"
                 title="Settings"
                 icon={<GearCircle />}
