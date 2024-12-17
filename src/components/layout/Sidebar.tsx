@@ -9,6 +9,7 @@ import TableIcon from "@rsuite/icons/Table";
 import PeoplesIcon from "@rsuite/icons/Peoples";
 import ListIcon from "@rsuite/icons/List";
 import SettingIcon from "@rsuite/icons/Setting";
+import PeopleBranchIcon from "@rsuite/icons/PeopleBranch";
 
 import NavToggle from "./NavToggle";
 
@@ -45,8 +46,11 @@ const DashSidebar = () => {
               <Nav.Item href="/items" eventKey="5" icon={<SettingIcon />}>
                 Item Category
               </Nav.Item>
-              <Nav.Item href="/waiter" eventKey="5" icon={<AdminIcon />}>
+              <Nav.Item href="/waiter" eventKey="6" icon={<AdminIcon />}>
                 Waiter List
+              </Nav.Item>
+              <Nav.Item href="/branch" eventKey="7" icon={<PeopleBranchIcon />}>
+                Branch List
               </Nav.Item>
 
               <Dropdown
