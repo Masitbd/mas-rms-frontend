@@ -95,7 +95,7 @@ const DashSidebar = () => {
                 eventKey="5"
                 trigger="hover"
                 title="Advanced"
-                icon={<Magic />}
+                icon={<StorageIcon />}
                 placement="rightStart"
               >
                 <Dropdown.Item eventKey="3-1">Geo</Dropdown.Item>

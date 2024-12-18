@@ -23,6 +23,8 @@ import {
   incrementQty,
   removeItem,
   setItemDiscount,
+  toggleDiscount,
+  toggleVat,
 } from "@/redux/features/order/orderSlice";
 import PlusRoundIcon from "@rsuite/icons/PlusRound";
 import MinusRoundIcon from "@rsuite/icons/MinusRound";
@@ -266,7 +268,14 @@ const Items = () => {
             <HeaderCell children="No Disc" />
             <Cell>
               {(rowData) => {
-                return <Checkbox />;
+                return (
+                  <Checkbox
+                    checked={!rowData?.isDiscount}
+                    onChange={() =>
+                      dispatch(toggleDiscount(rowData?.item?.itemCode))
+                    }
+                  />
+                );
               }}
             </Cell>
           </Column>
@@ -274,7 +283,14 @@ const Items = () => {
             <HeaderCell children="No Vat" />
             <Cell>
               {(rowData) => {
-                return <Checkbox />;
+                return (
+                  <Checkbox
+                    checked={!rowData?.isVat}
+                    onChange={() =>
+                      dispatch(toggleVat(rowData?.item?.itemCode))
+                    }
+                  />
+                );
               }}
             </Cell>
           </Column>

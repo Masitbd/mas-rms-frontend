@@ -141,7 +141,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
             <Form.Control
               name="isDiscount"
               accepter={Checkbox}
-              checked={formData?.isDiscount}
+              checked={!formData?.isDiscount}
               value={!formData?.isDiscount as unknown as ValueType}
             />
           </Form.Group>
@@ -150,7 +150,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
             <Form.Control
               name="isVat"
               accepter={Checkbox}
-              checked={formData?.isVat}
+              checked={!formData?.isVat}
               value={!formData?.isVat as unknown as ValueType}
             />
           </Form.Group>
@@ -159,7 +159,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
             <Form.Control
               name="isWaiterTips"
               accepter={Checkbox}
-              checked={formData?.isWaiterTips}
+              checked={!formData?.isWaiterTips}
               value={!formData?.isWaiterTips as unknown as ValueType}
             />
           </Form.Group>

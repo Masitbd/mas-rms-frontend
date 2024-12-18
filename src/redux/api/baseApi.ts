@@ -16,5 +16,11 @@ export const baseApi = createApi({
     "waiterList",
     "raw-material",
     "consumption",
+    "singleCustomer",
+    "order",
+    "single-order",
+    "single-kitchen-order",
+    "active-table-list",
+    "active-table-list-details",
   ],
 });

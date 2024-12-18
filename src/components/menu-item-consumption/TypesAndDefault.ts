@@ -34,9 +34,9 @@ export interface IMenuItemConsumption {
 
 export const defaultMenuItemConsumption = {
   id: "",
-  isDiscount: false,
-  isVat: false,
-  isWaiterTips: false,
+  isDiscount: true,
+  isVat: true,
+  isWaiterTips: true,
   consumptions: [],
 };
 
