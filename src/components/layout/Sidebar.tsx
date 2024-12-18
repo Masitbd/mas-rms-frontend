@@ -7,11 +7,18 @@ import AdminIcon from "@rsuite/icons/Admin";
 import GearCircle from "@rsuite/icons/legacy/GearCircle";
 import TableIcon from "@rsuite/icons/Table";
 import PeoplesIcon from "@rsuite/icons/Peoples";
+
 import ListIcon from "@rsuite/icons/List";
 import SettingIcon from "@rsuite/icons/Setting";
 import PeopleBranchIcon from "@rsuite/icons/PeopleBranch";
 
 import NavToggle from "./NavToggle";
+import { NavLink } from "./Navlink";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { config, IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faCalculator } from "@fortawesome/free-solid-svg-icons";
+import StorageIcon from "@rsuite/icons/Storage";
+import FunnelTimeIcon from "@rsuite/icons/FunnelTime";
 
 const DashSidebar = () => {
   const [expand, setExpand] = React.useState(true);
@@ -31,15 +38,23 @@ const DashSidebar = () => {
         <Sidenav expanded={expand} defaultOpenKeys={["3"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
-              <Nav.Item href="/" eventKey="1" active icon={<Dashboard />}>
-                Dashboard
-              </Nav.Item>
-              <Nav.Item href="/table" eventKey="2" icon={<TableIcon />}>
+              <Nav.Item
+                href="/table"
+                eventKey="2"
+                icon={<TableIcon />}
+                as={NavLink}
+              >
                 Table
               </Nav.Item>
-              <Nav.Item href="/customers" eventKey="3" icon={<PeoplesIcon />}>
+              <Nav.Item
+                href="/customers"
+                eventKey="3"
+                icon={<PeoplesIcon />}
+                as={NavLink}
+              >
                 Customers
               </Nav.Item>
+
               <Nav.Item href="/menu-group" eventKey="4" icon={<ListIcon />}>
                 Menu Group
               </Nav.Item>
