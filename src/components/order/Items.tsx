@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-children-prop */
-import React, { useEffect, useRef, useState } from "react";
+import React, { Ref, useEffect, useRef, useState } from "react";
 import {
   Button,
   Checkbox,
@@ -36,9 +37,9 @@ import {
 const Items = () => {
   const itemCodeRef = useRef<PickerHandle>();
   const itemNameRef = useRef<PickerHandle>();
-  const qtyRef = useRef<HTMLInputElement>();
+  const qtyRef = useRef<HTMLInputElement>(null);
   const { Cell, Column, ColumnGroup, HeaderCell } = Table;
-  const [searchTerm, setSearchTerm] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
   const [item, setItem] = useState<IMenuItemConsumption>();
   const [qty, setQty] = useState(1);
   const {
@@ -53,7 +54,8 @@ const Items = () => {
 
   const handleAdd = () => {
     const doesExists =
-      state.items.length && state.items.find((i) => i?.item?._id == item?._id);
+      state?.items?.length &&
+      state.items.find((i) => i?.item?._id == item?._id);
 
     if (qty < 1) {
       toaster.push(
@@ -75,10 +77,10 @@ const Items = () => {
       isVat: item?.isVat,
     };
     dispatch(addItem(data));
-    setItem(null);
+    setItem(null as unknown as IMenuItemConsumption);
     setQty(0);
-    if (itemCodeRef) {
-      itemCodeRef?.current?.open();
+    if (itemCodeRef && itemCodeRef.current !== undefined) {
+      itemCodeRef?.current?.open && itemCodeRef?.current?.open();
       itemCodeRef?.current?.target?.focus();
     }
   };
@@ -115,17 +117,21 @@ const Items = () => {
             size="sm"
             caretAs={SearchIcon}
             searchable
-            data={consumptionData?.data?.map((cd) => ({
+            data={consumptionData?.data?.map((cd: IMenuItemConsumption) => ({
               label: cd?.itemCode,
               value: cd?._id,
               children: cd,
             }))}
-            onSelect={(v, v1, v2) => selectHandler(v1?.children)}
+            onSelect={(v, v1, v2) =>
+              selectHandler(v1?.children as unknown as IMenuItemConsumption)
+            }
             value={item?._id}
-            disabledItemValues={state?.items?.map((i) => i?.item?._id)}
+            disabledItemValues={
+              state?.items?.map((i) => i?.item?._id) as string[]
+            }
             onSearch={(v) => setSearchTerm(v)}
             loading={consumptionDataFeatching || consumptionDataFeatching}
-            ref={itemCodeRef}
+            ref={itemCodeRef as Ref<PickerHandle>}
           />
         </div>
         <div className="col-span-8">
@@ -136,17 +142,21 @@ const Items = () => {
             searchable
             block
             placeholder={"Item name"}
-            data={consumptionData?.data?.map((cd) => ({
+            data={consumptionData?.data?.map((cd: IMenuItemConsumption) => ({
               label: cd?.itemName,
               value: cd?._id,
               children: cd,
             }))}
-            onSelect={(v, v1, v2) => selectHandler(v1?.children)}
+            onSelect={(v, v1, v2) =>
+              selectHandler(v1?.children as unknown as IMenuItemConsumption)
+            }
             value={item?._id}
-            disabledItemValues={state?.items?.map((i) => i?.item?._id)}
+            disabledItemValues={
+              state?.items?.map((i) => i?.item?._id) as string[]
+            }
             onSearch={(v) => setSearchTerm(v)}
             loading={consumptionDataFeatching || consumptionDataFeatching}
-            ref={itemNameRef}
+            ref={itemNameRef as Ref<PickerHandle>}
           />
         </div>
         <div>

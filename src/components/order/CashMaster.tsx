@@ -29,6 +29,7 @@ import {
 import { ICashMasterProps } from "./TypesAndDefaultes";
 import { ENUM_MODE } from "@/enums/EnumMode";
 import { useGetActiveTableListQuery } from "@/redux/api/order/orderSlice";
+import { TTableData } from "../Table/Table";
 
 const CashMaster = (props: ICashMasterProps) => {
   // Data source
@@ -136,7 +137,7 @@ const CashMaster = (props: ICashMasterProps) => {
             name="tableName"
             accepter={InputPicker}
             size="sm"
-            data={tableData?.data?.map((td) => ({
+            data={tableData?.data?.map((td: TTableData) => ({
               label: td?.name,
               value: td?._id,
             }))}
@@ -149,7 +150,7 @@ const CashMaster = (props: ICashMasterProps) => {
             name="waiter"
             accepter={InputPicker}
             size="sm"
-            data={waiterData?.data?.map((td) => ({
+            data={waiterData?.data?.map((td: TTableData) => ({
               label: td?.name,
               value: td?._id,
             }))}

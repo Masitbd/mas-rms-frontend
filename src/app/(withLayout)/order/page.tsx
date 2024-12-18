@@ -13,18 +13,7 @@ const Order = () => {
       <div className="text-center text-[#194BEE] text-2xl font-bold font-roboto">
         Orders
       </div>
-      <div className="mt-5">
-        <Button
-          appearance="primary"
-          color="blue"
-          as={NavLink}
-          href={`/order/new?mode=new`}
-          style={{ backgroundColor: "#194BEE" }}
-          size="lg"
-        >
-          Add New
-        </Button>
-      </div>
+
       <div className="mt-2.5">
         <OrderTable />
       </div>

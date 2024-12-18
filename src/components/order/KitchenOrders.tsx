@@ -9,6 +9,7 @@ import { faPrint } from "@fortawesome/free-solid-svg-icons/faPrint";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import pdfMake from "pdfmake/build/pdfmake";
 import { useAppSelector } from "@/lib/hooks";
+import { TDocumentDefinitions } from "pdfmake/interfaces";
 pdfMake.vfs = pdfFonts as unknown as { [file: string]: string };
 
 const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
@@ -114,13 +115,13 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
                 { text: "Name", bold: true },
                 { text: "Qty", bold: true },
               ],
-              ...order?.items?.map((item) => {
+              ...(order?.items?.map((item) => {
                 return [
                   { text: item.itemCode ?? 0 },
                   { text: item.itemName ?? " " },
                   { text: item.qty ?? 0 },
                 ];
-              }),
+              }) as unknown as string[]),
             ],
           },
           style: "infoText",
@@ -142,7 +143,7 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
       },
     };
 
-    pdfMake.createPdf(docDefinition).print();
+    pdfMake.createPdf(docDefinition as unknown as TDocumentDefinitions).print();
   };
 
   return (

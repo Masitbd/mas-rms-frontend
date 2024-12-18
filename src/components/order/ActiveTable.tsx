@@ -8,6 +8,7 @@ import { KitchenOrderData } from "./TypesAndDefaultes";
 import ModalBody from "rsuite/esm/Modal/ModalBody";
 import KitchenOrderDetails from "./KitchenOrderDetails";
 import KitchenOrders from "./KitchenOrders";
+import { IOrder } from "@/redux/features/order/orderSlice";
 
 const ActiveTable = () => {
   const { Cell, Column, ColumnGroup, HeaderCell } = Table;
@@ -21,10 +22,7 @@ const ActiveTable = () => {
 
   return (
     <div className="border border-[#DCDCDC] p-2 rounded-md h-full">
-      <div className="text-center">
-        {/* <InputPicker block searchable placeholder="Select Active Table" /> */}
-        Active Kitchen Orders
-      </div>
+      <div className="text-center">Active Kitchen Orders</div>
       <div className="mt-2">
         <Table
           autoHeight
@@ -54,7 +52,7 @@ const ActiveTable = () => {
               {(rowData) => {
                 return (
                   <>
-                    <KitchenOrders order={rowData} />
+                    <KitchenOrders order={rowData as KitchenOrderData} />
                   </>
                 );
               }}

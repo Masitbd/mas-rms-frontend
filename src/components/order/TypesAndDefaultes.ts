@@ -27,3 +27,14 @@ export type KitchenOrderData = {
   tableName?: string;
   waiterName?: string;
 };
+
+export const statusOption = [
+  { label: "Posted", value: "posted" },
+  { label: "Not Posted", value: "notPosted" },
+  { label: "Void", value: "void" },
+];
+export const sortOption = [
+  { label: "Price", value: "totalBill" },
+  { label: "Bill No", value: "billNo" },
+];
+export type ISelectPicker = { label: string; value: string };

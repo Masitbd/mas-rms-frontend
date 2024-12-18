@@ -25,6 +25,7 @@ import { useSession } from "next-auth/react";
 import { ENUM_MODE } from "@/enums/EnumMode";
 import CheckIcon from "@rsuite/icons/Check";
 import { changeOrderStatus } from "./OrderHelpers";
+import { TDocumentDefinitions } from "pdfmake/interfaces";
 
 pdfMake.vfs = pdfFonts as unknown as { [file: string]: string };
 
@@ -70,7 +71,7 @@ const BillMaster = (props: { mode: string }) => {
       serviceChargeRate: bill?.serviceChargeRate ?? 0,
       discountCard: bill?.discountCard,
       customer: bill?.customer,
-    };
+    } as IOrder;
 
     if (
       typeof bill.customer == "object" &&
@@ -229,7 +230,7 @@ const BillMaster = (props: { mode: string }) => {
                 { text: "Rate", bold: true },
                 { text: "Amount", bold: true },
               ],
-              ...bill?.items?.map((item) => {
+              ...(bill?.items?.map((item) => {
                 return [
                   { text: item?.item?.itemName },
                   { text: item?.qty },
@@ -238,7 +239,7 @@ const BillMaster = (props: { mode: string }) => {
                     text: parseFloat((item?.rate * item?.qty).toFixed(2)),
                   },
                 ];
-              }),
+              }) as []),
             ],
           },
           style: "infoText",
@@ -423,7 +424,7 @@ const BillMaster = (props: { mode: string }) => {
       },
     };
 
-    pdfMake.createPdf(doc).print();
+    pdfMake.createPdf(doc as unknown as TDocumentDefinitions).print();
   };
 
   return (
