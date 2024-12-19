@@ -19,8 +19,11 @@ import { config, IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 import StorageIcon from "@rsuite/icons/Storage";
 import FunnelTimeIcon from "@rsuite/icons/FunnelTime";
+import DateTaskIcon from "@rsuite/icons/DateTask";
+import { useRouter } from "next/navigation";
 
 const DashSidebar = () => {
+  const navigate = useRouter();
   const [expand, setExpand] = React.useState(true);
   return (
     <>
@@ -68,27 +71,40 @@ const DashSidebar = () => {
                 Branch List
               </Nav.Item>
 
-              <Dropdown
-                eventKey="4"
+              <Nav.Menu
+                eventKey="8"
                 trigger="hover"
-                title="Settings"
-                icon={<GearCircle />}
+                title="Reports"
+                icon={<DateTaskIcon />}
                 placement="rightStart"
               >
-                <Dropdown.Item eventKey="4-1">Applications</Dropdown.Item>
-                <Dropdown.Item eventKey="4-2">Websites</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-              </Dropdown>
+                <Nav.Item
+                  eventKey="8-1"
+                  href="/reports/daily-sales-report"
+                  as={NavLink}
+                >
+                  Daily Sales Reports
+                </Nav.Item>
+                <Nav.Item
+                  eventKey="8-2"
+                  href="/reports/daily-sales-summery"
+                  as={NavLink}
+                >
+                  Daily Sales Summery
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item eventKey="8-3" href="/menu-items" as={NavLink}>
+                  Menu Items
+                </Nav.Item>
+                <Nav.Item
+                  eventKey="8-4"
+                  href="/reports/item-wise-sales"
+                  as={NavLink}
+                >
+                  Item Wise Sales Statement
+                </Nav.Item>
+                {/*  */}
+              </Nav.Menu>
             </Nav>
           </Sidenav.Body>
         </Sidenav>

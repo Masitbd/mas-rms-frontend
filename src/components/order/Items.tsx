@@ -23,10 +23,12 @@ import {
   incrementQty,
   removeItem,
   setItemDiscount,
+  toggleDiscount,
+  toggleVat,
 } from "@/redux/features/order/orderSlice";
 import PlusRoundIcon from "@rsuite/icons/PlusRound";
 import MinusRoundIcon from "@rsuite/icons/MinusRound";
-import Trash from "@rsuite/icons/esm/icons/Trash";
+
 import {
   IItemConsumption,
   IMenuItemConsumption,
@@ -46,8 +48,6 @@ const Items = () => {
   } = useGetConsumptionQuery({
     searchTerm: searchTerm,
   });
-
-  console.log(consumptionData, "data item");
 
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state.order);
@@ -270,7 +270,14 @@ const Items = () => {
             <HeaderCell children="No Disc" />
             <Cell>
               {(rowData) => {
-                return <Checkbox />;
+                return (
+                  <Checkbox
+                    checked={!rowData?.isDiscount}
+                    onChange={() =>
+                      dispatch(toggleDiscount(rowData?.item?.itemCode))
+                    }
+                  />
+                );
               }}
             </Cell>
           </Column>
@@ -278,7 +285,14 @@ const Items = () => {
             <HeaderCell children="No Vat" />
             <Cell>
               {(rowData) => {
-                return <Checkbox />;
+                return (
+                  <Checkbox
+                    checked={!rowData?.isVat}
+                    onChange={() =>
+                      dispatch(toggleVat(rowData?.item?.itemCode))
+                    }
+                  />
+                );
               }}
             </Cell>
           </Column>

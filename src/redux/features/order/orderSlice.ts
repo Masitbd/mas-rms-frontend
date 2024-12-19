@@ -1,3 +1,4 @@
+import { TCustomer } from "@/components/customers/CustomerTable";
 import { IMenuItemConsumption } from "@/components/menu-item-consumption/TypesAndDefault";
 import { TTableData } from "@/components/Table/Table";
 import { createSlice, createAsyncThunk, Action } from "@reduxjs/toolkit";
@@ -11,8 +12,14 @@ export type IItems = {
   isVat: boolean;
 };
 
+export type IUnregisteredCustomerInfo = {
+  name: string;
+  address: string;
+};
+
 export type IOrder = {
-  billNo: number;
+  _id?: string;
+  billNo?: string;
   date: Date;
   tableName: TTableData;
   waiter: string; //!change
@@ -27,7 +34,7 @@ export type IOrder = {
   serviceCharge: number;
   totalDiscount: number;
   netPayable: number;
-  pPaymentMode: boolean;
+  pPaymentMode: string;
   paid: number;
   pPayment: number;
   due: number;
@@ -35,6 +42,11 @@ export type IOrder = {
   cashReceived: number;
   paymentMode: string;
   remark: string;
+  serviceChargeRate: number;
+  discountCard?: string;
+  customer: TCustomer | IUnregisteredCustomerInfo;
+  guestType: string;
+  status: string;
 };
 
 const initialState: IOrder = {
@@ -56,43 +68,79 @@ const initialState: IOrder = {
   cashBack: 0,
   cashReceived: 0,
   items: [],
+  serviceChargeRate: 0,
+  status: "not-Posted",
 } as unknown as IOrder;
 
-// export const saveBill = createAsyncThunk(
-//   "bill/saveBill",
-//   async (billData, { rejectWithValue }) => {
-//     try {
-//       // API call simulation
-//       await new Promise((resolve) => setTimeout(resolve, 1000));
-//       return billData;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
 const balanceUpdater = (state: IOrder) => {
   if (state.items) {
+    // 1. Total bill
     state.totalBill = state.items.reduce((total, item) => {
       return total + item.rate * item.qty;
     }, 0);
 
-    state.totalVat = state.items.reduce((total, item) => {
-      return total + item.rate * item.qty * (item.item ? state.vat : 0);
-    }, 0);
-
-    state.totalDiscount =
-      state.items.reduce((total, item) => {
-        return (
-          total +
-          item.rate *
+    // 2. discount
+    state.totalDiscount = parseFloat(
+      (
+        state.items.reduce((total, item) => {
+          const itemDiscount =
+            item.rate *
             item.qty *
-            (item.item.isDiscount ? state.percentDiscount : 0)
-        );
-      }, 0) + state.discountAmount;
+            (item.isDiscount
+              ? (Number(item.discount) || Number(state.percentDiscount)) / 100
+              : 0);
 
-    state.netPayable = state.totalBill + state.totalVat - state.totalDiscount;
+          return total + itemDiscount;
+        }, 0) + Number(state.discountAmount)
+      ).toPrecision(2)
+    );
 
-    state.due = state.totalBill + state.paid;
+    // 3. vat
+    state.totalVat = parseFloat(
+      state.items
+        .reduce((total, item) => {
+          const itemDiscount =
+            item.rate *
+            item.qty *
+            (item.isDiscount
+              ? (Number(item.discount ?? 0) ||
+                  Number(state.percentDiscount ?? 0)) / 100
+              : 0);
+
+          const itemGrossPrice = item?.rate * item?.qty;
+          const itemCashDiscount =
+            (state.discountAmount / state.totalBill) * itemGrossPrice;
+
+          const vat = item?.isVat
+            ? ((itemGrossPrice - itemDiscount - itemCashDiscount) *
+                Number(state.vat ?? 0)) /
+              100
+            : 0;
+
+          return total + vat;
+        }, 0)
+        .toPrecision(2)
+    );
+
+    // 4. Service Charge
+    state.serviceCharge = parseFloat(
+      (
+        state.totalBill *
+        (Number(state.serviceChargeRate ?? 0) / 100)
+      ).toPrecision(2)
+    );
+    state.netPayable =
+      state.totalBill +
+      state.totalVat -
+      state.totalDiscount +
+      state.serviceCharge;
+
+    state.due = state.netPayable - (state.paid ?? 0) - (state?.pPayment ?? 0);
+
+    state.cashBack =
+      state.cashReceived - state.netPayable > 0
+        ? state.cashReceived - state.netPayable
+        : 0;
   }
 };
 
@@ -100,6 +148,10 @@ const billSlice = createSlice({
   name: "bill",
   initialState,
   reducers: {
+    updateCustomerInfo: (state, { payload }) => {
+      const customerInfo = Object.assign(state.customer ?? {}, payload);
+      Object.assign(state, { customer: customerInfo });
+    },
     updateBillDetails: (state, { payload }) => {
       Object.assign(state, payload);
       balanceUpdater(state);
@@ -127,7 +179,7 @@ const billSlice = createSlice({
           (item) => item.item.itemCode === action.payload
         );
         if (item) {
-          item.item.isDiscount = !item.item.isDiscount;
+          item.isDiscount = !item.isDiscount;
         }
       }
       balanceUpdater(state);
@@ -138,7 +190,7 @@ const billSlice = createSlice({
           (item) => item.item.itemCode === action.payload
         );
         if (item) {
-          item.item.isVat = !item.item.isVat;
+          item.isVat = !item.isVat;
         }
       }
       balanceUpdater(state);
@@ -225,10 +277,12 @@ export const {
   addItem,
   removeItem,
   toggleDiscount,
+  toggleVat,
   resetBill,
   incrementQty,
   decrementQty,
   changeQty,
   setItemDiscount,
+  updateCustomerInfo,
 } = billSlice.actions;
 export default billSlice.reducer;

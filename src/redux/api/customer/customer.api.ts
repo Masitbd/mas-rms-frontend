@@ -40,6 +40,13 @@ const customerApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["custmerList"],
     }),
+    getCustomerByDiscountCode: build.query({
+      query: (discountCode: string) => ({
+        url: `/customer-list/discount-code/${discountCode}`,
+        method: "GET",
+        providesTags: ["singleCustomer"],
+      }),
+    }),
   }),
 });
 
@@ -48,4 +55,6 @@ export const {
   useCreateCustomerListMutation,
   useDeleteCustomerListMutation,
   useUpdateCustomerListMutation,
+  useLazyGetCustomerListQuery,
+  useLazyGetCustomerByDiscountCodeQuery,
 } = customerApi;
