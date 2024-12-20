@@ -140,6 +140,7 @@ const ActiveTableList = () => {
                         height={200}
                         width={200}
                         className="object-cover w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-105"
+                        alt="Image"
                       />
                       {/* Text overlay */}
                       <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 text-white transition-opacity duration-300 ease-in-out group-hover:bg-opacity-70 p-2">

@@ -12,7 +12,7 @@ export const baseApi = createApi({
     "custmerList",
     "menuGroupList",
     "itemCategory",
-
+    "reports",
     "waiterList",
     "branch",
   ],

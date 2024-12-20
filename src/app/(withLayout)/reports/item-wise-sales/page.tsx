@@ -4,9 +4,13 @@
 import { formatDate } from "@/utils/formateDate";
 import { useState } from "react";
 import { IFormValues } from "../daily-sales-report/page";
-import { useGetDailySalesSatementSummeryQuery } from "@/redux/api/report/report.api";
+import {
+  useGetDailySalesSatementSummeryQuery,
+  useGetItemWiseSalesReportsQuery,
+} from "@/redux/api/report/report.api";
 import { Button, DatePicker, Form } from "rsuite";
-import DailySalesSummeryTable from "@/components/reports/DailySalesSummeryTable";
+
+import ItemWiseSalesTable from "@/components/reports/ItemWiseSalesTable";
 
 const ItemWiseSalesPage = () => {
   const [isSearchEnable, setIsSearchEnable] = useState(false);
@@ -40,12 +44,9 @@ const ItemWiseSalesPage = () => {
     }
   };
 
-  const { data, isLoading } = useGetDailySalesSatementSummeryQuery(
-    queryParams,
-    {
-      skip: !isSearchEnable,
-    }
-  );
+  const { data, isLoading } = useGetItemWiseSalesReportsQuery(queryParams, {
+    skip: !isSearchEnable,
+  });
 
   return (
     <div>
@@ -96,7 +97,8 @@ const ItemWiseSalesPage = () => {
         </Form>
 
         {data && data?.data?.length > 0 && (
-          <DailySalesSummeryTable
+          <ItemWiseSalesTable
+            isLoading={isLoading}
             data={data.data}
             startDate={formValue.startDate}
             endDate={formValue.endDate}

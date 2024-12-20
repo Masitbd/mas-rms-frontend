@@ -21,10 +21,32 @@ const reportsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reports"],
     }),
+    //
+    getItemWiseSalesReports: build.query({
+      query: (args) => ({
+        url: "/reports/itemwise-sales",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+    //
+    getMenuItemsReports: build.query({
+      query: (args) => ({
+        url: "/reports/menugroup-items",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+
+    //
   }),
 });
 
 export const {
   useGetDailySalesSatementReportQuery,
   useGetDailySalesSatementSummeryQuery,
+  useGetItemWiseSalesReportsQuery,
+  useGetMenuItemsReportsQuery,
 } = reportsApi;

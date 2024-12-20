@@ -1,7 +1,10 @@
 /* eslint-disable react/no-children-prop */
+
+"use client"
+
 import { useAppSelector } from "@/lib/hooks";
 import { useSingleKitchenOrderListQuery } from "@/redux/api/order/orderSlice";
-import React from "react";
+
 import { Button, InputPicker, Modal, Table } from "rsuite";
 import { KitchenOrderData } from "./TypesAndDefaultes";
 
@@ -26,6 +29,7 @@ const ActiveTable = () => {
         Active Kitchen Orders
       </div>
       <div className="mt-2">
+       
         <Table
           autoHeight
           data={
@@ -45,6 +49,8 @@ const ActiveTable = () => {
           }
         >
           <Column flexGrow={2}>
+            <HeaderCell>NO.</HeaderCell>
+            <Cell dataKey="kitchenOrderNo" />
             <HeaderCell>NO.</HeaderCell>
             <Cell dataKey="kitchenOrderNo" />
           </Column>

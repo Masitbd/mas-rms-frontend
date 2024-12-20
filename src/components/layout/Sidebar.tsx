@@ -93,7 +93,11 @@ const DashSidebar = () => {
                   Daily Sales Summery
                 </Nav.Item>
                 {/*  */}
-                <Nav.Item eventKey="8-3" href="/menu-items" as={NavLink}>
+                <Nav.Item
+                  eventKey="8-3"
+                  href="/reports/menu-items"
+                  as={NavLink}
+                >
                   Menu Items
                 </Nav.Item>
                 <Nav.Item
