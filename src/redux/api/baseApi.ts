@@ -12,8 +12,22 @@ export const baseApi = createApi({
     "custmerList",
     "menuGroupList",
     "itemCategory",
+
+    "user-list",
+    "waiterList",
+    "raw-material",
+    "consumption",
+    "singleCustomer",
+    "order",
+    "single-order",
+    "single-kitchen-order",
+    "active-table-list",
+    "active-table-list-details",
+    "single-user",
+
     "reports",
     "waiterList",
     "branch",
+
   ],
 });

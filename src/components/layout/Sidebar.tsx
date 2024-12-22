@@ -19,8 +19,11 @@ import { config, IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 import StorageIcon from "@rsuite/icons/Storage";
 import FunnelTimeIcon from "@rsuite/icons/FunnelTime";
+import DocPassIcon from "@rsuite/icons/DocPass";
+
 import DateTaskIcon from "@rsuite/icons/DateTask";
 import { useRouter } from "next/navigation";
+
 
 const DashSidebar = () => {
   const navigate = useRouter();
@@ -71,6 +74,37 @@ const DashSidebar = () => {
                 Branch List
               </Nav.Item>
 
+              <Nav.Item
+                href="/consumption"
+                eventKey="8"
+                icon={<StorageIcon />}
+                as={NavLink}
+              >
+                Menu Item And consumption
+              </Nav.Item>
+              <Nav.Item
+                href="/order"
+                eventKey="9"
+                icon={<DocPassIcon />}
+                as={NavLink}
+              >
+                Order
+              </Nav.Item>
+              {/* <Dropdown
+                eventKey="5"
+                trigger="hover"
+                title="Advanced"
+                icon={<StorageIcon />}
+                placement="rightStart"
+              >
+                <Dropdown.Item eventKey="3-1">Geo</Dropdown.Item>
+                <Dropdown.Item eventKey="3-2">Devices</Dropdown.Item>
+                <Dropdown.Item eventKey="3-3">Brand</Dropdown.Item>
+                <Dropdown.Item eventKey="3-4">Loyalty</Dropdown.Item>
+                <Dropdown.Item eventKey="3-5">Visit Depth</Dropdown.Item>
+              </Dropdown>
+
+
               <Nav.Menu
                 eventKey="8"
                 trigger="hover"
@@ -78,6 +112,21 @@ const DashSidebar = () => {
                 icon={<DateTaskIcon />}
                 placement="rightStart"
               >
+  <Dropdown.Item eventKey="4-1">Applications</Dropdown.Item>
+                <Dropdown.Item eventKey="4-2">Websites</Dropdown.Item>
+                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
+                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
+                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
+                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
+                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
+                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
+                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
+                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
+                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
+                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
+                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
+              </Dropdown> */}
+
                 <Nav.Item
                   eventKey="8-1"
                   href="/reports/daily-sales-report"
@@ -109,6 +158,7 @@ const DashSidebar = () => {
                 </Nav.Item>
                 {/*  */}
               </Nav.Menu>
+
             </Nav>
           </Sidenav.Body>
         </Sidenav>

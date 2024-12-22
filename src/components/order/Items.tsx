@@ -113,8 +113,8 @@ const Items = () => {
 
   return (
     <div className="border border-[#DCDCDC] p-2 rounded-md">
-      <div className="grid grid-cols-12 gap-2 ">
-        <div>
+      <div className="grid 2xl:grid-cols-12 gap-2 xl:grid-cols-10 lg:grid-cols-8 grid-cols-6">
+        <div className="lg:max-2xl:col-span-2 col-span-1 ">
           <h2>Item Code</h2>
           <SelectPicker
             size="sm"
@@ -135,9 +135,10 @@ const Items = () => {
             onSearch={(v) => setSearchTerm(v)}
             loading={consumptionDataFeatching || consumptionDataFeatching}
             ref={itemCodeRef as Ref<PickerHandle>}
+            block
           />
         </div>
-        <div className="col-span-8">
+        <div className="2xl:col-span-8  xl:col-span-5 lg:col-span-3 col-span-2">
           <h2>Item Name</h2>
           <SelectPicker
             size="sm"
@@ -197,7 +198,7 @@ const Items = () => {
             <HeaderCell children="Item code" />
             <Cell dataKey="item.itemCode" />
           </Column>
-          <Column flexGrow={3.8}>
+          <Column flexGrow={3}>
             <HeaderCell children="Item Name" />
             <Cell dataKey="item.itemName" />
           </Column>
@@ -267,6 +268,8 @@ const Items = () => {
                           })
                         )
                       }
+                      value={rowData?.discount}
+                      disabled
                     />
                   </>
                 );
