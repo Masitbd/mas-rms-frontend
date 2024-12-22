@@ -1,16 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import ActiveTable from "@/components/order/ActiveTable";
 import BillMaster from "@/components/order/BillMaster";
 import CashMaster from "@/components/order/CashMaster";
 import Items from "@/components/order/Items";
-import { PageProps } from "../../../../../.next/types/app/layout";
+
 import { ENUM_MODE } from "@/enums/EnumMode";
 import { useLazyGetOrderDataForPatchQuery } from "@/redux/api/order/orderSlice";
 import Loading from "@/app/Loading";
 import { useAppDispatch } from "@/lib/hooks";
 import { updateBillDetails } from "@/redux/features/order/orderSlice";
+import { PageProps } from "../../../../../.next/types/app/api/auth/[...nextauth]/route";
 
 const NewOrder = (props: PageProps) => {
   const dispatch = useAppDispatch();
@@ -44,6 +45,7 @@ const NewOrder = (props: PageProps) => {
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-9 grid grid-cols-1 gap-2 ">
           <CashMaster mode={mode} />
+          <CashMaster mode={mode} />
 
           <div className="w-full">
             <Items />
@@ -53,6 +55,7 @@ const NewOrder = (props: PageProps) => {
           <ActiveTable />
         </div>
         <div className="col-span-12 h-full">
+          <BillMaster mode={mode} />
           <BillMaster mode={mode} />
         </div>
       </div>

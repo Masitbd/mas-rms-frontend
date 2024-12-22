@@ -3,6 +3,7 @@
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useDate } from "@/lib/TimerHook";
 import { useLazyGetCustomerByDiscountCodeQuery } from "@/redux/api/customer/customer.api";
+
 import { useGetTableListQuery } from "@/redux/api/table/table.api";
 import { useGetWaiterListQuery } from "@/redux/api/waiter/waiter.api";
 import CheckRoundIcon from "@rsuite/icons/CheckRound";
@@ -115,6 +116,32 @@ const CashMaster = (props: ICashMasterProps) => {
     }
   }, [state.discountCard]);
 
+  useEffect(() => {
+    if (state.discountCard && props?.mode == ENUM_MODE.NEW) {
+      const timeoutId = setTimeout(async () => {
+        try {
+          const data = await getCustomer(state.discountCard as string).unwrap();
+          if (data?.success) {
+            dispatch(updateBillDetails({ customer: data?.data }));
+            toaster.push(
+              <Message type="success">
+                {data?.message ?? "Info Retrieved successfully"}
+              </Message>
+            );
+          }
+        } catch (error) {
+          toaster.push(
+            <Message type="error">
+              {(error as string) ?? ("Failed" as string)}
+            </Message>
+          );
+        }
+      }, 1000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [state.discountCard]);
+
   return (
     <div className="border border-[#DCDCDC] p-2 rounded-md">
       <Form
@@ -163,17 +190,22 @@ const CashMaster = (props: ICashMasterProps) => {
         <Form.Group>
           <Form.ControlLabel children={"S.Charge(%)"} />
           <Form.Control name="serviceChargeRate" type="number" size="sm" />
+          <Form.ControlLabel children={"S.Charge(%)"} />
+          <Form.Control name="serviceChargeRate" type="number" size="sm" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Vat(%)"} />
+          <Form.Control name="vat" size="sm" type="number" />
           <Form.Control name="vat" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Discount(%)"} />
           <Form.Control name="percentDiscount" size="sm" type="number" />
+          <Form.Control name="percentDiscount" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Discount(Amt)"} />
+          <Form.Control name="discountAmount" size="sm" type="number" />
           <Form.Control name="discountAmount" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
@@ -197,6 +229,17 @@ const CashMaster = (props: ICashMasterProps) => {
               />
               <InputGroup.Addon>{addonIconProvider()}</InputGroup.Addon>
             </InputGroup>
+            <InputGroup className="w-full col-span-10">
+              <Input
+                size="sm"
+                className="col-span-10"
+                onChange={(v) =>
+                  dispatch(updateBillDetails({ discountCard: v }))
+                }
+                value={state?.discountCard}
+              />
+              <InputGroup.Addon>{addonIconProvider()}</InputGroup.Addon>
+            </InputGroup>
           </div>
           <div className="grid grid-cols-12">
             <h3 className="col-span-2">Guest Name</h3>
@@ -206,9 +249,21 @@ const CashMaster = (props: ICashMasterProps) => {
               value={state?.customer?.name}
               onChange={(v) => dispatch(updateCustomerInfo({ name: v }))}
             />
+            <Input
+              size="sm"
+              className="col-span-10"
+              value={state?.customer?.name}
+              onChange={(v) => dispatch(updateCustomerInfo({ name: v }))}
+            />
           </div>
           <div className="grid grid-cols-12">
             <h3 className="col-span-2">Address</h3>
+            <Input
+              size="sm"
+              className="col-span-10"
+              value={state?.customer?.address}
+              onChange={(v) => dispatch(updateCustomerInfo({ address: v }))}
+            />
             <Input
               size="sm"
               className="col-span-10"

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-children-prop */
 import React, { Ref, useEffect, useRef, useState } from "react";
+import TrashIcon from "@rsuite/icons/Trash";
+
 import {
   Button,
   Checkbox,
@@ -29,7 +31,7 @@ import {
 } from "@/redux/features/order/orderSlice";
 import PlusRoundIcon from "@rsuite/icons/PlusRound";
 import MinusRoundIcon from "@rsuite/icons/MinusRound";
-import Trash from "@rsuite/icons/esm/icons/Trash";
+
 import {
   IItemConsumption,
   IMenuItemConsumption,
@@ -49,6 +51,7 @@ const Items = () => {
   } = useGetConsumptionQuery({
     searchTerm: searchTerm,
   });
+
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state.order);
 
@@ -319,7 +322,7 @@ const Items = () => {
                     size="sm"
                     onClick={() => handleRemove(rowData?.item?.itemCode)}
                   >
-                    <Trash />
+                    <TrashIcon />
                   </Button>
                 );
               }}

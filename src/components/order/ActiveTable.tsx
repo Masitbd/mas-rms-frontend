@@ -1,14 +1,16 @@
 /* eslint-disable react/no-children-prop */
+
+"use client"
+
 import { useAppSelector } from "@/lib/hooks";
 import { useSingleKitchenOrderListQuery } from "@/redux/api/order/orderSlice";
-import React from "react";
+
 import { Button, InputPicker, Modal, Table } from "rsuite";
 import { KitchenOrderData } from "./TypesAndDefaultes";
 
 import ModalBody from "rsuite/esm/Modal/ModalBody";
 import KitchenOrderDetails from "./KitchenOrderDetails";
 import KitchenOrders from "./KitchenOrders";
-import { IOrder } from "@/redux/features/order/orderSlice";
 
 const ActiveTable = () => {
   const { Cell, Column, ColumnGroup, HeaderCell } = Table;
@@ -22,8 +24,12 @@ const ActiveTable = () => {
 
   return (
     <div className="border border-[#DCDCDC] p-2 rounded-md h-full">
-      <div className="text-center">Active Kitchen Orders</div>
+      <div className="text-center">
+        {/* <InputPicker block searchable placeholder="Select Active Table" /> */}
+        Active Kitchen Orders
+      </div>
       <div className="mt-2">
+       
         <Table
           autoHeight
           data={
@@ -45,6 +51,8 @@ const ActiveTable = () => {
           <Column flexGrow={2}>
             <HeaderCell>NO.</HeaderCell>
             <Cell dataKey="kitchenOrderNo" />
+            <HeaderCell>NO.</HeaderCell>
+            <Cell dataKey="kitchenOrderNo" />
           </Column>
           <Column flexGrow={1}>
             <HeaderCell>...</HeaderCell>
@@ -52,7 +60,7 @@ const ActiveTable = () => {
               {(rowData) => {
                 return (
                   <>
-                    <KitchenOrders order={rowData as KitchenOrderData} />
+                    <KitchenOrders order={rowData} />
                   </>
                 );
               }}

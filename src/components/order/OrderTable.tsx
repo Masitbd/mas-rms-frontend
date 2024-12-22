@@ -13,14 +13,9 @@ import ViewIcon from "@rsuite/icons/EyeClose";
 import { useRouter } from "next/navigation";
 import { useGetOrdersQuery } from "@/redux/api/order/orderSlice";
 import ActiveTableList from "./ActiveTableList";
-import { NavLink } from "../layout/Navlink";
 import { useGetWaiterListQuery } from "@/redux/api/waiter/waiter.api";
 import { useGetTableListQuery } from "@/redux/api/table/table.api";
-import useQueryBuilder, { QueryBuilder } from "@/helpers/QueryBUilder";
-import SearchIcon from "@rsuite/icons/Search";
-import CloseIcon from "@rsuite/icons/Close";
-import { ISelectPicker, sortOption, statusOption } from "./TypesAndDefaultes";
-import { TTableData } from "../Table/Table";
+import useQueryBuilder from "@/helpers/QueryBUilder";
 import { IOrder } from "@/redux/features/order/orderSlice";
 
 const OrderTable = () => {
@@ -50,84 +45,7 @@ const OrderTable = () => {
   };
 
   return (
-    <>
-      <div className="my-5 grid grid-cols-12 gap-2">
-        <Button
-          appearance="primary"
-          color="blue"
-          as={NavLink}
-          href={`/order/new?mode=new`}
-          style={{ backgroundColor: "#194BEE" }}
-          size="lg"
-        >
-          Add New
-        </Button>
-        <InputGroup className="col-span-3">
-          <Input
-            placeholder="search"
-            onChange={(v) => addField("searchTerm", v)}
-            value={query?.searchTerm ?? ""}
-          />
-          <InputGroup.Addon style={{ backgroundColor: "white" }}>
-            <CloseIcon
-              className="text-xs cursor-pointer hover:text-xl "
-              color="red"
-              onClick={() => deleteField("searchTerm")}
-            />
-          </InputGroup.Addon>
-          <InputGroup.Addon>
-            <SearchIcon />
-          </InputGroup.Addon>
-        </InputGroup>
-        <SelectPicker
-          placeholder={"waiter"}
-          size="lg"
-          data={waiterData?.data?.map((wd: TTableData) => ({
-            label: wd?.name,
-            value: wd?._id,
-          }))}
-          onChange={(v) => addField("waiter", v)}
-          className="col-span-2"
-          cleanable
-          onClean={() => deleteField("waiter")}
-        />
-        <SelectPicker
-          placeholder={"table"}
-          size="lg"
-          data={tableData?.data?.map((wd: TTableData) => ({
-            label: wd?.name,
-            value: wd?._id,
-          }))}
-          className="col-span-2"
-          cleanable
-          onChange={(v) => addField("tableName", v)}
-          onClean={() => deleteField("tableName")}
-        />
-        <SelectPicker
-          placeholder={"status"}
-          size="lg"
-          className="col-span-2"
-          data={statusOption.map((so: ISelectPicker) => ({
-            label: so.label,
-            value: so.value,
-          }))}
-          cleanable
-          onChange={(v) => addField("status", v)}
-          onClean={() => deleteField("status")}
-        />
-        <SelectPicker
-          placeholder={"Sort By"}
-          size="lg"
-          className="col-span-2"
-          data={sortOption.map((so: ISelectPicker) => ({
-            label: so.label,
-            value: so.value,
-          }))}
-          cleanable
-          onChange={(v) => addField("sort", v)}
-          onClean={() => deleteField("sort")}
-        />
-      </div>
+    <div>
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-9">
           <Table
@@ -163,7 +81,7 @@ const OrderTable = () => {
                         <Button
                           appearance="ghost"
                           color="blue"
-                          onClick={() => editHandler(rowdata as IOrder)}
+                          onClick={() => editHandler(rowdata)}
                         >
                           <EditIcon />
                         </Button>
@@ -206,7 +124,10 @@ const OrderTable = () => {
           <ActiveTableList />
         </div>
       </div>
-    </>
+      <div className="col-span-3 ">
+        <ActiveTableList />
+      </div>
+    </div>
   );
 };
 

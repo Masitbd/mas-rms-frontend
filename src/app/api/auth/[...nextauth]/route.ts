@@ -17,7 +17,7 @@ async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
     // Get a new access token from backend using the refresh token
     const res = await axios
       .post(
-        "http://localhost:5000/api/v1/auth/refresh-token",
+        "http://localhost:3001/api/v1/auth/refresh-token",
         {},
 
         {
@@ -66,7 +66,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         try {
           const res = await axios
-            .post("http://localhost:5000/api/v1/auth/login", {
+            .post("http://localhost:3001/api/v1/auth/login", {
               email: credentials?.email,
               password: credentials?.password,
             })

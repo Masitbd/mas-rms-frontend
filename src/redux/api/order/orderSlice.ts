@@ -34,10 +34,9 @@ const order = baseApi.injectEndpoints({
     }),
 
     getOrders: build.query({
-      query: (query) => ({
+      query: () => ({
         url: "/order",
         method: "GET",
-        params: query,
       }),
       providesTags: ["order"],
     }),
@@ -51,7 +50,7 @@ const order = baseApi.injectEndpoints({
     }),
 
     getActiveTableList: build.query({
-      query: () => ({
+      query: (id: string) => ({
         url: `/order/active-table-list`,
         method: "GET",
       }),

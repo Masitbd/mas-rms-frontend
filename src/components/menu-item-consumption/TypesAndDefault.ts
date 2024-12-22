@@ -24,6 +24,7 @@ export interface IMenuItemConsumption {
   cookingTime: number;
   itemCategory: string;
   isDiscount: boolean;
+  discount: number;
   isVat: boolean;
   isWaiterTips: boolean;
   itemName: string;
