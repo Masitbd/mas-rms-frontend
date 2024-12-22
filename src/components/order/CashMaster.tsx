@@ -118,7 +118,7 @@ const CashMaster = (props: ICashMasterProps) => {
   return (
     <div className="border border-[#DCDCDC] p-2 rounded-md">
       <Form
-        className="grid grid-cols-10 gap-x-5"
+        className="grid 2xl:grid-cols-10 lg:grid-cols-8 md:grid-cols-6 gap-x-5"
         fluid
         onChange={handleFormChange}
         formValue={state}
@@ -132,7 +132,7 @@ const CashMaster = (props: ICashMasterProps) => {
           <Form.Control name="billNo" value={date} size="sm" disabled />
         </Form.Group>
         <Form.Group>
-          <Form.ControlLabel children={"Table Name"} />
+          <Form.ControlLabel children={"Table"} />
           <Form.Control
             name="tableName"
             accepter={InputPicker}
@@ -183,7 +183,7 @@ const CashMaster = (props: ICashMasterProps) => {
       </Form>
 
       <div className="grid grid-cols-10 gap-5">
-        <div className="col-span-9 grid grid-cols-1 gap-2">
+        <div className="2xl:col-span-9 xl:col-span-8 lg:col-span-7 grid grid-cols-1 gap-2 col-span-6">
           <div className="grid grid-cols-12 gap">
             <h3 className="col-span-2">Discount Card</h3>
             <InputGroup className="w-full col-span-10">
@@ -217,7 +217,7 @@ const CashMaster = (props: ICashMasterProps) => {
             />
           </div>
         </div>
-        <div className=" flex flex-col justify-around">
+        <div className=" flex flex-col justify-around col-span-2 2xl:col-span-1 ">
           <Tag
             style={{
               color: "#6388FD",
@@ -228,7 +228,7 @@ const CashMaster = (props: ICashMasterProps) => {
             size="lg"
             className="text-center"
           >
-            Posted
+            {state.status ?? "Not Posted"}
           </Tag>
           <Tag
             style={{

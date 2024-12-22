@@ -20,6 +20,7 @@ import { config, IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 import StorageIcon from "@rsuite/icons/Storage";
 import FunnelTimeIcon from "@rsuite/icons/FunnelTime";
+import DocPassIcon from "@rsuite/icons/DocPass";
 
 const DashSidebar = () => {
   const [expand, setExpand] = React.useState(true);
@@ -91,7 +92,15 @@ const DashSidebar = () => {
               >
                 Menu Item And consumption
               </Nav.Item>
-              <Dropdown
+              <Nav.Item
+                href="/order"
+                eventKey="9"
+                icon={<DocPassIcon />}
+                as={NavLink}
+              >
+                Order
+              </Nav.Item>
+              {/* <Dropdown
                 eventKey="5"
                 trigger="hover"
                 title="Advanced"
@@ -125,7 +134,7 @@ const DashSidebar = () => {
                 <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
                 <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
                 <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-              </Dropdown>
+              </Dropdown> */}
             </Nav>
           </Sidenav.Body>
         </Sidenav>

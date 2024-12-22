@@ -427,6 +427,7 @@ const BillMaster = (props: { mode: string }) => {
     pdfMake.createPdf(doc as unknown as TDocumentDefinitions).print();
   };
 
+  console.log(bill?._id as unknown as boolean);
   return (
     <div>
       <h3 className="text-[#003CFF] font-roboto text-xl font-semibold">
@@ -618,7 +619,9 @@ const BillMaster = (props: { mode: string }) => {
               endIcon={<FontAwesomeIcon icon={faPrint} />}
               children={"Print"}
               onClick={() => handlePrint()}
-              disabled={bill?.status == "posted"}
+              disabled={
+                bill?.status == "posted" || (!bill?._id as unknown as boolean)
+              }
             />
 
             <Button
@@ -636,7 +639,9 @@ const BillMaster = (props: { mode: string }) => {
                 )
               }
               loading={changeStatusLoading}
-              disabled={bill?.status == "posted"}
+              disabled={
+                bill?.status == "posted" || (!bill?._id as unknown as boolean)
+              }
             />
 
             <Button
