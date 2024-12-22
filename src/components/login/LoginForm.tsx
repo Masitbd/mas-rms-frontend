@@ -38,6 +38,7 @@ const LoginForm = () => {
         email: credentials.email,
         password: credentials.password,
       });
+      console.log(result, "login rest");
       if (result?.error) {
         setError(result.error);
       }

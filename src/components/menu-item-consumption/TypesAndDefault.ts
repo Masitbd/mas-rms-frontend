@@ -24,6 +24,7 @@ export interface IMenuItemConsumption {
   cookingTime: number;
   itemCategory: string;
   isDiscount: boolean;
+  discount: number;
   isVat: boolean;
   isWaiterTips: boolean;
   itemName: string;
@@ -34,9 +35,9 @@ export interface IMenuItemConsumption {
 
 export const defaultMenuItemConsumption = {
   id: "",
-  isDiscount: false,
-  isVat: false,
-  isWaiterTips: false,
+  isDiscount: true,
+  isVat: true,
+  isWaiterTips: true,
   consumptions: [],
 };
 

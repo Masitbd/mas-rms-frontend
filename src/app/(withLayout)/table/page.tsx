@@ -42,7 +42,6 @@ const TablePage = () => {
     try {
       const res = await craetTable(formData).unwrap();
 
-
       if (res.success) {
         Swal.fire({
           toast: true,
