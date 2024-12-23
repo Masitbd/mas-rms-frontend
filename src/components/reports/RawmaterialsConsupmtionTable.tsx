@@ -13,8 +13,8 @@ type TRecord = {
 type TRawmaterialsConsupmtionTable = {
   data: TRecord[];
   isLoading: boolean;
-  startDate: string;
-  endDate: string;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 const RawmaterialsConsupmtionTable:React.FC<TRawmaterialsConsupmtionTable> = ({data,isLoading, startDate, endDate}) => {
@@ -59,7 +59,7 @@ const RawmaterialsConsupmtionTable:React.FC<TRawmaterialsConsupmtionTable> = ({d
                         <div className="flex gap-4 justify-center">
                           <p>
 
-                          {record.rate || 0}
+                          {record.rate?.toFixed(2) || 0}
                           </p>
                           <p>
                           {record.unit}

@@ -108,6 +108,29 @@ const DashSidebar = () => {
                   Item Wise Sales Statement
                 </Nav.Item>
                 {/*  */}
+                <Nav.Item
+                  eventKey="8-5"
+                  href="/reports/menu-item-conssumption"
+                  as={NavLink}
+                >
+                  Menu Item Conssumption
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item
+                  eventKey="8-6"
+                  href="/reports/menu-item-costing"
+                  as={NavLink}
+                >
+                 Menu Item Costing
+                </Nav.Item>
+                <Nav.Item
+                  eventKey="8-7"
+                  href="/reports/raw-material-consumption"
+                  as={NavLink}
+                >
+                  Raw Material Consumption
+                </Nav.Item>
+                {/*  */}
               </Nav.Menu>
             </Nav>
           </Sidenav.Body>

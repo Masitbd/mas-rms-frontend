@@ -39,6 +39,32 @@ const reportsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reports"],
     }),
+    // menu item consumption
+
+    getMenuItemsConsumptionReports: build.query({
+      query: (args) => ({
+        url: "/reports/menuitem-consumption",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+    getMenuItemsConsumpitonCostingReports: build.query({
+      query: (args) => ({
+        url: "/reports/menuitem-costing",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+    getRawMaterialsConsumptionReports: build.query({
+      query: (args) => ({
+        url: "/reports/raw-materials/sales",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
 
     //
   }),
@@ -49,4 +75,7 @@ export const {
   useGetDailySalesSatementSummeryQuery,
   useGetItemWiseSalesReportsQuery,
   useGetMenuItemsReportsQuery,
+  useGetMenuItemsConsumptionReportsQuery,
+  useGetMenuItemsConsumpitonCostingReportsQuery,
+  useGetRawMaterialsConsumptionReportsQuery,
 } = reportsApi;
