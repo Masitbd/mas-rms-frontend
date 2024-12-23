@@ -28,6 +28,5 @@ export const baseApi = createApi({
     "reports",
     "waiterList",
     "branch",
-
   ],
 });

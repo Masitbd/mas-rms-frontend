@@ -45,7 +45,6 @@ const NewOrder = (props: PageProps) => {
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-9 grid grid-cols-1 gap-2 ">
           <CashMaster mode={mode} />
-          <CashMaster mode={mode} />
 
           <div className="w-full">
             <Items />
@@ -55,7 +54,6 @@ const NewOrder = (props: PageProps) => {
           <ActiveTable />
         </div>
         <div className="col-span-12 h-full">
-          <BillMaster mode={mode} />
           <BillMaster mode={mode} />
         </div>
       </div>
