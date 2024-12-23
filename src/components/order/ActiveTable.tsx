@@ -1,6 +1,6 @@
 /* eslint-disable react/no-children-prop */
 
-"use client"
+"use client";
 
 import { useAppSelector } from "@/lib/hooks";
 import { useSingleKitchenOrderListQuery } from "@/redux/api/order/orderSlice";
@@ -29,7 +29,6 @@ const ActiveTable = () => {
         Active Kitchen Orders
       </div>
       <div className="mt-2">
-       
         <Table
           autoHeight
           data={
@@ -51,8 +50,6 @@ const ActiveTable = () => {
           <Column flexGrow={2}>
             <HeaderCell>NO.</HeaderCell>
             <Cell dataKey="kitchenOrderNo" />
-            <HeaderCell>NO.</HeaderCell>
-            <Cell dataKey="kitchenOrderNo" />
           </Column>
           <Column flexGrow={1}>
             <HeaderCell>...</HeaderCell>
@@ -60,7 +57,7 @@ const ActiveTable = () => {
               {(rowData) => {
                 return (
                   <>
-                    <KitchenOrders order={rowData} />
+                    <KitchenOrders order={rowData as KitchenOrderData} />
                   </>
                 );
               }}

@@ -190,22 +190,18 @@ const CashMaster = (props: ICashMasterProps) => {
         <Form.Group>
           <Form.ControlLabel children={"S.Charge(%)"} />
           <Form.Control name="serviceChargeRate" type="number" size="sm" />
-          <Form.ControlLabel children={"S.Charge(%)"} />
-          <Form.Control name="serviceChargeRate" type="number" size="sm" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Vat(%)"} />
           <Form.Control name="vat" size="sm" type="number" />
-          <Form.Control name="vat" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Discount(%)"} />
-          <Form.Control name="percentDiscount" size="sm" type="number" />
+
           <Form.Control name="percentDiscount" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Discount(Amt)"} />
-          <Form.Control name="discountAmount" size="sm" type="number" />
           <Form.Control name="discountAmount" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
@@ -229,26 +225,10 @@ const CashMaster = (props: ICashMasterProps) => {
               />
               <InputGroup.Addon>{addonIconProvider()}</InputGroup.Addon>
             </InputGroup>
-            <InputGroup className="w-full col-span-10">
-              <Input
-                size="sm"
-                className="col-span-10"
-                onChange={(v) =>
-                  dispatch(updateBillDetails({ discountCard: v }))
-                }
-                value={state?.discountCard}
-              />
-              <InputGroup.Addon>{addonIconProvider()}</InputGroup.Addon>
-            </InputGroup>
           </div>
           <div className="grid grid-cols-12">
             <h3 className="col-span-2">Guest Name</h3>
-            <Input
-              size="sm"
-              className="col-span-10"
-              value={state?.customer?.name}
-              onChange={(v) => dispatch(updateCustomerInfo({ name: v }))}
-            />
+
             <Input
               size="sm"
               className="col-span-10"
@@ -258,12 +238,7 @@ const CashMaster = (props: ICashMasterProps) => {
           </div>
           <div className="grid grid-cols-12">
             <h3 className="col-span-2">Address</h3>
-            <Input
-              size="sm"
-              className="col-span-10"
-              value={state?.customer?.address}
-              onChange={(v) => dispatch(updateCustomerInfo({ address: v }))}
-            />
+
             <Input
               size="sm"
               className="col-span-10"

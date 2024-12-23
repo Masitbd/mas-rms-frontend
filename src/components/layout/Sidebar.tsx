@@ -23,7 +23,7 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 
 import DateTaskIcon from "@rsuite/icons/DateTask";
 import { useRouter } from "next/navigation";
-
+import UserInfoIcon from "@rsuite/icons/UserInfo";
 
 const DashSidebar = () => {
   const navigate = useRouter();
@@ -90,52 +90,31 @@ const DashSidebar = () => {
               >
                 Order
               </Nav.Item>
-              {/* <Dropdown
-                eventKey="5"
-                trigger="hover"
-                title="Advanced"
-                icon={<StorageIcon />}
-                placement="rightStart"
+              <Nav.Item
+                href="/users"
+                eventKey="10"
+                icon={<UserInfoIcon />}
+                as={NavLink}
               >
-                <Dropdown.Item eventKey="3-1">Geo</Dropdown.Item>
-                <Dropdown.Item eventKey="3-2">Devices</Dropdown.Item>
-                <Dropdown.Item eventKey="3-3">Brand</Dropdown.Item>
-                <Dropdown.Item eventKey="3-4">Loyalty</Dropdown.Item>
-                <Dropdown.Item eventKey="3-5">Visit Depth</Dropdown.Item>
-              </Dropdown>
-
+                Users
+              </Nav.Item>
 
               <Nav.Menu
-                eventKey="8"
+                eventKey="9"
                 trigger="hover"
                 title="Reports"
                 icon={<DateTaskIcon />}
                 placement="rightStart"
               >
-  <Dropdown.Item eventKey="4-1">Applications</Dropdown.Item>
-                <Dropdown.Item eventKey="4-2">Websites</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-                <Dropdown.Item eventKey="4-5">Versions</Dropdown.Item>
-                <Dropdown.Item eventKey="4-3">Channels</Dropdown.Item>
-                <Dropdown.Item eventKey="4-4">Tags</Dropdown.Item>
-              </Dropdown> */}
-
                 <Nav.Item
-                  eventKey="8-1"
+                  eventKey="9-1"
                   href="/reports/daily-sales-report"
                   as={NavLink}
                 >
                   Daily Sales Reports
                 </Nav.Item>
                 <Nav.Item
-                  eventKey="8-2"
+                  eventKey="9-2"
                   href="/reports/daily-sales-summery"
                   as={NavLink}
                 >
@@ -143,22 +122,20 @@ const DashSidebar = () => {
                 </Nav.Item>
                 {/*  */}
                 <Nav.Item
-                  eventKey="8-3"
+                  eventKey="9-3"
                   href="/reports/menu-items"
                   as={NavLink}
                 >
                   Menu Items
                 </Nav.Item>
                 <Nav.Item
-                  eventKey="8-4"
+                  eventKey="9-4"
                   href="/reports/item-wise-sales"
                   as={NavLink}
                 >
                   Item Wise Sales Statement
                 </Nav.Item>
-                {/*  */}
               </Nav.Menu>
-
             </Nav>
           </Sidenav.Body>
         </Sidenav>
