@@ -12,6 +12,7 @@ declare module "next-auth" {
     name: string;
     role: string;
     uuid: string;
+    branch?: string;
   }
 
   /**

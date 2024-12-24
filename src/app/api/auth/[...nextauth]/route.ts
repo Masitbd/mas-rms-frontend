@@ -88,6 +88,9 @@ const handler = NextAuth({
             role: access?.role,
             uuid: access?.uuid,
           };
+          if (Object.hasOwn(access, "branch")) {
+            user.branch = access?.branch;
+          }
           // Extract the auth validity from the tokens
           const validity: AuthValidity = {
             valid_until: access.exp,

@@ -24,7 +24,6 @@ export interface IMenuItemConsumption {
   cookingTime: number;
   itemCategory: string;
   isDiscount: boolean;
-  discount: number;
   isVat: boolean;
   isWaiterTips: boolean;
   itemName: string;
@@ -57,10 +56,8 @@ export type ConsumptionListProps = IMenuItemTableProps & {
 const { StringType, NumberType, BooleanType } = Schema.Types;
 
 export const formModel = Schema.Model({
-  id: StringType().isRequired("ID is required."),
   rate: NumberType("Rate must be a number").isRequired("Rate is required."),
   itemGroup: StringType().isRequired("Item Group is required."),
-  cookingTime: NumberType().isRequired("Cooking Time is required."),
   itemCategory: StringType().isRequired("Item Category is required."),
   itemName: StringType().isRequired("Item Name is required."),
   itemCode: StringType().isRequired("Item Code is required."),

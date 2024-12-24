@@ -4,8 +4,16 @@ import { Button, DatePicker, Form, FormInstance, InputPicker } from "rsuite";
 import PasswordFieldProvider from "./PasswordFieldProvider";
 import { Textarea } from "../customers/TextArea";
 import { IuserFormData, IUserPost, userFormSchema } from "./Types&Defaults";
-import { genders, roles, userModelProvider } from "./userHelper";
+import {
+  genders,
+  roles,
+  userModelProvider,
+  userRoleProviderForNewUser,
+} from "./userHelper";
 import { ENUM_MODE } from "@/enums/EnumMode";
+import { getSession, useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
+import { useGetBranchQuery } from "@/redux/api/branch/branch.api";
 
 const UserForm = (props: {
   setFormData: React.Dispatch<SetStateAction<IuserFormData | undefined>>;
@@ -15,6 +23,9 @@ const UserForm = (props: {
 }) => {
   const { setFormData, formData, forwardedFromRef, mode } = props;
   const model = userModelProvider(mode);
+  const { status, data } = useSession();
+  const { data: brunchData, isLoading: brunchDataLoading } =
+    useGetBranchQuery(undefined);
 
   return (
     <div>
@@ -84,9 +95,10 @@ const UserForm = (props: {
             <Form.Control
               name="role"
               accepter={InputPicker}
-              data={roles}
+              data={userRoleProviderForNewUser(data?.user?.role as string)}
               className="w-full"
               block={true}
+              loading={status == "loading"}
             />
           </Form.Group>
 
@@ -98,6 +110,24 @@ const UserForm = (props: {
             <Form.ControlLabel>Email</Form.ControlLabel>
             <Form.Control name="email" type="email" />
           </Form.Group>
+          {(data?.user?.role == ENUM_USER.ADMIN ||
+            data?.user?.role == ENUM_USER.SUPER_ADMIN) && (
+            <Form.Group controlId="brunch">
+              <Form.ControlLabel>Brunch</Form.ControlLabel>
+              <Form.Control
+                name="brunch"
+                accepter={InputPicker}
+                block
+                data={brunchData?.data?.map(
+                  (bd: { name: string; _id: string }) => ({
+                    label: bd.name,
+                    value: bd?._id,
+                  })
+                )}
+                loading={brunchDataLoading}
+              />
+            </Form.Group>
+          )}
           {props.mode == ENUM_MODE.NEW && (
             <div className="contents">
               <PasswordFieldProvider />

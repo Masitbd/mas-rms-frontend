@@ -94,12 +94,14 @@ export type IUser = {
   profile?: string | IProfile;
   status: string;
   email: string;
+  branch: string;
 };
 export type IUserPost = {
   role: string;
   password?: string;
   profile: IProfile;
   email: string;
+  brunch?: string;
 };
 
 export type IuserFormData = {
@@ -115,4 +117,5 @@ export type IuserFormData = {
   dateOfBirth: Date;
   gender: string;
   uuid?: string;
+  branch: string;
 };

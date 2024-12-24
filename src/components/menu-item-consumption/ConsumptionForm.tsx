@@ -1,6 +1,14 @@
 "use client";
 import React, { SetStateAction, useState } from "react";
-import { Button, Checkbox, Form, InputPicker, Message, toaster } from "rsuite";
+import {
+  Button,
+  Checkbox,
+  Form,
+  InputPicker,
+  Message,
+  SelectPicker,
+  toaster,
+} from "rsuite";
 import { Textarea } from "../customers/TextArea";
 import {
   defaultMenuItemConsumption,
@@ -98,7 +106,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
       >
         <Form.Group controlId="id">
           <Form.ControlLabel>ID</Form.ControlLabel>
-          <Form.Control name="id" />
+          <Form.Control name="id" disabled />
         </Form.Group>
         <Form.Group controlId="rate">
           <Form.ControlLabel>Rate</Form.ControlLabel>
@@ -109,7 +117,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
           <Form.Control
             name="itemGroup"
             accepter={InputPicker}
-            className="w-fit"
+            className="w-[300px]"
             data={menuGroupData?.data?.map(
               (v: { name: string; _id: string }) => ({
                 label: v?.name,
@@ -118,6 +126,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
             )}
             onSelect={(v) => setFilterOption({ menuGroup: v })}
             loading={menuGroupLoading}
+            block
           />
         </Form.Group>
         <Form.Group controlId="cookingTime">
@@ -136,9 +145,32 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
               })
             )}
             loading={itemCategoryLoading}
+            className="w-[300px]"
           />
         </Form.Group>
-        <div className="flex ">
+
+        <Form.Group controlId="itemName">
+          <Form.ControlLabel>Item Name</Form.ControlLabel>
+          <Form.Control name="itemName" />
+        </Form.Group>
+
+        <Form.Group controlId="itemCode">
+          <Form.ControlLabel>Item Code</Form.ControlLabel>
+          <Form.Control name="itemCode" />
+        </Form.Group>
+        <Form.Group controlId="discount">
+          <Form.ControlLabel>Discount(%)</Form.ControlLabel>
+          <Form.Control name="discount" type="number" />
+        </Form.Group>
+        <Form.Group controlId="waiterTip">
+          <Form.ControlLabel>Waiter Tip</Form.ControlLabel>
+          <Form.Control name="waiterTip" type="number" />
+        </Form.Group>
+        <Form.Group controlId="description" className="row-span-2">
+          <Form.ControlLabel>Description</Form.ControlLabel>
+          <Form.Control name="description" accepter={Textarea} />
+        </Form.Group>
+        <div className="grid 2xl:grid-cols-3 xl:col-span-2 col-span-1 row-span-2">
           <Form.Group controlId="isDiscount">
             <Form.ControlLabel>No Discount</Form.ControlLabel>
             <Form.Control
@@ -167,27 +199,6 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
             />
           </Form.Group>
         </div>
-        <Form.Group controlId="itemName">
-          <Form.ControlLabel>Item Name</Form.ControlLabel>
-          <Form.Control name="itemName" />
-        </Form.Group>
-
-        <Form.Group controlId="description" className="row-span-2">
-          <Form.ControlLabel>Description</Form.ControlLabel>
-          <Form.Control name="description" accepter={Textarea} />
-        </Form.Group>
-        <Form.Group controlId="itemCode">
-          <Form.ControlLabel>Item Code</Form.ControlLabel>
-          <Form.Control name="itemCode" />
-        </Form.Group>
-        <Form.Group controlId="discount">
-          <Form.ControlLabel>Discount(%)</Form.ControlLabel>
-          <Form.Control name="discount" type="number" />
-        </Form.Group>
-        <Form.Group controlId="waiterTip">
-          <Form.ControlLabel>Waiter Tip</Form.ControlLabel>
-          <Form.Control name="waiterTip" type="number" />
-        </Form.Group>
         {mode !== ENUM_MODE.VIEW && (
           <div className="col-span-2 grid grid-cols-8 mt-2.5">
             <Button
