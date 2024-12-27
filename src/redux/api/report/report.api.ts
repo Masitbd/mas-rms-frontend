@@ -57,9 +57,42 @@ const reportsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reports"],
     }),
+    //
     getRawMaterialsConsumptionReports: build.query({
       query: (args) => ({
         url: "/reports/raw-materials/sales",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+    getItemWiseRawMaterialsConsumptionReports: build.query({
+      query: (args) => ({
+        url: "/reports/item/raw-materials",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+    getDueStatementReports: build.query({
+      query: (args) => ({
+        url: "/reports/sales/due-statement",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+    getWaiterWiseSalesReports: build.query({
+      query: (args) => ({
+        url: "/reports/waiter-wise-sales",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
+    getWaiterWiseSaleStatementReports: build.query({
+      query: (args) => ({
+        url: "/reports/waiter-wise-sales/statement",
         method: "GET",
         params: args,
       }),
@@ -78,4 +111,8 @@ export const {
   useGetMenuItemsConsumptionReportsQuery,
   useGetMenuItemsConsumpitonCostingReportsQuery,
   useGetRawMaterialsConsumptionReportsQuery,
+  useGetItemWiseRawMaterialsConsumptionReportsQuery,
+  useGetDueStatementReportsQuery,
+  useGetWaiterWiseSaleStatementReportsQuery,
+  useGetWaiterWiseSalesReportsQuery,
 } = reportsApi;
