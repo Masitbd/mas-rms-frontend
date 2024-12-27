@@ -29,7 +29,7 @@ export type TMenuGroupItem = {
 const ItemsCategoryPage = () => {
   const { data: menus, isLoading: menuLoading } = useGetMenuGroupQuery({});
 
-  const { data: items, isLoading } = useGetItemsCategoryQuery({});
+  const { data: items, isLoading } = useGetItemsCategoryQuery(undefined);
 
   const menuGroupData: TMenuGroupOption[] = menus?.data?.map(
     (item: TMenuGroupItem) => ({

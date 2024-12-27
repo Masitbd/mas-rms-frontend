@@ -43,19 +43,17 @@ const NewOrder = (props: PageProps) => {
   return (
     <div className="bg-[#FAFBFF]">
       <div className="grid grid-cols-12 gap-2">
-        <div className="col-span-9 grid grid-cols-1 gap-2 h-[60vh]">
-          <CashMaster mode={mode} />
+        <div className="col-span-9 grid grid-cols-1 gap-2 ">
           <CashMaster mode={mode} />
 
           <div className="w-full">
             <Items />
           </div>
         </div>
-        <div className="col-span-3 h-[60vh]">
+        <div className="col-span-3">
           <ActiveTable />
         </div>
-        <div className="col-span-12 h-[30vh]">
-          <BillMaster mode={mode} />
+        <div className="col-span-12 h-full">
           <BillMaster mode={mode} />
         </div>
       </div>

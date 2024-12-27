@@ -44,6 +44,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
     // Handle success
     const handleSuccess = (message: string) => {
       Swal.fire("Success", message, "success");
+      defaultMenuItemConsumption.consumptions = [];
       setFormData(
         defaultMenuItemConsumption as unknown as IMenuItemConsumption
       );
@@ -80,6 +81,8 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
       Swal.fire("Error", "Failed to create Item Consumption Setup", "error");
     }
   };
+
+  console.log(defaultMenuItemConsumption);
 
   return (
     <div>
@@ -176,6 +179,14 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
         <Form.Group controlId="itemCode">
           <Form.ControlLabel>Item Code</Form.ControlLabel>
           <Form.Control name="itemCode" />
+        </Form.Group>
+        <Form.Group controlId="discount">
+          <Form.ControlLabel>Discount(%)</Form.ControlLabel>
+          <Form.Control name="discount" type="number" />
+        </Form.Group>
+        <Form.Group controlId="waiterTip">
+          <Form.ControlLabel>Waiter Tip</Form.ControlLabel>
+          <Form.Control name="waiterTip" type="number" />
         </Form.Group>
         {mode !== ENUM_MODE.VIEW && (
           <div className="col-span-2 grid grid-cols-8 mt-2.5">

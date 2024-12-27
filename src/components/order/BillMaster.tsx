@@ -1,12 +1,10 @@
 /* eslint-disable react/no-children-prop */
-/* eslint-disable react/no-children-prop */
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   IOrder,
   resetBill,
   updateBillDetails,
 } from "@/redux/features/order/orderSlice";
-
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Button, Input, InputPicker, toaster } from "rsuite";
@@ -27,6 +25,7 @@ import { useSession } from "next-auth/react";
 import { ENUM_MODE } from "@/enums/EnumMode";
 import CheckIcon from "@rsuite/icons/Check";
 import { changeOrderStatus } from "./OrderHelpers";
+import { TDocumentDefinitions } from "pdfmake/interfaces";
 
 pdfMake.vfs = pdfFonts as unknown as { [file: string]: string };
 
@@ -36,7 +35,6 @@ const BillMaster = (props: { mode: string }) => {
   const dispatch = useAppDispatch();
   const bill = useAppSelector((state) => state.order);
   const [postOrder, { isLoading: orderPostLoading }] = usePostOrderMutation();
-
   const [updateOrder, { isLoading: orderUpdateLoading }] =
     useUpdateOrderMutation();
   const router = useRouter();
@@ -73,7 +71,7 @@ const BillMaster = (props: { mode: string }) => {
       serviceChargeRate: bill?.serviceChargeRate ?? 0,
       discountCard: bill?.discountCard,
       customer: bill?.customer,
-    };
+    } as IOrder;
 
     if (
       typeof bill.customer == "object" &&
@@ -232,7 +230,7 @@ const BillMaster = (props: { mode: string }) => {
                 { text: "Rate", bold: true },
                 { text: "Amount", bold: true },
               ],
-              ...bill?.items?.map((item) => {
+              ...(bill?.items?.map((item) => {
                 return [
                   { text: item?.item?.itemName },
                   { text: item?.qty },
@@ -241,7 +239,7 @@ const BillMaster = (props: { mode: string }) => {
                     text: parseFloat((item?.rate * item?.qty).toFixed(2)),
                   },
                 ];
-              }),
+              }) as []),
             ],
           },
           style: "infoText",
@@ -426,7 +424,7 @@ const BillMaster = (props: { mode: string }) => {
       },
     };
 
-    pdfMake.createPdf(doc).print();
+    pdfMake.createPdf(doc as unknown as TDocumentDefinitions).print();
   };
 
   return (
@@ -498,16 +496,6 @@ const BillMaster = (props: { mode: string }) => {
                 placement="top"
                 value={bill.paymentMode}
               />
-              <InputPicker
-                size="sm"
-                className="col-span-2"
-                data={paymentMethod}
-                onSelect={(v) =>
-                  dispatch(updateBillDetails({ paymentMode: v }))
-                }
-                placement="top"
-                value={bill.paymentMode}
-              />
             </div>
             <div className="grid grid-cols-3">
               <label htmlFor="">Remark</label>
@@ -517,25 +505,9 @@ const BillMaster = (props: { mode: string }) => {
                 onChange={(v) => dispatch(updateBillDetails({ remark: v }))}
                 value={bill.remark}
               />
-              <Input
-                size="sm"
-                className="col-span-2"
-                onChange={(v) => dispatch(updateBillDetails({ remark: v }))}
-                value={bill.remark}
-              />
             </div>
             <div className="grid grid-cols-3">
               <label htmlFor="">P. Payment Mode</label>
-              <InputPicker
-                size="sm"
-                className="col-span-2"
-                data={paymentMethod}
-                onSelect={(v) =>
-                  dispatch(updateBillDetails({ pPaymentMode: v }))
-                }
-                placement="top"
-                value={bill.pPaymentMode}
-              />
               <InputPicker
                 size="sm"
                 className="col-span-2"
@@ -559,27 +531,9 @@ const BillMaster = (props: { mode: string }) => {
                 type="number"
                 value={bill.paid}
               />
-              <Input
-                size="sm"
-                className="col-span-2"
-                onChange={(v) =>
-                  dispatch(updateBillDetails({ paid: Number(v) }))
-                }
-                type="number"
-                value={bill.paid}
-              />
             </div>
             <div className="grid grid-cols-3">
               <label htmlFor="">P. Payment</label>
-              <Input
-                size="sm"
-                className="col-span-2"
-                onChange={(v) =>
-                  dispatch(updateBillDetails({ pPayment: Number(v) }))
-                }
-                type="number"
-                value={bill?.pPayment}
-              />
               <Input
                 size="sm"
                 className="col-span-2"
@@ -598,28 +552,13 @@ const BillMaster = (props: { mode: string }) => {
                 value={bill.due}
                 disabled
               />
-              <Input
-                size="sm"
-                className="col-span-2"
-                value={bill.due}
-                disabled
-              />
             </div>
           </div>
 
           <div className="col-span-3">
             <div className="grid grid-cols-3 mb-2">
               <label htmlFor="">Cash Received</label>
-              <label htmlFor="">Cash Received</label>
               <div className="col-span-2 ">
-                <Input
-                  size="sm"
-                  className="col-span-2 w"
-                  onChange={(v) =>
-                    dispatch(updateBillDetails({ cashReceived: Number(v) }))
-                  }
-                  value={bill.cashReceived}
-                />
                 <Input
                   size="sm"
                   className="col-span-2 w"
@@ -632,14 +571,7 @@ const BillMaster = (props: { mode: string }) => {
             </div>
             <div className="grid grid-cols-3">
               <label htmlFor="">Cash Back</label>
-              <label htmlFor="">Cash Back</label>
               <div className="col-span-2 ">
-                <Input
-                  size="sm"
-                  className="col-span-2 w"
-                  disabled
-                  value={bill.cashBack}
-                />
                 <Input
                   size="sm"
                   className="col-span-2 w"
@@ -658,9 +590,6 @@ const BillMaster = (props: { mode: string }) => {
               onClick={() => submitHandler("save")}
               loading={orderPostLoading}
               disabled={bill?.status == "posted"}
-              onClick={() => submitHandler("save")}
-              loading={orderPostLoading}
-              disabled={bill?.status == "posted"}
             >
               Save
             </Button>
@@ -670,40 +599,18 @@ const BillMaster = (props: { mode: string }) => {
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("save&print")}
               disabled={bill?.status == "posted"}
-              onClick={() => submitHandler("save&print")}
-              disabled={bill?.status == "posted"}
             >
               Save & Print
             </Button>
-
             <Button
               size="lg"
               appearance="primary"
               style={{ backgroundColor: "#003CFF" }}
-              endIcon={<FontAwesomeIcon icon={faPrint} />}
-              children={"Print"}
-              onClick={() => handlePrint()}
+              onClick={() => submitHandler("exit")}
               disabled={bill?.status == "posted"}
-            />
-
-            <Button
-              size="lg"
-              appearance="primary"
-              color="green"
-              endIcon={<CheckIcon />}
-              children={"Posted"}
-              onClick={() =>
-                changeOrderStatus(
-                  bill?._id as string,
-                  "posted",
-                  changeStatus,
-                  dispatch
-                )
-              }
-              loading={changeStatusLoading}
-              disabled={bill?.status == "posted"}
-            />
-
+            >
+              Save & Exit
+            </Button>
             <Button
               size="lg"
               appearance="primary"

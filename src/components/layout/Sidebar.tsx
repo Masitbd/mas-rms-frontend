@@ -19,8 +19,11 @@ import { config, IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 import StorageIcon from "@rsuite/icons/Storage";
 import FunnelTimeIcon from "@rsuite/icons/FunnelTime";
+import DocPassIcon from "@rsuite/icons/DocPass";
+
 import DateTaskIcon from "@rsuite/icons/DateTask";
 import { useRouter } from "next/navigation";
+import UserInfoIcon from "@rsuite/icons/UserInfo";
 
 const DashSidebar = () => {
   const navigate = useRouter();
@@ -71,22 +74,47 @@ const DashSidebar = () => {
                 Branch List
               </Nav.Item>
 
-              <Nav.Menu
+              <Nav.Item
+                href="/consumption"
                 eventKey="8"
+                icon={<StorageIcon />}
+                as={NavLink}
+              >
+                Menu Item And consumption
+              </Nav.Item>
+              <Nav.Item
+                href="/order"
+                eventKey="9"
+                icon={<DocPassIcon />}
+                as={NavLink}
+              >
+                Order
+              </Nav.Item>
+              <Nav.Item
+                href="/users"
+                eventKey="10"
+                icon={<UserInfoIcon />}
+                as={NavLink}
+              >
+                Users
+              </Nav.Item>
+
+              <Nav.Menu
+                eventKey="9"
                 trigger="hover"
                 title="Reports"
                 icon={<DateTaskIcon />}
                 placement="rightStart"
               >
                 <Nav.Item
-                  eventKey="8-1"
+                  eventKey="9-1"
                   href="/reports/daily-sales-report"
                   as={NavLink}
                 >
                   Daily Sales Reports
                 </Nav.Item>
                 <Nav.Item
-                  eventKey="8-2"
+                  eventKey="9-2"
                   href="/reports/daily-sales-summery"
                   as={NavLink}
                 >
@@ -94,14 +122,14 @@ const DashSidebar = () => {
                 </Nav.Item>
                 {/*  */}
                 <Nav.Item
-                  eventKey="8-3"
+                  eventKey="9-3"
                   href="/reports/menu-items"
                   as={NavLink}
                 >
                   Menu Items
                 </Nav.Item>
                 <Nav.Item
-                  eventKey="8-4"
+                  eventKey="9-4"
                   href="/reports/item-wise-sales"
                   as={NavLink}
                 >

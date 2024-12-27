@@ -145,7 +145,7 @@ const CashMaster = (props: ICashMasterProps) => {
   return (
     <div className="border border-[#DCDCDC] p-2 rounded-md">
       <Form
-        className="grid grid-cols-10 gap-x-5"
+        className="grid 2xl:grid-cols-10 lg:grid-cols-8 md:grid-cols-6 gap-x-5"
         fluid
         onChange={handleFormChange}
         formValue={state}
@@ -159,7 +159,7 @@ const CashMaster = (props: ICashMasterProps) => {
           <Form.Control name="billNo" value={date} size="sm" disabled />
         </Form.Group>
         <Form.Group>
-          <Form.ControlLabel children={"Table Name"} />
+          <Form.ControlLabel children={"Table"} />
           <Form.Control
             name="tableName"
             accepter={InputPicker}
@@ -190,22 +190,18 @@ const CashMaster = (props: ICashMasterProps) => {
         <Form.Group>
           <Form.ControlLabel children={"S.Charge(%)"} />
           <Form.Control name="serviceChargeRate" type="number" size="sm" />
-          <Form.ControlLabel children={"S.Charge(%)"} />
-          <Form.Control name="serviceChargeRate" type="number" size="sm" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Vat(%)"} />
           <Form.Control name="vat" size="sm" type="number" />
-          <Form.Control name="vat" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Discount(%)"} />
-          <Form.Control name="percentDiscount" size="sm" type="number" />
+
           <Form.Control name="percentDiscount" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel children={"Discount(Amt)"} />
-          <Form.Control name="discountAmount" size="sm" type="number" />
           <Form.Control name="discountAmount" size="sm" type="number" />
         </Form.Group>
         <Form.Group>
@@ -215,20 +211,9 @@ const CashMaster = (props: ICashMasterProps) => {
       </Form>
 
       <div className="grid grid-cols-10 gap-5">
-        <div className="col-span-9 grid grid-cols-1 gap-2">
+        <div className="2xl:col-span-9 xl:col-span-8 lg:col-span-7 grid grid-cols-1 gap-2 col-span-6">
           <div className="grid grid-cols-12 gap">
             <h3 className="col-span-2">Discount Card</h3>
-            <InputGroup className="w-full col-span-10">
-              <Input
-                size="sm"
-                className="col-span-10"
-                onChange={(v) =>
-                  dispatch(updateBillDetails({ discountCard: v }))
-                }
-                value={state?.discountCard}
-              />
-              <InputGroup.Addon>{addonIconProvider()}</InputGroup.Addon>
-            </InputGroup>
             <InputGroup className="w-full col-span-10">
               <Input
                 size="sm"
@@ -243,12 +228,7 @@ const CashMaster = (props: ICashMasterProps) => {
           </div>
           <div className="grid grid-cols-12">
             <h3 className="col-span-2">Guest Name</h3>
-            <Input
-              size="sm"
-              className="col-span-10"
-              value={state?.customer?.name}
-              onChange={(v) => dispatch(updateCustomerInfo({ name: v }))}
-            />
+
             <Input
               size="sm"
               className="col-span-10"
@@ -258,12 +238,7 @@ const CashMaster = (props: ICashMasterProps) => {
           </div>
           <div className="grid grid-cols-12">
             <h3 className="col-span-2">Address</h3>
-            <Input
-              size="sm"
-              className="col-span-10"
-              value={state?.customer?.address}
-              onChange={(v) => dispatch(updateCustomerInfo({ address: v }))}
-            />
+
             <Input
               size="sm"
               className="col-span-10"
@@ -272,7 +247,7 @@ const CashMaster = (props: ICashMasterProps) => {
             />
           </div>
         </div>
-        <div className=" flex flex-col justify-around">
+        <div className=" flex flex-col justify-around col-span-2 2xl:col-span-1 ">
           <Tag
             style={{
               color: "#6388FD",
@@ -283,7 +258,7 @@ const CashMaster = (props: ICashMasterProps) => {
             size="lg"
             className="text-center"
           >
-            Posted
+            {state.status ?? "Not Posted"}
           </Tag>
           <Tag
             style={{

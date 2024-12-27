@@ -30,9 +30,10 @@ const ConsumptionListTable = (
     setConsumptionListMode(ENUM_MODE.UPDATE);
   };
 
+  console.log(props?.formData);
   return (
     <div>
-      <Table data={props?.data} autoHeight>
+      <Table data={props?.formData?.consumptions} autoHeight>
         <Column flexGrow={1}>
           <HeaderCell children="Material Id" />
           <Cell dataKey="item.id" />
