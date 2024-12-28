@@ -101,7 +101,7 @@ export type IUserPost = {
   password?: string;
   profile: IProfile;
   email: string;
-  brunch?: string;
+  branch?: string;
 };
 
 export type IuserFormData = {

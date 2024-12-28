@@ -1,10 +1,11 @@
 import { ENUM_MODE } from "@/enums/EnumMode";
-import { SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import {
   IRawMaterial,
   RawMaterialFormValues,
 } from "../raw-material-setup/TypesAndDefault";
 import { Schema } from "rsuite";
+import { TuseDeleteConsumptionImagesMutation } from "@/redux/api/rawMaterialConsumption/rawMaterialConsumption.api";
 
 export interface IMenuItemTableProps {
   mode: string;
@@ -32,6 +33,7 @@ export interface IMenuItemConsumption {
   consumptions: IItemConsumption[];
   discount?: number;
   waiterTip?: number;
+  images?: TImage;
 }
 
 export const defaultMenuItemConsumption = {
@@ -66,3 +68,28 @@ export const formModel = Schema.Model({
   isVat: BooleanType(),
   isWaiterTips: BooleanType(),
 });
+
+export type Image = {
+  url: string;
+  file?: File;
+};
+
+export type ImageUploaderProps = {
+  existingImages?: TFIle[];
+  onUpdate?: (images: Image[]) => void;
+  setImages: Dispatch<SetStateAction<Image[]>>;
+  images: Image[];
+  delFn: TuseDeleteConsumptionImagesMutation[0];
+  id: string;
+  mode: string;
+};
+
+export type TFIle = {
+  secure_url: string;
+  public_id: string;
+};
+
+export type TImage = {
+  _id?: string;
+  files: TFIle[];
+};

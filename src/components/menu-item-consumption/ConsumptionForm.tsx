@@ -16,6 +16,7 @@ import {
   IItemConsumption,
   IMenuItemConsumption,
   MenuItemFormProps,
+  TFIle,
 } from "./TypesAndDefault";
 import { ValueType } from "rsuite/esm/Checkbox";
 import ConsumptionList from "./ConsumptionList";
@@ -24,17 +25,25 @@ import { IRawMaterial } from "../raw-material-setup/TypesAndDefault";
 import { useGetMenuGroupQuery } from "@/redux/api/menugroup/menuGroup.api";
 import { useGetItemsCategoryQuery } from "@/redux/api/items/items.api";
 import {
+  useDeleteConsumptionImageMutation,
   usePostConsumptionMutation,
+  useUpdateConsumptionImagesMutation,
   useUpdateConsumptionMutation,
+  useUploadConsumptionImagesMutation,
 } from "@/redux/api/rawMaterialConsumption/rawMaterialConsumption.api";
 import { ENUM_MODE } from "@/enums/EnumMode";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import ImageUploader from "./ImageUploader";
+import { Image } from "./TypesAndDefault";
+import { imageUploader } from "./ConsumptionHelper";
+import { useSession } from "next-auth/react";
 
 const ConsumptionForm = (params: MenuItemFormProps) => {
   const routes = useRouter();
   const { formData, mode, setFormData, setMode } = params;
   const [open, setOpen] = useState(false);
+  const [images, setImages] = useState<Image[]>([]);
   const [filterOption, setFilterOption] = useState({ menuGroup: "" });
   const { data: itemCategoryData, isLoading: itemCategoryLoading } =
     useGetItemsCategoryQuery(filterOption);
@@ -42,6 +51,12 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
     useGetMenuGroupQuery(undefined);
   const [post, { isLoading: postLoading }] = usePostConsumptionMutation();
   const [update, { isLoading: updateLoading }] = useUpdateConsumptionMutation();
+  const [postImage, { isLoading: postImageLoading }] =
+    useUploadConsumptionImagesMutation();
+  const [updateImage, { isLoading: updateImageLoading }] =
+    useUpdateConsumptionImagesMutation();
+  const [deleteImage, { isLoading: deleteImageLoading }] =
+    useDeleteConsumptionImageMutation();
 
   const handleSubmit = async (v: IMenuItemConsumption) => {
     const submissionData = JSON.parse(JSON.stringify(v));
@@ -70,12 +85,29 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
     try {
       switch (mode) {
         case ENUM_MODE.NEW:
+          const imageResult = await imageUploader(
+            images,
+            mode,
+            "",
+            updateImage,
+            postImage
+          );
+          submissionData.images = imageResult;
           const result = await post(submissionData).unwrap();
           if (result?.success) {
             handleSuccess("Item Consumption Setup Created Successfully");
           }
           break;
         case ENUM_MODE.UPDATE:
+          const uploadImage = await imageUploader(
+            images,
+            mode,
+            params?.formData?.images?._id,
+            updateImage,
+            postImage
+          );
+
+          submissionData.images = uploadImage;
           const updateResult = await update(submissionData).unwrap();
           if (updateResult?.success) {
             handleSuccess("Item Consumption Setup Updated Successfully");
@@ -89,9 +121,8 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
       Swal.fire("Error", "Failed to create Item Consumption Setup", "error");
     }
   };
-
-  console.log(defaultMenuItemConsumption);
-
+  const session = useSession();
+  console.log(session);
   return (
     <div>
       <Form
@@ -170,6 +201,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
           <Form.ControlLabel>Description</Form.ControlLabel>
           <Form.Control name="description" accepter={Textarea} />
         </Form.Group>
+
         <div className="grid 2xl:grid-cols-3 xl:col-span-2 col-span-1 row-span-2">
           <Form.Group controlId="isDiscount">
             <Form.ControlLabel>No Discount</Form.ControlLabel>
@@ -199,29 +231,44 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
             />
           </Form.Group>
         </div>
+
         {mode !== ENUM_MODE.VIEW && (
-          <div className="col-span-2 grid grid-cols-8 mt-2.5">
-            <Button
-              className="col-start-2 "
-              color="green"
-              appearance="primary"
-              size="lg"
-              onClick={() => setOpen(true)}
-            >
-              Consumption
-            </Button>
-            <Button
-              className="col-start-6"
-              style={{ backgroundColor: "#194BEE" }}
-              size="lg"
-              appearance="primary"
-              type="submit"
-              loading={postLoading || updateLoading}
-            >
-              Save
-            </Button>
-          </div>
+          <>
+            <div className="col-span-2 grid grid-cols-8 mt-2.5">
+              <Button
+                className="col-start-2"
+                color="green"
+                appearance="primary"
+                size="lg"
+                onClick={() => setOpen(true)}
+              >
+                Consumption
+              </Button>
+
+              <Button
+                className="col-start-6"
+                style={{ backgroundColor: "#194BEE" }}
+                size="lg"
+                appearance="primary"
+                type="submit"
+                loading={postLoading || updateLoading}
+              >
+                Save
+              </Button>
+            </div>
+          </>
         )}
+
+        <div className="col-span-2">
+          <ImageUploader
+            setImages={setImages}
+            images={images}
+            existingImages={params?.formData?.images?.files}
+            delFn={deleteImage}
+            id={params?.formData?.images?._id as string}
+            mode={mode}
+          />
+        </div>
       </Form>
 
       <div className="mt-5">

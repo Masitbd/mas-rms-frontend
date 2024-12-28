@@ -112,10 +112,10 @@ const UserForm = (props: {
           </Form.Group>
           {(data?.user?.role == ENUM_USER.ADMIN ||
             data?.user?.role == ENUM_USER.SUPER_ADMIN) && (
-            <Form.Group controlId="brunch">
+            <Form.Group controlId="branch">
               <Form.ControlLabel>Brunch</Form.ControlLabel>
               <Form.Control
-                name="brunch"
+                name="branch"
                 accepter={InputPicker}
                 block
                 data={brunchData?.data?.map(

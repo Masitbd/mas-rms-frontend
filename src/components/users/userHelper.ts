@@ -65,7 +65,7 @@ export const userDataFormatter = (
   };
 
   if (data?.branch) {
-    userData.brunch = data?.branch;
+    userData.branch = data?.branch;
   }
   if (mode == ENUM_MODE.NEW) {
     userData["password"] = data?.password;
