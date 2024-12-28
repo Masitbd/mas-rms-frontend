@@ -1,10 +1,11 @@
 import { ENUM_MODE } from "@/enums/EnumMode";
-import { SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import {
   IRawMaterial,
   RawMaterialFormValues,
 } from "../raw-material-setup/TypesAndDefault";
 import { Schema } from "rsuite";
+import { TuseDeleteConsumptionImagesMutation } from "@/redux/api/rawMaterialConsumption/rawMaterialConsumption.api";
 
 export interface IMenuItemTableProps {
   mode: string;
@@ -24,7 +25,6 @@ export interface IMenuItemConsumption {
   cookingTime: number;
   itemCategory: string;
   isDiscount: boolean;
-  discount: number;
   isVat: boolean;
   isWaiterTips: boolean;
   itemName: string;
@@ -33,6 +33,7 @@ export interface IMenuItemConsumption {
   consumptions: IItemConsumption[];
   discount?: number;
   waiterTip?: number;
+  images?: TImage;
 }
 
 export const defaultMenuItemConsumption = {
@@ -57,10 +58,8 @@ export type ConsumptionListProps = IMenuItemTableProps & {
 const { StringType, NumberType, BooleanType } = Schema.Types;
 
 export const formModel = Schema.Model({
-  id: StringType().isRequired("ID is required."),
   rate: NumberType("Rate must be a number").isRequired("Rate is required."),
   itemGroup: StringType().isRequired("Item Group is required."),
-  cookingTime: NumberType().isRequired("Cooking Time is required."),
   itemCategory: StringType().isRequired("Item Category is required."),
   itemName: StringType().isRequired("Item Name is required."),
   itemCode: StringType().isRequired("Item Code is required."),
@@ -69,3 +68,28 @@ export const formModel = Schema.Model({
   isVat: BooleanType(),
   isWaiterTips: BooleanType(),
 });
+
+export type Image = {
+  url: string;
+  file?: File;
+};
+
+export type ImageUploaderProps = {
+  existingImages?: TFIle[];
+  onUpdate?: (images: Image[]) => void;
+  setImages: Dispatch<SetStateAction<Image[]>>;
+  images: Image[];
+  delFn: TuseDeleteConsumptionImagesMutation[0];
+  id: string;
+  mode: string;
+};
+
+export type TFIle = {
+  secure_url: string;
+  public_id: string;
+};
+
+export type TImage = {
+  _id?: string;
+  files: TFIle[];
+};

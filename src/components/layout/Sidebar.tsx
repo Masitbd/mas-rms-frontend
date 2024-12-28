@@ -61,19 +61,46 @@ const DashSidebar = () => {
                 Customers
               </Nav.Item>
 
-              <Nav.Item href="/menu-group" eventKey="4" icon={<ListIcon />}>
+              <Nav.Item
+                href="/menu-group"
+                eventKey="4"
+                icon={<ListIcon />}
+                as={NavLink}
+              >
                 Menu Group
               </Nav.Item>
-              <Nav.Item href="/items" eventKey="5" icon={<SettingIcon />}>
+              <Nav.Item
+                href="/items"
+                eventKey="5"
+                icon={<SettingIcon />}
+                as={NavLink}
+              >
                 Item Category
               </Nav.Item>
-              <Nav.Item href="/waiter" eventKey="6" icon={<AdminIcon />}>
+              <Nav.Item
+                href="/waiter"
+                eventKey="6"
+                icon={<AdminIcon />}
+                as={NavLink}
+              >
                 Waiter List
               </Nav.Item>
-              <Nav.Item href="/branch" eventKey="7" icon={<PeopleBranchIcon />}>
+              <Nav.Item
+                href="/branch"
+                eventKey="7"
+                icon={<PeopleBranchIcon />}
+                as={NavLink}
+              >
                 Branch List
               </Nav.Item>
-
+              <Nav.Item
+                href="/raw-material-setup"
+                eventKey="15"
+                icon={<FunnelTimeIcon />}
+                as={NavLink}
+              >
+                Raw Material Setup
+              </Nav.Item>
               <Nav.Item
                 href="/consumption"
                 eventKey="8"

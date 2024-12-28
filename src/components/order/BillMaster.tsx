@@ -7,7 +7,7 @@ import {
 } from "@/redux/features/order/orderSlice";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { Button, Input, InputPicker, toaster } from "rsuite";
+import { Button, Input, InputPicker, Message, toaster } from "rsuite";
 import { paymentMethod } from "./TypesAndDefaultes";
 import { IMenuItemConsumption } from "../menu-item-consumption/TypesAndDefault";
 import {
@@ -43,71 +43,77 @@ const BillMaster = (props: { mode: string }) => {
     router.push("/order");
   };
   const submitHandler = async (button: string) => {
-    const orderData: IOrder = {
-      tableName: bill?.tableName,
-      waiter: bill.waiter,
-      items: bill?.items?.map((item) => ({
-        ...item,
-        item: item?.item?._id as unknown as IMenuItemConsumption,
-      })),
-      guest: bill.guest,
-      sCharge: bill.sCharge,
-      vat: bill.vat,
-      percentDiscount: bill.percentDiscount,
-      discountAmount: bill.discountAmount,
-      totalBill: bill.totalBill,
-      totalVat: bill.totalVat,
-      serviceCharge: bill.serviceCharge,
-      totalDiscount: bill.totalDiscount,
-      netPayable: bill.netPayable,
-      pPaymentMode: bill?.paymentMode,
-      paid: bill?.paid ?? 0,
-      pPayment: bill?.pPayment ?? 0,
-      due: bill?.due ?? 0,
-      cashBack: bill?.cashBack ?? 0,
-      cashReceived: bill?.cashReceived ?? 0,
-      paymentMode: bill?.paymentMode ?? "cash",
-      remark: bill?.remark,
-      serviceChargeRate: bill?.serviceChargeRate ?? 0,
-      discountCard: bill?.discountCard,
-      customer: bill?.customer,
-    } as IOrder;
+    try {
+      const orderData: IOrder = {
+        tableName: bill?.tableName,
+        waiter: bill.waiter,
+        items: bill?.items?.map((item) => ({
+          ...item,
+          item: item?.item?._id as unknown as IMenuItemConsumption,
+        })),
+        guest: bill.guest,
+        sCharge: bill.sCharge,
+        vat: bill.vat,
+        percentDiscount: bill.percentDiscount,
+        discountAmount: bill.discountAmount,
+        totalBill: bill.totalBill,
+        totalVat: bill.totalVat,
+        serviceCharge: bill.serviceCharge,
+        totalDiscount: bill.totalDiscount,
+        netPayable: bill.netPayable,
+        pPaymentMode: bill?.paymentMode,
+        paid: bill?.paid ?? 0,
+        pPayment: bill?.pPayment ?? 0,
+        due: bill?.due ?? 0,
+        cashBack: bill?.cashBack ?? 0,
+        cashReceived: bill?.cashReceived ?? 0,
+        paymentMode: bill?.paymentMode ?? "cash",
+        remark: bill?.remark,
+        serviceChargeRate: bill?.serviceChargeRate ?? 0,
+        discountCard: bill?.discountCard,
+        customer: bill?.customer,
+      } as IOrder;
 
-    if (
-      typeof bill.customer == "object" &&
-      Object.hasOwn(bill.customer, "_id")
-    ) {
-      orderData.guestType = "registered";
-    } else {
-      orderData.guestType = "unRegistered";
-    }
-
-    let result;
-    if (props.mode == ENUM_MODE.NEW) {
-      result = await postOrder(orderData).unwrap();
-      dispatch(updateBillDetails({ _id: result?.data?._id }));
-      dispatch(updateBillDetails({ billNo: result?.data?.billNo }));
-    }
-    if (props.mode == ENUM_MODE.UPDATE) {
-      result = await updateOrder({
-        id: bill?._id as string,
-        data: orderData,
-      }).unwrap();
-    }
-    if (result?.success) {
-      Swal.fire("Success", result?.message ?? "Posted", "success");
-
-      if (button == "exit") {
-        cancelHandler();
+      if (
+        typeof bill.customer == "object" &&
+        Object.hasOwn(bill.customer, "_id")
+      ) {
+        orderData.guestType = "registered";
+      } else {
+        orderData.guestType = "unRegistered";
       }
-      if (button == "save&print") {
-        console.log(bill);
-        await handlePrint(result?.data?.billNo);
+
+      let result;
+      if (props.mode == ENUM_MODE.NEW) {
+        result = await postOrder(orderData).unwrap();
+        dispatch(updateBillDetails({ _id: result?.data?._id }));
+        dispatch(updateBillDetails({ billNo: result?.data?.billNo }));
       }
+      if (props.mode == ENUM_MODE.UPDATE) {
+        result = await updateOrder({
+          id: bill?._id as string,
+          data: orderData,
+        }).unwrap();
+      }
+      if (result?.success) {
+        Swal.fire("Success", result?.message ?? "Posted", "success");
+
+        if (button == "exit") {
+          cancelHandler();
+        }
+        if (button == "save&print") {
+          await handlePrint(result?.data?.billNo);
+        }
+      }
+    } catch (err) {
+      toaster.push(
+        <Message type="error">{(err ?? "Failed to post") as string}</Message>
+      );
     }
   };
 
   const session = useSession();
+
   const handlePrint = (billNo?: string) => {
     const numberToWord = new ToWords({
       localeCode: "en-BD",
@@ -123,19 +129,19 @@ const BillMaster = (props: { mode: string }) => {
       pageMargins: [2, 2, 2, 2], // Very small margins
       content: [
         {
-          text: "Pasta Club",
+          text: bill?.branch?.name,
           style: "header",
         },
         {
-          text: "House-01,Avenue Road, BLock-f ",
+          text: bill?.branch?.address1,
           style: "subHeader",
         },
         {
-          text: "Banasree Rampura Dhake-1200",
+          text: bill?.branch?.address2,
           style: "subHeader",
         },
         {
-          text: "Helpline:0000000000",
+          text: `Helpline: ${bill?.branch?.phone}`,
           style: "subHeader",
         },
         {
@@ -161,7 +167,10 @@ const BillMaster = (props: { mode: string }) => {
             {
               stack: [
                 {
-                  text: [{ text: "Vat Reg: ", bold: true }, "0178974987"],
+                  text: [
+                    { text: "Vat Reg: ", bold: true },
+                    bill?.branch?.vatNo,
+                  ],
                   style: "infoText",
                 },
                 {

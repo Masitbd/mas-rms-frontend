@@ -11,6 +11,7 @@ import {
 } from "@/redux/api/users/user.api";
 import UsersPagination from "./UsersPagination";
 import UserStatusProvider from "./UserStatusProvider";
+import { useSession } from "next-auth/react";
 
 const UsersTable = (props: { mode: string }) => {
   const { mode } = props;
@@ -23,6 +24,7 @@ const UsersTable = (props: { mode: string }) => {
     isFetching: userDataFetching,
   } = useGetUserListQuery(query);
   const [deleteUser, { isLoading: deleteLoading }] = useDeleteUserMutation();
+  const session = useSession();
 
   return (
     <div className="mx-2">
@@ -64,8 +66,8 @@ const UsersTable = (props: { mode: string }) => {
             <Cell dataKey="email" />
           </Column>
           <Column flexGrow={1}>
-            <HeaderCell children="Brunch" />
-            <Cell />
+            <HeaderCell children="Branch" />
+            <Cell dataKey="branch.name" />
           </Column>
           <Column flexGrow={1}>
             <HeaderCell children="Status" />

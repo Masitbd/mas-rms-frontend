@@ -16,6 +16,7 @@ import {
   IUserUpdateUserProfileMutation,
 } from "@/redux/api/users/user.api";
 import { Schema } from "rsuite";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 const { StringType, NumberType, DateType } = Schema.Types;
 export const deleteUser = async (uuid: string, fn: IUserDeleteMutation[0]) => {
@@ -63,6 +64,9 @@ export const userDataFormatter = (
     profile: profileData,
   };
 
+  if (data?.branch) {
+    userData.branch = data?.branch;
+  }
   if (mode == ENUM_MODE.NEW) {
     userData["password"] = data?.password;
     return userData;
@@ -194,4 +198,40 @@ export const userModelProvider = (
   }
 
   return Schema.Model(userFormSchema) as any;
+};
+
+export const userRoleProviderForNewUser = (userRole: string) => {
+  const role = [];
+  if (userRole === ENUM_USER.SUPER_ADMIN) {
+    role.push(
+      { label: "Admin", value: ENUM_USER.ADMIN },
+      { label: "Manager", value: ENUM_USER.MANAGER },
+      { label: "Cashier", value: ENUM_USER.CASHIER },
+      { label: "Accountant", value: ENUM_USER.ACCOUNTANT },
+      { label: "User", value: ENUM_USER.USER }
+    );
+  }
+  if (userRole === ENUM_USER.ADMIN) {
+    role.push(
+      { label: "Manager", value: ENUM_USER.MANAGER },
+      { label: "Cashier", value: ENUM_USER.CASHIER },
+      { label: "Accountant", value: ENUM_USER.ACCOUNTANT },
+      { label: "User", value: ENUM_USER.USER }
+    );
+  }
+  if (userRole === ENUM_USER.MANAGER) {
+    role.push(
+      { label: "Cashier", value: ENUM_USER.CASHIER },
+      { label: "Accountant", value: ENUM_USER.ACCOUNTANT },
+      { label: "User", value: ENUM_USER.USER }
+    );
+  }
+  if (userRole === ENUM_USER.ACCOUNTANT) {
+    role.push({ label: "User", value: ENUM_USER.USER });
+  }
+  if (userRole === ENUM_USER.CASHIER) {
+    role.push({ label: "User", value: ENUM_USER.USER });
+  }
+
+  return role;
 };

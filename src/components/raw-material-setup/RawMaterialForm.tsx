@@ -45,7 +45,6 @@ const RawMaterialForm = (props: IMaterialFormProps) => {
           break;
       }
     } catch (error) {
-      console.log(error);
       console.error(error);
       Swal.fire("Error", (error ?? "Failed") as string, "error");
     }
@@ -64,7 +63,7 @@ const RawMaterialForm = (props: IMaterialFormProps) => {
       >
         <Form.Group controlId="id">
           <Form.ControlLabel>ID</Form.ControlLabel>
-          <Form.Control name="id" size="lg" />
+          <Form.Control name="id" size="lg" disabled />
         </Form.Group>
         <Form.Group>
           <Form.ControlLabel>Base Unit</Form.ControlLabel>

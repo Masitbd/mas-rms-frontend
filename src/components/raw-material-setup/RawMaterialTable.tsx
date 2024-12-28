@@ -9,6 +9,7 @@ import {
   useDeleteRawMaterialMutation,
   useGetRawMaterialQuery,
   useLazyGetRawMaterialQuery,
+  useLazyGetSingleRawMaterialQuery,
 } from "@/redux/api/raw-material-setup/rawMaterial.api";
 import { ENUM_MODE } from "@/enums/EnumMode";
 import Swal from "sweetalert2";
@@ -23,7 +24,7 @@ const RawMaterialTable = (props: IMaterialTableProps) => {
     isFetching: rawMaterialFeatching,
   } = useGetRawMaterialQuery(undefined);
   const [get, { isLoading: getLoading, isFetching: fetchLoding }] =
-    useLazyGetRawMaterialQuery();
+    useLazyGetSingleRawMaterialQuery();
   const [remove, { isLoading: deleteLoading }] = useDeleteRawMaterialMutation();
 
   const deletHandler = async (payload: IRawMaterial) => {
@@ -53,8 +54,9 @@ const RawMaterialTable = (props: IMaterialTableProps) => {
   const editHandler = async (payload: IRawMaterial) => {
     try {
       const result = await get(payload.id).unwrap();
+      console.log(result);
       if (result?.success) {
-        setFormData(JSON.parse(JSON.stringify(result?.data[0])));
+        setFormData(JSON.parse(JSON.stringify(result?.data)));
         setMode(ENUM_MODE.UPDATE);
       }
     } catch (error) {

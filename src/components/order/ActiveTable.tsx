@@ -30,7 +30,7 @@ const ActiveTable = () => {
       </div>
       <div className="mt-2">
         <Table
-          autoHeight
+          height={200}
           data={
             kitchenList?.data
               ? Object?.keys(kitchenList?.data)?.map((v: string) => {
