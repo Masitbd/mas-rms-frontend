@@ -135,6 +135,62 @@ const DashSidebar = () => {
                 >
                   Item Wise Sales Statement
                 </Nav.Item>
+                {/*  */}
+                <Nav.Item
+                  eventKey="8-5"
+                  href="/reports/menu-item-consumption"
+                  as={NavLink}
+                >
+                  Menu Item Conssumption
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item
+                  eventKey="8-6"
+                  href="/reports/menu-item-costing"
+                  as={NavLink}
+                >
+                  Menu Item Costing
+                </Nav.Item>
+                <Nav.Item
+                  eventKey="8-7"
+                  href="/reports/raw-material-consumption"
+                  as={NavLink}
+                >
+                  Raw Material Consumption
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item
+                  eventKey="8-8"
+                  href="/reports/item-wise-raw-material-consumption"
+                  as={NavLink}
+                >
+                  Item wise Raw Material Consumption
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item
+                  eventKey="8-0"
+                  href="/reports/due-sales-statement"
+                  as={NavLink}
+                >
+                  Due Sales Statement
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item
+                  eventKey="10"
+                  href="/reports/waiter-wise-sales"
+                  as={NavLink}
+                >
+                  Waiter wise Sales
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item
+                  eventKey="10-1"
+                  href="/reports/waiter-wise-sales-details"
+                  as={NavLink}
+                >
+                  Waiter wise Sales Details
+                </Nav.Item>
+                {/*  */}
               </Nav.Menu>
             </Nav>
           </Sidenav.Body>
