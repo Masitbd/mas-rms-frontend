@@ -78,65 +78,69 @@ const DailySalesTable: React.FC<TDailySalesSummery> = ({
           <div>P Payment</div>
           <div>Net Payable</div>
         </div>
-        {data.map((group, groupIndex) => (
-          <div key={groupIndex} className="mb-8">
-            {/* Group Date Row */}
-            <div className="text-lg font-semibold p-2 mb-2">
-              {group.groupDate}
-            </div>
-
-            {/* Payment Types */}
-            {group.paymentGroups.map((paymentGroup, paymentIndex) => (
-              <div key={paymentIndex} className="mb-4">
-                {/* Payment Type Header */}
-                <div
-                  className={`text-md font-medium p-2 ${
-                    paymentGroup?.paymentType === "Due"
-                      ? "text-red-600"
-                      : "text-green-600"
-                  } `}
-                >
-                  {paymentGroup.paymentType}
-                </div>
-
-                {/* Time Periods */}
-                {paymentGroup.timePeriods.map((timePeriod, timeIndex) => (
-                  <div key={timeIndex} className="mb-4">
-                    {/* Time Period Header */}
-                    <div className="text-lg font-semibold p-2 bg-gray-300 ">
-                      {timePeriod.timePeriod}
-                    </div>
-
-                    {/* Records Table */}
-                    <div className="w-full border-t">
-                      {/* Table Header */}
-
-                      {/* Records Rows */}
-                      {timePeriod.records.map((record, recordIndex) => (
-                        <div
-                          key={recordIndex}
-                          className="grid grid-cols-10 text-center p-2 border-b"
-                        >
-                          <div>{record.billNo || "N/A"}</div>
-                          <div>{record.table}</div>
-                          <div>{record.guest || 0}</div>
-                          <div>{record.pMode}</div>
-                          <div>{record.totalBill || 0}</div>
-                          <div>{record.totalVat.toFixed(2)}</div>
-
-                          <div>{record.tSChargse || 0}</div>
-                          <div>{record.discount || 0}</div>
-                          <div>{record.pPayment || 0}</div>
-                          <div>{record.metPayable.toFixed(2) || 0}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+        {data?.length > 0 ? (
+          data.map((group, groupIndex) => (
+            <div key={groupIndex} className="mb-8">
+              {/* Group Date Row */}
+              <div className="text-lg font-semibold p-2 mb-2">
+                {group.groupDate}
               </div>
-            ))}
-          </div>
-        ))}
+
+              {/* Payment Types */}
+              {group.paymentGroups.map((paymentGroup, paymentIndex) => (
+                <div key={paymentIndex} className="mb-4">
+                  {/* Payment Type Header */}
+                  <div
+                    className={`text-md font-medium p-2 ${
+                      paymentGroup?.paymentType === "Due"
+                        ? "text-red-600"
+                        : "text-green-600"
+                    } `}
+                  >
+                    {paymentGroup.paymentType}
+                  </div>
+
+                  {/* Time Periods */}
+                  {paymentGroup.timePeriods.map((timePeriod, timeIndex) => (
+                    <div key={timeIndex} className="mb-4">
+                      {/* Time Period Header */}
+                      <div className="text-lg font-semibold p-2 bg-gray-300 ">
+                        {timePeriod.timePeriod}
+                      </div>
+
+                      {/* Records Table */}
+                      <div className="w-full border-t">
+                        {/* Table Header */}
+
+                        {/* Records Rows */}
+                        {timePeriod.records.map((record, recordIndex) => (
+                          <div
+                            key={recordIndex}
+                            className="grid grid-cols-10 text-center p-2 border-b"
+                          >
+                            <div>{record.billNo || "N/A"}</div>
+                            <div>{record.table}</div>
+                            <div>{record.guest || 0}</div>
+                            <div>{record.pMode}</div>
+                            <div>{record.totalBill || 0}</div>
+                            <div>{record.totalVat.toFixed(2)}</div>
+
+                            <div>{record.tSChargse || 0}</div>
+                            <div>{record.discount || 0}</div>
+                            <div>{record.pPayment || 0}</div>
+                            <div>{record.metPayable.toFixed(2) || 0}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          ))
+        ) : (
+          <p className="text-center mt-10 text-xl">No Data Found</p>
+        )}
       </div>
 
       {/* <button

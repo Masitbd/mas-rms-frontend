@@ -71,7 +71,7 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
         </div>
         {isLoading ? (
           <Loader />
-        ) : (
+        ) : data?.length > 0 ? (
           data?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
               {/* Group Date Row */}
@@ -120,6 +120,10 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
               ))}
             </div>
           ))
+        ) : (
+          <p className="text-center mt-10 text-xl text-red-500">
+            No Data Found
+          </p>
         )}
       </div>
 

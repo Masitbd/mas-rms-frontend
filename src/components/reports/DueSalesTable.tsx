@@ -55,7 +55,7 @@ const DueSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
         </div>
         {isLoading ? (
           <Loader />
-        ) : (
+        ) : data?.length > 0 ? (
           data?.map((group, groupIndex) => (
             <div
               key={groupIndex}
@@ -70,6 +70,10 @@ const DueSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
               <div>{group?.totalDue}</div>
             </div>
           ))
+        ) : (
+          <p className="text-center mt-10 text-xl text-red-500">
+            No Data Found
+          </p>
         )}
       </div>
       <div className="border mx-auto mt-10">

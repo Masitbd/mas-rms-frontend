@@ -43,7 +43,7 @@ type TDailySalesSummery = {
   data: TGroup[];
   startDate: Date | null;
   endDate: Date | null;
-}
+};
 
 const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
   data,
@@ -87,27 +87,33 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
         </div>
 
         {/* Payment Types */}
-        {data?.[0]?.dateWiseSummary?.map((paymentGroup, paymentIndex) => (
-          <div
-            key={paymentIndex}
-            className="grid grid-cols-8 text-center p-2 border-b"
-          >
-            <div className="text-green-600 font-semibold">
-              {paymentGroup._id.date}
+        {data?.[0]?.dateWiseSummary?.length > 0 ? (
+          data?.[0]?.dateWiseSummary?.map((paymentGroup, paymentIndex) => (
+            <div
+              key={paymentIndex}
+              className="grid grid-cols-8 text-center p-2 border-b"
+            >
+              <div className="text-green-600 font-semibold">
+                {paymentGroup._id.date}
+              </div>
+
+              <div>{paymentGroup.totalGuest || 0}</div>
+
+              <div>{paymentGroup.totalBill || 0}</div>
+              <div>{paymentGroup.totalVat?.toFixed(2)}</div>
+
+              <div>{paymentGroup.tSChargse || 0}</div>
+
+              <div>{paymentGroup.metPayable?.toFixed(2) || 0}</div>
+              <div>{paymentGroup.totalDue || 0}</div>
+              <div>{paymentGroup.totalPaid || 0}</div>
             </div>
-
-            <div>{paymentGroup.totalGuest || 0}</div>
-
-            <div>{paymentGroup.totalBill || 0}</div>
-            <div>{paymentGroup.totalVat?.toFixed(2)}</div>
-
-            <div>{paymentGroup.tSChargse || 0}</div>
-
-            <div>{paymentGroup.metPayable?.toFixed(2) || 0}</div>
-            <div>{paymentGroup.totalDue || 0}</div>
-            <div>{paymentGroup.totalPaid || 0}</div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center mt-10 text-xl text-red-500">
+            No Data Found
+          </p>
+        )}
 
         <div className="grid grid-cols-8 border-b font-bold text-center">
           <div>Total Sales Amount</div>
