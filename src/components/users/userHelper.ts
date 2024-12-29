@@ -148,19 +148,14 @@ export const userModelProvider = (
     name: StringType().isRequired("Name is required."),
     motherName: StringType().isRequired("Mother Name is required."),
     fatherName: StringType().isRequired("Father Name is required."),
-    age: NumberType()
-      .isInteger("Age must be an integer.")
-      .min(1, "Age must be at least 1.")
-      .max(120, "Age must be less than or equal to 120.")
-      .isRequired("Age is required."),
     dateOfBirth: DateType().isRequired("Date of Birth is required."),
     gender: StringType().isRequired("Gender is required."),
     role: StringType().isRequired("Role is required."),
     phone: StringType()
       .isRequired("Phone number is required.")
       .pattern(
-        /^[0-9]{10}$/,
-        "Phone number must be 10 digits and only contain numbers."
+        /^[0-9]{11}$/,
+        "Phone number must be 11 digits and only contain numbers."
       ),
     email: StringType()
       .isEmail("Please enter a valid email address.")

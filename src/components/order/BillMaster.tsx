@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   IOrder,
   resetBill,
+  TBranch,
   updateBillDetails,
 } from "@/redux/features/order/orderSlice";
 import { useRouter } from "next/navigation";
@@ -11,6 +12,7 @@ import { Button, Input, InputPicker, Message, toaster } from "rsuite";
 import { paymentMethod } from "./TypesAndDefaultes";
 import { IMenuItemConsumption } from "../menu-item-consumption/TypesAndDefault";
 import {
+  useLazyGetSIngleOrderWithDetailsQuery,
   usePostOrderMutation,
   useStatusChangerMutation,
   useUpdateOrderMutation,
@@ -35,6 +37,8 @@ const BillMaster = (props: { mode: string }) => {
   const dispatch = useAppDispatch();
   const bill = useAppSelector((state) => state.order);
   const [postOrder, { isLoading: orderPostLoading }] = usePostOrderMutation();
+  const [getFullOrderData, { isLoading: detailsLoading }] =
+    useLazyGetSIngleOrderWithDetailsQuery();
   const [updateOrder, { isLoading: orderUpdateLoading }] =
     useUpdateOrderMutation();
   const router = useRouter();
@@ -102,7 +106,7 @@ const BillMaster = (props: { mode: string }) => {
           cancelHandler();
         }
         if (button == "save&print") {
-          await handlePrint(result?.data?.billNo);
+          await handlePrint(result?.data?._id);
         }
       }
     } catch (err) {
@@ -114,7 +118,10 @@ const BillMaster = (props: { mode: string }) => {
 
   const session = useSession();
 
-  const handlePrint = (billNo?: string) => {
+  const handlePrint = async (id: string) => {
+    const Data = await getFullOrderData(id).unwrap();
+    const bill = Data?.data;
+    console.log(bill);
     const numberToWord = new ToWords({
       localeCode: "en-BD",
       converterOptions: {
@@ -174,20 +181,20 @@ const BillMaster = (props: { mode: string }) => {
                   style: "infoText",
                 },
                 {
-                  text: [
-                    { text: "Bill No.: ", bold: true },
-                    billNo ?? bill.billNo,
-                  ],
+                  text: [{ text: "Bill No.: ", bold: true }, bill.billNo],
                   style: "infoText",
                 },
                 {
-                  text: [{ text: "Table Name:", bold: true }, "John cumin"],
+                  text: [
+                    { text: "Table Name:", bold: true },
+                    bill?.tableName?.name,
+                  ],
                   style: "infoText",
                 },
                 {
                   text: [
                     { text: "waiter Name ", bold: true },
-                    "Some father Name",
+                    bill?.waiter?.name,
                   ],
                   style: "infoText",
                 },
@@ -239,7 +246,7 @@ const BillMaster = (props: { mode: string }) => {
                 { text: "Rate", bold: true },
                 { text: "Amount", bold: true },
               ],
-              ...(bill?.items?.map((item) => {
+              ...(bill?.items?.map((item: any) => {
                 return [
                   { text: item?.item?.itemName },
                   { text: item?.qty },
@@ -626,7 +633,7 @@ const BillMaster = (props: { mode: string }) => {
               style={{ backgroundColor: "#003CFF" }}
               endIcon={<FontAwesomeIcon icon={faPrint} />}
               children={"Print"}
-              onClick={() => handlePrint()}
+              onClick={() => handlePrint(bill?._id as string)}
               disabled={bill?.status == "posted"}
             />
 
