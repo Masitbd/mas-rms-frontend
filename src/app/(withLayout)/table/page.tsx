@@ -22,7 +22,6 @@ const TablePage = () => {
   const [craetTable, { isLoading: creating }] = useCreateTableListMutation();
 
   const [formData, setFormData] = useState({
-    tid: "",
     name: "",
     details: "",
   });
@@ -30,7 +29,6 @@ const TablePage = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (event: Record<string, any>) => {
     setFormData({
-      tid: event.tid,
       name: event.name,
       details: event.details,
     });
@@ -80,10 +78,6 @@ const TablePage = () => {
           onChange={handleChange}
           onSubmit={handleSubmit}
         >
-          <Form.Group controlId="tid">
-            <Form.ControlLabel className="text-xl">Table Id</Form.ControlLabel>
-            <Form.Control name="tid" />
-          </Form.Group>
           <Form.Group controlId="name">
             <Form.ControlLabel className="text-xl">
               Table Name

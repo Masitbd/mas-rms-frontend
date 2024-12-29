@@ -66,7 +66,7 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
         </div>
         {isLoading ? (
           <Loader />
-        ) : (
+        ) : data?.length > 0 ? (
           data?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
               <div className="grid grid-cols-5 text-center py-3 gap-4 border-b font-semibold text-blue-500">
@@ -104,6 +104,10 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
               )}
             </div>
           ))
+        ) : (
+          <p className="text-center mt-10 text-xl text-red-500">
+            No Data Found
+          </p>
         )}
       </div>
       <div className="border mx-auto mt-10">

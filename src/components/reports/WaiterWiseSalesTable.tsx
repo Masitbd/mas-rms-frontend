@@ -45,7 +45,7 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
         </div>
         {isLoading ? (
           <Loader />
-        ) : (
+        ) : data?.length > 0 ? (
           data?.map((group, groupIndex) => (
             <div
               className="grid grid-cols-2 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
@@ -55,6 +55,10 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
               <div>{group.totalAmount}</div>
             </div>
           ))
+        ) : (
+          <p className="text-center mt-10 text-xl text-red-500">
+            No Data Found
+          </p>
         )}
       </div>
       <div className="border w-[500px] mx-auto mt-10">

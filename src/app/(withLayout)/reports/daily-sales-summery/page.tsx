@@ -5,22 +5,31 @@ import { formatDate } from "@/utils/formateDate";
 import { useState } from "react";
 import { IFormValues } from "../daily-sales-report/page";
 import { useGetDailySalesSatementSummeryQuery } from "@/redux/api/report/report.api";
-import { Button, DatePicker, Form } from "rsuite";
+import { Button, DatePicker, Form, SelectPicker } from "rsuite";
 import DailySalesSummeryTable from "@/components/reports/DailySalesSummeryTable";
+import { useSession } from "next-auth/react";
+import { useGetBranchQuery } from "@/redux/api/branch/branch.api";
 
 const DailySalesSummeryPage = () => {
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const queryParams: Record<string, any> = {};
 
+  const { data: branchs, isLoading: branchLoading } =
+    useGetBranchQuery(undefined);
+
+  const session = useSession();
+
   // console.log("data", data);
 
   const [formValue, setFormValue] = useState<IFormValues>({
+    branch: null,
     startDate: null,
     endDate: null,
   });
 
   const handleChange = (value: Record<string, any>) => {
     setFormValue({
+      branch: value.branch || null,
       startDate: value.startDate || null,
       endDate: value.endDate || null,
     });
@@ -85,6 +94,29 @@ const DailySalesSummeryPage = () => {
             />
           </Form.Group>
 
+          {!session.data?.user?.branch && (
+            <Form.Group controlId="branch">
+              <Form.ControlLabel>Branch</Form.ControlLabel>
+              <SelectPicker
+                data={
+                  branchs?.data?.map(
+                    (branch: { name: string; _id: string }) => ({
+                      label: branch.name,
+                      value: branch._id,
+                    })
+                  ) || []
+                }
+                placeholder="Select a branch"
+                style={{ width: 250 }}
+                value={formValue.branch} // Current selected value
+                onChange={(value) =>
+                  setFormValue((prev) => ({ ...prev, branch: value }))
+                }
+                loading={branchLoading} // Show loading spinner while fetching data
+              />
+            </Form.Group>
+          )}
+
           <Button
             className="max-h-11 mt-5"
             size="sm"
@@ -95,7 +127,7 @@ const DailySalesSummeryPage = () => {
           </Button>
         </Form>
 
-        {data && data?.data?.length > 0 && (
+        {data && data?.data && (
           <DailySalesSummeryTable
             data={data.data}
             startDate={formValue.startDate}
