@@ -3,7 +3,14 @@ import React, { Ref, SetStateAction } from "react";
 import { Button, DatePicker, Form, FormInstance, InputPicker } from "rsuite";
 import PasswordFieldProvider from "./PasswordFieldProvider";
 import { Textarea } from "../customers/TextArea";
-import { IuserFormData, IUserPost, userFormSchema } from "./Types&Defaults";
+import {
+  IUser,
+  IuserFormData,
+  IUserPost,
+  userFormSchema,
+} from "./Types&Defaults";
+import dobToAge from "dob-to-age";
+
 import {
   genders,
   roles,
@@ -65,7 +72,7 @@ const UserForm = (props: {
           </Form.Group>
           <Form.Group controlId="age">
             <Form.ControlLabel>Age</Form.ControlLabel>
-            <Form.Control name="age" />
+            <Form.Control name="age" disabled />
           </Form.Group>
           <Form.Group controlId="dateOfBirth">
             <Form.ControlLabel>Date Of Birth</Form.ControlLabel>
@@ -78,6 +85,28 @@ const UserForm = (props: {
                   ? new Date(formData?.dateOfBirth as unknown as string)
                   : new Date()
               }
+              onChange={(v) => {
+                // Create a date object for 2024-11-30
+                const specificDate = new Date(v);
+
+                // Format the date into a custom string
+                const year = specificDate.getFullYear(); // Get the year (2024)
+                const month = String(specificDate.getMonth() + 1).padStart(
+                  2,
+                  "0"
+                ); // Get the month (11), pad if needed
+                const day = String(specificDate.getDate()).padStart(2, "0"); // Get the day (30)
+
+                // Combine the parts into a single numeric string
+                const formattedDate = `${year}-${month}-${day}`;
+                const age = dobToAge(formattedDate);
+                const ageData = (age?.count + " " + age?.unit) as string;
+
+                props.setFormData({
+                  ...props.formData,
+                  age: ageData,
+                } as IuserFormData);
+              }}
             />
           </Form.Group>
           <Form.Group controlId="gender">

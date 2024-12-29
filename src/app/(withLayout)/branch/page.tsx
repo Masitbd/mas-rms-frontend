@@ -1,5 +1,6 @@
 "use client";
 
+import config from "@/app/config";
 import BranchTable from "@/components/branch/BranchTable";
 import {
   useCreateBranchMutation,
@@ -36,7 +37,8 @@ const BranchPage = () => {
     address2: "",
   };
 
-  const [formData, setFormData] = useState<FormBranchDataType>(itemFormInitialState);
+  const [formData, setFormData] =
+    useState<FormBranchDataType>(itemFormInitialState);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
@@ -63,6 +65,7 @@ const BranchPage = () => {
     }
   };
 
+  console.log(config.server_url);
   return (
     <div className="w-full max-w-6xl mx-auto  drop-shadow-md shadow-xl m-5 py-8 px-5 bg-[#fcfbfb]">
       <h1 className="text-center text-[#003CFF] text-2xl font-bold">

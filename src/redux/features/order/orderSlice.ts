@@ -17,6 +17,17 @@ export type IUnregisteredCustomerInfo = {
   address: string;
 };
 
+export type TBranch = {
+  bid?: string;
+  name: string;
+  phone: string;
+  email: string;
+  vatNo: string;
+  isActive: boolean;
+  address1: string;
+  address2: string;
+};
+
 export type IOrder = {
   _id?: string;
   billNo?: string;
@@ -47,6 +58,7 @@ export type IOrder = {
   customer: TCustomer | IUnregisteredCustomerInfo;
   guestType: string;
   status: string;
+  branch: string | TBranch;
 };
 
 const initialState: IOrder = {

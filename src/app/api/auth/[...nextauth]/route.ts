@@ -11,13 +11,15 @@ import NextAuth, {
 import type { JWT } from "next-auth/jwt";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import config from "@/app/config";
 
 async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
   try {
     // Get a new access token from backend using the refresh token
+
     const res = await axios
       .post(
-        "http://localhost:3001/api/v1/auth/refresh-token",
+        `${config.server_url}/auth/refresh-token`,
         {},
 
         {
@@ -66,7 +68,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         try {
           const res = await axios
-            .post("http://localhost:3001/api/v1/auth/login", {
+            .post(`${config.server_url}/auth/login`, {
               email: credentials?.email,
               password: credentials?.password,
             })

@@ -121,8 +121,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
       Swal.fire("Error", "Failed to create Item Consumption Setup", "error");
     }
   };
-  const session = useSession();
-  console.log(session);
+
   return (
     <div>
       <Form
@@ -251,7 +250,13 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
                 size="lg"
                 appearance="primary"
                 type="submit"
-                loading={postLoading || updateLoading}
+                loading={
+                  postLoading ||
+                  updateLoading ||
+                  postImageLoading ||
+                  deleteImageLoading ||
+                  updateImageLoading
+                }
               >
                 Save
               </Button>

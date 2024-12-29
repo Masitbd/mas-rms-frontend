@@ -8,7 +8,6 @@ import { deleteUser } from "./userHelper";
 import { IUserDeleteMutation } from "@/redux/api/users/user.api";
 const TableActionButtonProvider = (props: {
   uuid: string;
-  mode: string;
   route: string;
   deleteFn: IUserDeleteMutation[0];
 }) => {

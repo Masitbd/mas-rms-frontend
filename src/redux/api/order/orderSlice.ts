@@ -41,6 +41,13 @@ const order = baseApi.injectEndpoints({
       }),
       providesTags: ["order"],
     }),
+    getSIngleOrderWithDetails: build.query({
+      query: (id: string) => ({
+        url: `/order/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["order"],
+    }),
 
     getOrderDataForPatch: build.query({
       query: (id: string) => ({
@@ -97,6 +104,7 @@ export const {
   useGetActiveTableListDetailsQuery,
   useUpdateOrderMutation,
   useStatusChangerMutation,
+  useLazyGetSIngleOrderWithDetailsQuery,
 } = order;
 
 export type IStatusChanger = ReturnType<typeof useStatusChangerMutation>[0];

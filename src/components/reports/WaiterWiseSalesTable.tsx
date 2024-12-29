@@ -42,13 +42,15 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
         <div className="grid grid-cols-2 bg-gray-100 font-semibold text-center p-2">
           <div>Name</div>
           <div>Total Amount</div>
-         
         </div>
         {isLoading ? (
           <Loader />
         ) : (
           data?.map((group, groupIndex) => (
-            <div className="grid grid-cols-2 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2">
+            <div
+              className="grid grid-cols-2 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
+              key={groupIndex}
+            >
               <div>{group.name}</div>
               <div>{group.totalAmount}</div>
             </div>

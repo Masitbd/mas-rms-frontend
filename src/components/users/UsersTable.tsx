@@ -13,8 +13,7 @@ import UsersPagination from "./UsersPagination";
 import UserStatusProvider from "./UserStatusProvider";
 import { useSession } from "next-auth/react";
 
-const UsersTable = (props: { mode: string }) => {
-  const { mode } = props;
+const UsersTable = () => {
   const { Cell, Column, HeaderCell } = Table;
   const { addField, deleteField, query } = useQueryBuilder();
 
@@ -85,7 +84,6 @@ const UsersTable = (props: { mode: string }) => {
                   <>
                     <TableActionButtonProvider
                       uuid={rowData?.uuid}
-                      mode={mode}
                       route="/user/new"
                       deleteFn={deleteUser}
                     />
