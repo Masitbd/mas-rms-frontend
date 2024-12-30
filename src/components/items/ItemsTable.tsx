@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 
 import { ItemEditAndViewModal } from "./ItemEditAndViewModal";
 import { useDeleteItemsCategoryMutation } from "@/redux/api/items/items.api";
+import { useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 export type TItemsData = {
   _id: string;
@@ -28,7 +30,8 @@ export type TTableDataProps = {
 const { Column, HeaderCell, Cell } = Table;
 const ItemCategoryTable = ({ data, isLoading }: TTableDataProps) => {
   const [deleteItem] = useDeleteItemsCategoryMutation();
-
+  const session = useSession();
+  const userRole = session?.data?.user?.role;
   const handleDelete = (id: string) => {
     Swal.fire({
       title: "Are you sure?",
@@ -95,6 +98,14 @@ const ItemCategoryTable = ({ data, isLoading }: TTableDataProps) => {
           </HeaderCell>
           <Cell dataKey="name" />
         </Column>
+        {(userRole == ENUM_USER.ADMIN || ENUM_USER.SUPER_ADMIN) && (
+          <Column flexGrow={2}>
+            <HeaderCell className="text-center text-lg font-semibold ">
+              {"Branch"}
+            </HeaderCell>
+            <Cell dataKey="branch.name" />
+          </Column>
+        )}
 
         <Column flexGrow={3}>
           <HeaderCell className="text-center text-lg font-semibold">

@@ -80,9 +80,9 @@ const TableList = ({ data, isLoading }: TTableDataProps) => {
         </Column>
         <Column flexGrow={3}>
           <HeaderCell className="text-center text-lg font-semibold">
-            {"Table Description"}
+            {"Branch"}
           </HeaderCell>
-          <Cell dataKey="details" />
+          <Cell dataKey="branch.name" />
         </Column>
 
         <Column flexGrow={3}>

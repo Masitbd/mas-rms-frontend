@@ -146,8 +146,7 @@ export const userModelProvider = (
     any
   > = {
     name: StringType().isRequired("Name is required."),
-    motherName: StringType().isRequired("Mother Name is required."),
-    fatherName: StringType().isRequired("Father Name is required."),
+
     dateOfBirth: DateType().isRequired("Date of Birth is required."),
     gender: StringType().isRequired("Gender is required."),
     role: StringType().isRequired("Role is required."),
@@ -217,8 +216,7 @@ export const userRoleProviderForNewUser = (userRole: string) => {
   if (userRole === ENUM_USER.MANAGER) {
     role.push(
       { label: "Cashier", value: ENUM_USER.CASHIER },
-      { label: "Accountant", value: ENUM_USER.ACCOUNTANT },
-      { label: "User", value: ENUM_USER.USER }
+      { label: "Accountant", value: ENUM_USER.ACCOUNTANT }
     );
   }
   if (userRole === ENUM_USER.ACCOUNTANT) {

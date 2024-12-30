@@ -14,6 +14,7 @@ import {
   useUpdateRawMaterialMutation,
 } from "@/redux/api/raw-material-setup/rawMaterial.api";
 import Swal from "sweetalert2";
+import BranchFieldProvider from "../branch/BranchFieldProvider";
 
 const RawMaterialForm = (props: IMaterialFormProps) => {
   const { formData, mode, setFormData, setMode } = props;
@@ -85,6 +86,7 @@ const RawMaterialForm = (props: IMaterialFormProps) => {
           <Form.ControlLabel>Conversion</Form.ControlLabel>
           <Form.Control name="conversion" size="lg" type="number" />
         </Form.Group>
+        <BranchFieldProvider />
         <Form.Group>
           <Form.ControlLabel>Description</Form.ControlLabel>
           <Form.Control name="description" accepter={Textarea} />

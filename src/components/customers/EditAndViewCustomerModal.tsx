@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { useUpdateCustomerListMutation } from "@/redux/api/customer/customer.api";
 import { Textarea } from "./TextArea";
 import { TCustomer } from "./CustomerTable";
+import BranchFieldProvider from "../branch/BranchFieldProvider";
 
 type TEdittableProps = {
   data: TCustomer;
@@ -27,7 +28,7 @@ export const EditAndViewCustomerModal = ({
 
   const [updateCustomer, { isLoading }] = useUpdateCustomerListMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Partial<TCustomer>>({
     cid: "",
     name: "",
     email: "",
@@ -51,7 +52,8 @@ export const EditAndViewCustomerModal = ({
         reward: data.reward || 0,
         isActive: data.isActive || false,
         address: data.address || "",
-      });
+        ...(data?.branch ? { branch: data?.branch?._id } : {}),
+      } as unknown as TCustomer);
     }
   }, [data]);
 
@@ -67,6 +69,7 @@ export const EditAndViewCustomerModal = ({
       reward: event.reward,
       isActive: event.isActive,
       address: event.address,
+      branch: event?.branch,
     });
   };
 
@@ -142,6 +145,7 @@ export const EditAndViewCustomerModal = ({
                 <Form.ControlLabel>Discount Card</Form.ControlLabel>
                 <Form.Control name="discountCard" />
               </Form.Group>
+              <BranchFieldProvider />
 
               <div className="grid row-span-2">
                 <Form.Group controlId="address">
@@ -169,7 +173,7 @@ export const EditAndViewCustomerModal = ({
 
               <Form.Group className="w-full max-w-[300px] ms-40">
                 <Button
-                onClick={handleClose}
+                  onClick={handleClose}
                   className="w-full"
                   appearance="primary"
                   disabled={isLoading}

@@ -105,6 +105,7 @@ const UserForm = (props: {
                 props.setFormData({
                   ...props.formData,
                   age: ageData,
+                  dateOfBirth: v,
                 } as IuserFormData);
               }}
             />

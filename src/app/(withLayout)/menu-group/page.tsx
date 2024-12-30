@@ -1,5 +1,6 @@
 "use client";
 
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
 import { Textarea } from "@/components/customers/TextArea";
 import MenuGroupTable from "@/components/menuGroup/MenuGroupTable";
 import {
@@ -41,6 +42,7 @@ const MenuGroupPage = () => {
         title: "Menu Added successfully",
         icon: "success",
       });
+      setFormData({ name: "", description: "" });
     }
   };
 
@@ -66,6 +68,7 @@ const MenuGroupPage = () => {
             <Form.Control name="name" />
           </Form.Group>
 
+          <BranchFieldProvider />
           {/*  */}
           <Form.Group controlId="description">
             <Form.ControlLabel>Description</Form.ControlLabel>

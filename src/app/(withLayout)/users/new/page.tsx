@@ -20,14 +20,18 @@ import {
 import React, { Ref, useEffect, useRef, useState } from "react";
 import { Button, FormInstance, Message, toaster } from "rsuite";
 import { PageProps } from "../../../../../.next/types/app/layout";
+import { useRouter } from "next/navigation";
 
 const NewUser = (props: PageProps) => {
+  const router = useRouter();
   const formRef = useRef<FormInstance>();
   const { mode, uuid } = props.searchParams;
   const [getSingle, { isLoading, isFetching }] =
     useLazyGetSingleUserByUUidQuery();
-  const [update, { isLoading: updateLoading }] = useUpdateUserProfileMutation();
-  const [post, { isLoading: postLoading }] = useCreateUserMutation();
+  const [update, { isLoading: updateLoading, isSuccess: updateSuccess }] =
+    useUpdateUserProfileMutation();
+  const [post, { isLoading: postLoading, isSuccess: postSuccess }] =
+    useCreateUserMutation();
   const [userData, setUserData] = useState<IuserFormData | undefined>();
 
   const submitHandler = async () => {
@@ -63,6 +67,14 @@ const NewUser = (props: PageProps) => {
       })();
     }
   }, []);
+
+  useEffect(() => {
+    if (postSuccess || updateSuccess) {
+      router.push("/users");
+
+      setUserData(undefined);
+    }
+  }, [postSuccess, updateSuccess]);
   return (
     <div className="shadow-lg bg-[#003CFF05] p-4 m-2">
       <div className="text-center text-[#194BEE] text-2xl font-bold font-roboto ">

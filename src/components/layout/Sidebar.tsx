@@ -24,10 +24,13 @@ import DocPassIcon from "@rsuite/icons/DocPass";
 import DateTaskIcon from "@rsuite/icons/DateTask";
 import { useRouter } from "next/navigation";
 import UserInfoIcon from "@rsuite/icons/UserInfo";
+import { useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 const DashSidebar = () => {
   const navigate = useRouter();
   const [expand, setExpand] = React.useState(true);
+  const session = useSession();
   return (
     <>
       <Sidebar
@@ -44,6 +47,17 @@ const DashSidebar = () => {
         <Sidenav expanded={expand} defaultOpenKeys={["3"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
+              {(session?.data?.user?.role == ENUM_USER.SUPER_ADMIN ||
+                session?.data?.user?.role == ENUM_USER.SUPER_ADMIN) && (
+                <Nav.Item
+                  href="/branch"
+                  eventKey="7"
+                  icon={<PeopleBranchIcon />}
+                  as={NavLink}
+                >
+                  Branch List
+                </Nav.Item>
+              )}
               <Nav.Item
                 href="/table"
                 eventKey="2"
@@ -85,14 +99,7 @@ const DashSidebar = () => {
               >
                 Waiter List
               </Nav.Item>
-              <Nav.Item
-                href="/branch"
-                eventKey="7"
-                icon={<PeopleBranchIcon />}
-                as={NavLink}
-              >
-                Branch List
-              </Nav.Item>
+
               <Nav.Item
                 href="/raw-material-setup"
                 eventKey="15"

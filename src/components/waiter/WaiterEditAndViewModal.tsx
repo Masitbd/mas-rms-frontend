@@ -7,6 +7,7 @@ import { Form, Button, Loader, Modal } from "rsuite";
 import Swal from "sweetalert2";
 import { Textarea } from "../customers/TextArea";
 import { useUpdateWaiterListMutation } from "@/redux/api/waiter/waiter.api";
+import BranchFieldProvider from "../branch/BranchFieldProvider";
 
 type TEdittableProps = {
   data: any;
@@ -25,7 +26,7 @@ export const WaiterEditAndViewModal = ({
 
   const [updateMenu, { isLoading }] = useUpdateWaiterListMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     uid: "",
     name: "",
     remarks: "",
@@ -37,6 +38,7 @@ export const WaiterEditAndViewModal = ({
         uid: data.uid || "",
         name: data.name || "",
         remarks: data.remarks || "",
+        ...(data?.branch ? { branch: data?.branch?._id } : {}),
       });
     }
   }, [data]);
@@ -47,6 +49,7 @@ export const WaiterEditAndViewModal = ({
       uid: event.uid,
       name: event.name,
       remarks: event.remarks,
+      branch: event.branch,
     });
   };
 
@@ -57,8 +60,6 @@ export const WaiterEditAndViewModal = ({
       id: data?._id,
       data: formData,
     };
-
-    console.log(data, "data");
 
     const res = await updateMenu(options).unwrap();
 
@@ -107,6 +108,7 @@ export const WaiterEditAndViewModal = ({
                 <Form.ControlLabel>Menu Group Name</Form.ControlLabel>
                 <Form.Control name="name" />
               </Form.Group>
+              <BranchFieldProvider />
               <Form.Group controlId="remarks">
                 <Form.ControlLabel>Remarks</Form.ControlLabel>
                 <Form.Control name="remarks" accepter={Textarea} />

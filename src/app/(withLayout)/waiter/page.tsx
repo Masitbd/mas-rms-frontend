@@ -1,5 +1,6 @@
 "use client";
 
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
 import { Textarea } from "@/components/customers/TextArea";
 
 import WaiterListTable from "@/components/waiter/WaiterListTable";
@@ -17,14 +18,14 @@ const MenuGroupPage = () => {
 
   const [craeteMenu, { isLoading: creating }] = useCreateWaiterListMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: "",
     description: "",
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       ...value,
     }));
@@ -42,6 +43,10 @@ const MenuGroupPage = () => {
         timerProgressBar: true,
         title: "Waiter Added successfully",
         icon: "success",
+      });
+      setFormData({
+        name: "",
+        remarks: "",
       });
     }
   };
@@ -67,6 +72,7 @@ const MenuGroupPage = () => {
             <Form.ControlLabel>Waiter Name</Form.ControlLabel>
             <Form.Control name="name" />
           </Form.Group>
+          <BranchFieldProvider />
 
           {/*  */}
           <Form.Group controlId="remarks">

@@ -18,6 +18,7 @@ export type IUnregisteredCustomerInfo = {
 };
 
 export type TBranch = {
+  _id?: string;
   bid?: string;
   name: string;
   phone: string;

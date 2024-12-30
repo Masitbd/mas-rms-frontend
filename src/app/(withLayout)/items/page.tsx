@@ -1,5 +1,6 @@
 "use client";
 
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
 import ItemCategoryTable from "@/components/items/ItemsTable";
 
 import {
@@ -15,6 +16,7 @@ export type FormDataType = {
   uid?: string;
   name: string;
   menuGroup: string | unknown;
+  branch?: string;
 };
 
 export type TMenuGroupOption = {
@@ -43,10 +45,11 @@ const ItemsCategoryPage = () => {
 
   const itemFormInitialState = {
     name: "",
-    menuGroup: "",
   };
 
-  const [formData, setFormData] = useState<FormDataType>(itemFormInitialState);
+  const [formData, setFormData] = useState<FormDataType>(
+    itemFormInitialState as FormDataType
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
@@ -69,7 +72,7 @@ const ItemsCategoryPage = () => {
         title: "Item Added successfully",
         icon: "success",
       });
-      setFormData(itemFormInitialState);
+      setFormData(itemFormInitialState as FormDataType);
     }
   };
 
@@ -107,6 +110,8 @@ const ItemsCategoryPage = () => {
             <Form.ControlLabel>Category Name</Form.ControlLabel>
             <Form.Control name="name" />
           </Form.Group>
+
+          <BranchFieldProvider />
 
           {/*  */}
 

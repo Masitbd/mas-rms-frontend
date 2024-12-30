@@ -1,12 +1,14 @@
 "use client";
 
-import TableList from "@/components/Table/Table";
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
+import TableList, { TTableData } from "@/components/Table/Table";
+import { useGetBranchQuery } from "@/redux/api/branch/branch.api";
 import {
   useCreateTableListMutation,
   useGetTableListQuery,
 } from "@/redux/api/table/table.api";
 import { useState } from "react";
-import { Form, Button, Loader } from "rsuite";
+import { Form, Button, Loader, InputPicker } from "rsuite";
 import Swal from "sweetalert2";
 
 type TError = {
@@ -16,12 +18,18 @@ type TError = {
   };
 };
 
+export type TTableFormData = {
+  name: string;
+  details: string;
+  branch?: string;
+  tid?: string;
+};
 const TablePage = () => {
   const { data: tables, isLoading } = useGetTableListQuery({});
 
   const [craetTable, { isLoading: creating }] = useCreateTableListMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TTableFormData>({
     name: "",
     details: "",
   });
@@ -31,6 +39,7 @@ const TablePage = () => {
     setFormData({
       name: event.name,
       details: event.details,
+      branch: event.branch,
     });
   };
 
@@ -50,6 +59,7 @@ const TablePage = () => {
           title: "Table Added successfully",
           icon: "success",
         });
+        setFormData({ name: "", details: "" } as never);
       }
     } catch (err) {
       const error = err as TError;
@@ -84,6 +94,7 @@ const TablePage = () => {
             </Form.ControlLabel>
             <Form.Control name="name" />
           </Form.Group>
+          <BranchFieldProvider />
           <Form.Group controlId="details">
             <Form.ControlLabel>Table Description</Form.ControlLabel>
             <Form.Control name="details" />
@@ -94,9 +105,6 @@ const TablePage = () => {
             <Button
               disabled={creating}
               className="w-full max-w-[300px] bg-[#003CFF]"
-              // appearance="primary"
-              // color="blue"
-
               style={{
                 backgroundColor: "#003CFF",
                 color: "white",

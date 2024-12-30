@@ -18,9 +18,13 @@ import {
   useGetConsumptionQuery,
 } from "@/redux/api/rawMaterialConsumption/rawMaterialConsumption.api";
 import { useRouter } from "next/navigation";
+import { ENUM_USER } from "@/enums/EnumUser";
+import { useSession } from "next-auth/react";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RawMaterialConsumptionTable = () => {
+  const session = useSession();
+  const userRole = session?.data?.user?.role;
   const router = useRouter();
   const { Cell, Column, HeaderCell } = Table;
   const {
@@ -98,6 +102,12 @@ const RawMaterialConsumptionTable = () => {
           <HeaderCell children="Rate" flexGrow={1} />
           <Cell dataKey="rate" />
         </Column>
+        {(userRole == ENUM_USER.ADMIN || ENUM_USER.SUPER_ADMIN) && (
+          <Column flexGrow={2}>
+            <HeaderCell>{"Branch"}</HeaderCell>
+            <Cell dataKey="branch.name" />
+          </Column>
+        )}
         <Column flexGrow={2} align="center">
           <HeaderCell children="... " flexGrow={1} />
           <Cell>

@@ -1,4 +1,5 @@
 "use client";
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
 import CustomerTable from "@/components/customers/CustomerTable";
 import { Textarea } from "@/components/customers/TextArea";
 import {
@@ -9,23 +10,24 @@ import { useState } from "react";
 import { Form, Button, Checkbox, Loader } from "rsuite";
 import Swal from "sweetalert2";
 
+const defaultFormData = {
+  name: "",
+  phone: "",
+  email: "",
+  dob: "",
+  reward: "",
+  discountCard: "",
+  discount: "",
+  address: "",
+  isActive: false,
+};
 const CustomersPage = () => {
   const { data: customres, isLoading } = useGetCustomerListQuery({});
 
   const [createCustomer, { isLoading: creating }] =
     useCreateCustomerListMutation();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    dob: "",
-    reward: "",
-    discountCard: "",
-    discount: "",
-    address: "",
-    isActive: false,
-  });
+  const [formData, setFormData] = useState(defaultFormData);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
@@ -48,6 +50,7 @@ const CustomersPage = () => {
         title: "Customer Added successfully",
         icon: "success",
       });
+      setFormData(defaultFormData);
     }
   };
 
@@ -96,6 +99,7 @@ const CustomersPage = () => {
             <Form.ControlLabel>Discount Amount</Form.ControlLabel>
             <Form.Control name="discount" />
           </Form.Group>
+          <BranchFieldProvider />
           {/*  */}
           <Form.Group controlId="address">
             <Form.ControlLabel>Address</Form.ControlLabel>

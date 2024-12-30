@@ -6,9 +6,12 @@ import { Form, Button, Loader, Modal } from "rsuite";
 import { useUpdateTableListMutation } from "@/redux/api/table/table.api";
 import Swal from "sweetalert2";
 import { TTableData } from "./Table";
+import BranchFieldProvider from "../branch/BranchFieldProvider";
+import { TTableFormData } from "@/app/(withLayout)/table/page";
+import { TBranch } from "@/redux/features/order/orderSlice";
 
 type TEdittableProps = {
-  data: TTableData;
+  data: TTableData & { branch?: TBranch };
   color: any;
   openButton: JSX.Element;
 };
@@ -24,7 +27,7 @@ export const EditTableModel = ({
 
   const [updateTable, { isLoading }] = useUpdateTableListMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TTableFormData>({
     tid: "",
     name: "",
     details: "",
@@ -36,6 +39,7 @@ export const EditTableModel = ({
         tid: data.tid || "",
         name: data.name || "",
         details: data.details || "",
+        ...(data?.branch?._id ? { branch: data.branch._id } : {}),
       });
     }
   }, [data]);
@@ -46,6 +50,7 @@ export const EditTableModel = ({
       tid: event.tid,
       name: event.name,
       details: event.details,
+      branch: event.branch,
     });
   };
 
@@ -93,17 +98,11 @@ export const EditTableModel = ({
               onChange={handleChange}
               onSubmit={handleSubmit}
             >
-              <Form.Group controlId="tid">
-                <Form.ControlLabel className="text-xl">
-                  Table Id
-                </Form.ControlLabel>
-                <Form.Control name="tid" />
-              </Form.Group>
-
               <Form.Group controlId="name">
                 <Form.ControlLabel>Table Name</Form.ControlLabel>
                 <Form.Control name="name" />
               </Form.Group>
+              <BranchFieldProvider />
               <Form.Group controlId="details">
                 <Form.ControlLabel>Table Description</Form.ControlLabel>
                 <Form.Control name="details" />
