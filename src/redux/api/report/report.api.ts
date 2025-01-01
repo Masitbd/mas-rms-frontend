@@ -98,6 +98,13 @@ const reportsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reports"],
     }),
+    getDashboardStaticsData: build.query({
+      query: () => ({
+        url: "/reports/dashboard-statistics",
+        method: "GET",
+      }),
+      providesTags: ["reports"],
+    }),
 
     //
   }),
@@ -115,4 +122,5 @@ export const {
   useGetDueStatementReportsQuery,
   useGetWaiterWiseSaleStatementReportsQuery,
   useGetWaiterWiseSalesReportsQuery,
+  useGetDashboardStaticsDataQuery,
 } = reportsApi;
