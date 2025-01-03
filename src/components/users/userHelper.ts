@@ -46,8 +46,8 @@ export const deleteUser = async (uuid: string, fn: IUserDeleteMutation[0]) => {
 export const userDataFormatter = (
   data: IuserFormData,
   mode: string
-): IUserPost | IProfile => {
-  const profileData: IProfile = {
+): (IUserPost | IProfile) & { branch?: string } => {
+  const profileData: IProfile & { branch?: string } = {
     name: data?.name,
     phone: data?.phone,
     address: data?.address,
@@ -73,6 +73,7 @@ export const userDataFormatter = (
   }
   if (mode == ENUM_MODE.UPDATE) {
     profileData.uuid = data?.uuid;
+    profileData.branch = data?.branch as keyof IProfile;
   }
   return profileData;
 };

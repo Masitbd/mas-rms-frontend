@@ -10,6 +10,7 @@ import {
 import { useGetMenuGroupQuery } from "@/redux/api/menugroup/menuGroup.api";
 import React, { useState } from "react";
 import { Button, Form, Loader, SelectPicker } from "rsuite";
+import SchemaTyped from "rsuite/esm/Schema/Schema";
 import Swal from "sweetalert2";
 
 export type FormDataType = {
@@ -45,10 +46,12 @@ const ItemsCategoryPage = () => {
 
   const itemFormInitialState = {
     name: "",
+    branch: null,
+    menuGroup: null,
   };
 
   const [formData, setFormData] = useState<FormDataType>(
-    itemFormInitialState as FormDataType
+    itemFormInitialState as unknown as FormDataType
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,7 +75,7 @@ const ItemsCategoryPage = () => {
         title: "Item Added successfully",
         icon: "success",
       });
-      setFormData(itemFormInitialState as FormDataType);
+      setFormData(itemFormInitialState as unknown as FormDataType);
     }
   };
 
@@ -92,13 +95,22 @@ const ItemsCategoryPage = () => {
           onChange={handleChange}
           onSubmit={handleSubmit}
           className="lg:justify-items-center lg:pe-40"
+          model={SchemaTyped.Model({
+            menuGroup: SchemaTyped.Types.StringType().isRequired(
+              "Menu Group is required"
+            ),
+            name: SchemaTyped.Types.StringType().isRequired(
+              "Name  is required"
+            ),
+          })}
         >
           <Form.Group controlId="menuGroup">
             <Form.ControlLabel>Menu Group</Form.ControlLabel>
-            <SelectPicker
+            <Form.Control
+              name="menuGroup"
+              accepter={SelectPicker}
               disabled={menuLoading}
               data={menuGroupData}
-              name="menuGroup"
               onChange={(value) =>
                 setFormData({ ...formData, menuGroup: value })
               }

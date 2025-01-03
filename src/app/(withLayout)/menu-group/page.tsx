@@ -16,14 +16,14 @@ const MenuGroupPage = () => {
 
   const [craeteMenu, { isLoading: creating }] = useCreateMenuGroupMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: "",
     description: "",
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       ...value,
     }));
@@ -42,7 +42,7 @@ const MenuGroupPage = () => {
         title: "Menu Added successfully",
         icon: "success",
       });
-      setFormData({ name: "", description: "" });
+      setFormData({ name: "", description: "", branch: null });
     }
   };
 

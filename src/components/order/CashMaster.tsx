@@ -169,6 +169,7 @@ const CashMaster = (props: ICashMasterProps) => {
               value: td?._id,
             }))}
             disabledItemValues={activeTableListData?.data}
+            loading={tableDataLoading || activeTableDataLoading}
           />
         </Form.Group>
         <Form.Group>

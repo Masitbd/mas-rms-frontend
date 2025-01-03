@@ -108,6 +108,9 @@ const BillMaster = (props: { mode: string }) => {
         if (button == "save&print") {
           await handlePrint(result?.data?._id);
         }
+        if (props.mode == ENUM_MODE.NEW) {
+          router.push(`/order/new?mode=update&id=${result?.data?._id}`);
+        }
       }
     } catch (err) {
       toaster.push(
@@ -121,7 +124,6 @@ const BillMaster = (props: { mode: string }) => {
   const handlePrint = async (id: string) => {
     const Data = await getFullOrderData(id).unwrap();
     const bill = Data?.data;
-    console.log(bill);
     const numberToWord = new ToWords({
       localeCode: "en-BD",
       converterOptions: {
@@ -202,7 +204,7 @@ const BillMaster = (props: { mode: string }) => {
                 {
                   text: [
                     { text: "Guest Name: ", bold: true },
-                    bill.customer.name,
+                    bill?.customer?.name,
                   ],
                   style: "infoText",
                 },
@@ -289,12 +291,12 @@ const BillMaster = (props: { mode: string }) => {
                   style: "infoText",
                 },
                 {
-                  text: [{ text: `Vat(${bill.vat}):` }],
+                  text: [{ text: `Vat(${bill?.vat}):` }],
                   style: "infoText",
                 },
                 {
                   text: [
-                    { text: `Service Charge(${bill.serviceChargeRate}):` },
+                    { text: `Service Charge(${bill?.serviceChargeRate}):` },
                   ],
                   style: "infoText",
                 },
@@ -305,19 +307,19 @@ const BillMaster = (props: { mode: string }) => {
             {
               stack: [
                 {
-                  text: [{ text: bill.totalBill, bold: true }],
+                  text: [{ text: bill?.totalBill, bold: true }],
                   style: "infoText",
                 },
                 {
-                  text: [{ text: bill.totalDiscount }],
+                  text: [{ text: bill?.totalDiscount }],
                   style: "infoText",
                 },
                 {
-                  text: [{ text: bill.totalVat }],
+                  text: [{ text: bill?.totalVat }],
                   style: "infoText",
                 },
                 {
-                  text: [{ text: bill.serviceCharge }],
+                  text: [{ text: bill?.serviceCharge }],
                   style: "infoText",
                 },
               ],
@@ -356,7 +358,7 @@ const BillMaster = (props: { mode: string }) => {
             {
               stack: [
                 {
-                  text: [{ text: bill.netPayable, bold: true }],
+                  text: [{ text: bill?.netPayable, bold: true }],
                   style: "infoText",
                 },
               ],
@@ -389,7 +391,7 @@ const BillMaster = (props: { mode: string }) => {
             {
               stack: [
                 {
-                  text: [{ text: session.data?.user.name, bold: true }],
+                  text: [{ text: session?.data?.user?.name, bold: true }],
                   style: "infoText",
                 },
               ],
@@ -607,7 +609,7 @@ const BillMaster = (props: { mode: string }) => {
               loading={orderPostLoading}
               disabled={bill?.status == "posted"}
             >
-              Save
+              {props?.mode == ENUM_MODE.NEW ? "Save" : "Update"}
             </Button>
             <Button
               size="lg"
@@ -616,7 +618,7 @@ const BillMaster = (props: { mode: string }) => {
               onClick={() => submitHandler("save&print")}
               disabled={bill?.status == "posted"}
             >
-              Save & Print
+              {props?.mode == ENUM_MODE.NEW ? "Save & Print" : "Update & Print"}
             </Button>
             <Button
               size="lg"
@@ -625,7 +627,7 @@ const BillMaster = (props: { mode: string }) => {
               onClick={() => submitHandler("exit")}
               disabled={bill?.status == "posted"}
             >
-              Save & Exit
+              {props?.mode == ENUM_MODE.NEW ? "Save & Exit" : "Update & Exit"}
             </Button>
             <Button
               size="lg"

@@ -19,8 +19,9 @@ import {
 } from "@/redux/api/users/user.api";
 import React, { Ref, useEffect, useRef, useState } from "react";
 import { Button, FormInstance, Message, toaster } from "rsuite";
-import { PageProps } from "../../../../../.next/types/app/layout";
+
 import { useRouter } from "next/navigation";
+import { PageProps } from "../../../../../.next/types/app/page";
 
 const NewUser = (props: PageProps) => {
   const router = useRouter();

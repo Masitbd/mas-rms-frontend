@@ -11,7 +11,7 @@ import { useLazyGetOrderDataForPatchQuery } from "@/redux/api/order/orderSlice";
 import Loading from "@/app/Loading";
 import { useAppDispatch } from "@/lib/hooks";
 import { updateBillDetails } from "@/redux/features/order/orderSlice";
-import { PageProps } from "../../../../../.next/types/app/api/auth/[...nextauth]/route";
+import { PageProps } from "next/types";
 
 const NewOrder = (props: PageProps) => {
   const dispatch = useAppDispatch();
