@@ -105,6 +105,7 @@ export type IUserPost = {
 };
 
 export type IuserFormData = {
+  _id: string;
   role: string;
   password?: string;
   name: string;
@@ -119,3 +120,31 @@ export type IuserFormData = {
   uuid?: string;
   branch: string;
 };
+
+export const PasswordFieldChangeModel = Schema.Model({
+  password: StringType()
+    .isRequired("Password is required.")
+    .minLength(8, "Password must be at least 8 characters long.")
+    .addRule(
+      (value) => /[A-Z]/.test(value),
+      "Password must contain at least one uppercase letter."
+    )
+    .addRule(
+      (value) => /[a-z]/.test(value),
+      "Password must contain at least one lowercase letter."
+    )
+    .addRule(
+      (value) => /[0-9]/.test(value),
+      "Password must contain at least one number."
+    )
+    .addRule(
+      (value) => /[@$!%*?&]/.test(value),
+      "Password must contain at least one special character (e.g., @, $, !, %, *, ?, &)."
+    ),
+  confirmPassword: StringType()
+    .isRequired("Confirm Password is required.")
+    .addRule(
+      (value, formData) => value === formData.password,
+      "Passwords do not match."
+    ),
+});

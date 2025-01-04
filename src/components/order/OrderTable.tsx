@@ -154,20 +154,20 @@ const OrderTable = () => {
             </Column>
             <Column flexGrow={2} align="center">
               <HeaderCell children="... " flexGrow={1} />
-              <Cell>
+              <Cell align="center">
                 {(rowdata) => {
                   return (
                     <>
                       <div className="grid grid-cols-6 items-center justify-items-center gap-5">
                         <Button
-                          appearance="ghost"
+                          appearance="primary"
                           color="blue"
                           onClick={() => editHandler(rowdata as IOrder)}
                         >
                           <EditIcon />
                         </Button>
                         <Button
-                          appearance="ghost"
+                          appearance="primary"
                           color="green"
                           onClick={() => viewHandler(rowdata as IOrder)}
                         >

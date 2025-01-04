@@ -10,9 +10,13 @@ import { ENUM_MODE } from "@/enums/EnumMode";
 import { useLazyGetOrderDataForPatchQuery } from "@/redux/api/order/orderSlice";
 import Loading from "@/app/Loading";
 import { useAppDispatch } from "@/lib/hooks";
-import { updateBillDetails } from "@/redux/features/order/orderSlice";
-import { PageProps } from "../../../../../.next/types/app/api/auth/[...nextauth]/route";
-
+import {
+  resetBill,
+  updateBillDetails,
+} from "@/redux/features/order/orderSlice";
+export type PageProps = {
+  searchParams: { id: string; mode: ENUM_MODE };
+};
 const NewOrder = (props: PageProps) => {
   const dispatch = useAppDispatch();
   const [
@@ -35,6 +39,19 @@ const NewOrder = (props: PageProps) => {
       });
       setLoading(false);
     }
+
+    if (mode == ENUM_MODE.NEW) {
+      dispatch(resetBill());
+      dispatch(
+        updateBillDetails({
+          customer: {
+            name: "",
+            address: "",
+          },
+        })
+      );
+      dispatch(updateBillDetails({ discountCard: "" }));
+    }
   }, [mode]);
 
   if (orderDataLoading || orderDataFetching || loading) {
@@ -43,12 +60,18 @@ const NewOrder = (props: PageProps) => {
   return (
     <div className="bg-[#FAFBFF]">
       <div className="grid grid-cols-12 gap-2">
-        <div className="col-span-9 grid grid-cols-1 gap-2 ">
-          <CashMaster mode={mode} />
+        <div
+          className={` ${
+            mode == ENUM_MODE.UPDATE ? " col-span-9" : " col-span-12"
+          } grid grid-cols-1 gap-2 `}
+        >
+          <CashMaster mode={mode} key={mode} />
         </div>
-        <div className="col-span-3">
-          <ActiveTable />
-        </div>
+        {mode == ENUM_MODE.UPDATE && (
+          <div className="col-span-3">
+            <ActiveTable key={mode} />
+          </div>
+        )}
 
         <div className=" col-span-12">
           <Items />

@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 
 import { useDeleteWaiterListMutation } from "@/redux/api/waiter/waiter.api";
 import { WaiterEditAndViewModal } from "./WaiterEditAndViewModal";
+import { useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 export type TMenuTableData = {
   _id: string;
@@ -25,6 +27,8 @@ export type TTableDataProps = {
 
 const { Column, HeaderCell, Cell } = Table;
 const WaiterListTable = ({ data, isLoading }: TTableDataProps) => {
+  const session = useSession();
+  const userRole = session?.data?.user?.role;
   const [deleteMenu] = useDeleteWaiterListMutation();
 
   const handleDelete = (id: string) => {
@@ -80,12 +84,14 @@ const WaiterListTable = ({ data, isLoading }: TTableDataProps) => {
           </HeaderCell>
           <Cell dataKey="name" />
         </Column>
-        <Column flexGrow={3}>
-          <HeaderCell className="text-center text-lg font-semibold">
-            {"Remarks"}
-          </HeaderCell>
-          <Cell dataKey="remarks" />
-        </Column>
+        {(userRole == ENUM_USER.ADMIN || ENUM_USER.SUPER_ADMIN) && (
+          <Column flexGrow={2}>
+            <HeaderCell className="text-center text-lg font-semibold ">
+              {"Branch"}
+            </HeaderCell>
+            <Cell dataKey="branch.name" />
+          </Column>
+        )}
 
         <Column flexGrow={3}>
           <HeaderCell className="text-center text-lg font-semibold">

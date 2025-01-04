@@ -1,5 +1,6 @@
 "use client";
 
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
 import { Textarea } from "@/components/customers/TextArea";
 import MenuGroupTable from "@/components/menuGroup/MenuGroupTable";
 import {
@@ -15,14 +16,14 @@ const MenuGroupPage = () => {
 
   const [craeteMenu, { isLoading: creating }] = useCreateMenuGroupMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: "",
     description: "",
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       ...value,
     }));
@@ -41,6 +42,7 @@ const MenuGroupPage = () => {
         title: "Menu Added successfully",
         icon: "success",
       });
+      setFormData({ name: "", description: "", branch: null });
     }
   };
 
@@ -66,6 +68,7 @@ const MenuGroupPage = () => {
             <Form.Control name="name" />
           </Form.Group>
 
+          <BranchFieldProvider />
           {/*  */}
           <Form.Group controlId="description">
             <Form.ControlLabel>Description</Form.ControlLabel>

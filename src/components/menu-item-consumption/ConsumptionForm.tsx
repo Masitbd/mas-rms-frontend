@@ -38,6 +38,7 @@ import ImageUploader from "./ImageUploader";
 import { Image } from "./TypesAndDefault";
 import { imageUploader } from "./ConsumptionHelper";
 import { useSession } from "next-auth/react";
+import BranchFieldProvider from "../branch/BranchFieldProvider";
 
 const ConsumptionForm = (params: MenuItemFormProps) => {
   const routes = useRouter();
@@ -60,10 +61,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
 
   const handleSubmit = async (v: IMenuItemConsumption) => {
     const submissionData = JSON.parse(JSON.stringify(v));
-    if (!submissionData?.consumptions.length) {
-      toaster.push(<Message type="error">Please Enter Consumptions</Message>);
-      return;
-    }
+
     // Handle success
     const handleSuccess = (message: string) => {
       Swal.fire("Success", message, "success");
@@ -122,6 +120,8 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
     }
   };
 
+  console.log(formData);
+
   return (
     <div>
       <Form
@@ -138,6 +138,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
           <Form.ControlLabel>ID</Form.ControlLabel>
           <Form.Control name="id" disabled />
         </Form.Group>
+        <BranchFieldProvider usedFor="consumption" />
         <Form.Group controlId="rate">
           <Form.ControlLabel>Rate</Form.ControlLabel>
           <Form.Control name="rate" type="number" />

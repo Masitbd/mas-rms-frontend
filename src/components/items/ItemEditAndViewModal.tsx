@@ -13,6 +13,7 @@ import {
   TMenuGroupItem,
   TMenuGroupOption,
 } from "@/app/(withLayout)/items/page";
+import BranchFieldProvider from "../branch/BranchFieldProvider";
 
 type TEdittableProps = {
   data: any;
@@ -51,6 +52,7 @@ export const ItemEditAndViewModal = ({
         uid: data.uid || "",
         name: data.name || "",
         menuGroup: data.menuGroup?._id || "", // Correct way to set the nested property
+        ...(data?.branch ? { branch: data?.branch?._id } : {}),
       });
     }
   }, [data]);
@@ -61,6 +63,7 @@ export const ItemEditAndViewModal = ({
       uid: event.uid,
       name: event.name,
       menuGroup: event.menuGroup,
+      branch: event.branch,
     });
   };
 
@@ -71,8 +74,6 @@ export const ItemEditAndViewModal = ({
       id: data?._id,
       data: formData,
     };
-
-    console.log(data, "data");
 
     const res = await updateItem(options).unwrap();
 
@@ -136,6 +137,8 @@ export const ItemEditAndViewModal = ({
                 <Form.ControlLabel>Category Name</Form.ControlLabel>
                 <Form.Control name="name" />
               </Form.Group>
+
+              <BranchFieldProvider />
 
               <Form.Group>
                 <Button

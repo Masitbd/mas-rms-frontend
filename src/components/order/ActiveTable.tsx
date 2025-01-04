@@ -19,6 +19,7 @@ const ActiveTable = () => {
     bill?._id as string,
     {
       skip: !bill?._id as unknown as boolean,
+      refetchOnMountOrArgChange: true,
     }
   );
 

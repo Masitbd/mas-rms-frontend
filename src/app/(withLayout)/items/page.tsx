@@ -1,5 +1,6 @@
 "use client";
 
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
 import ItemCategoryTable from "@/components/items/ItemsTable";
 
 import {
@@ -9,12 +10,14 @@ import {
 import { useGetMenuGroupQuery } from "@/redux/api/menugroup/menuGroup.api";
 import React, { useState } from "react";
 import { Button, Form, Loader, SelectPicker } from "rsuite";
+import SchemaTyped from "rsuite/esm/Schema/Schema";
 import Swal from "sweetalert2";
 
 export type FormDataType = {
   uid?: string;
   name: string;
   menuGroup: string | unknown;
+  branch?: string;
 };
 
 export type TMenuGroupOption = {
@@ -43,10 +46,13 @@ const ItemsCategoryPage = () => {
 
   const itemFormInitialState = {
     name: "",
-    menuGroup: "",
+    branch: null,
+    menuGroup: null,
   };
 
-  const [formData, setFormData] = useState<FormDataType>(itemFormInitialState);
+  const [formData, setFormData] = useState<FormDataType>(
+    itemFormInitialState as unknown as FormDataType
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
@@ -69,7 +75,7 @@ const ItemsCategoryPage = () => {
         title: "Item Added successfully",
         icon: "success",
       });
-      setFormData(itemFormInitialState);
+      setFormData(itemFormInitialState as unknown as FormDataType);
     }
   };
 
@@ -89,13 +95,22 @@ const ItemsCategoryPage = () => {
           onChange={handleChange}
           onSubmit={handleSubmit}
           className="lg:justify-items-center lg:pe-40"
+          model={SchemaTyped.Model({
+            menuGroup: SchemaTyped.Types.StringType().isRequired(
+              "Menu Group is required"
+            ),
+            name: SchemaTyped.Types.StringType().isRequired(
+              "Name  is required"
+            ),
+          })}
         >
           <Form.Group controlId="menuGroup">
             <Form.ControlLabel>Menu Group</Form.ControlLabel>
-            <SelectPicker
+            <Form.Control
+              name="menuGroup"
+              accepter={SelectPicker}
               disabled={menuLoading}
               data={menuGroupData}
-              name="menuGroup"
               onChange={(value) =>
                 setFormData({ ...formData, menuGroup: value })
               }
@@ -107,6 +122,8 @@ const ItemsCategoryPage = () => {
             <Form.ControlLabel>Category Name</Form.ControlLabel>
             <Form.Control name="name" />
           </Form.Group>
+
+          <BranchFieldProvider />
 
           {/*  */}
 

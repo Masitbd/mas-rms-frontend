@@ -44,6 +44,15 @@ const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["user-list", "single-user"],
     }),
+    changePasswordAdmin: build.mutation({
+      query: (data: { data: { password: string }; id: string }) => ({
+        url: `/user/change-password-admin/${data.id}`,
+        method: "PATCH",
+        body: data.data,
+        data: data.data,
+      }),
+      invalidatesTags: ["user-list", "single-user"],
+    }),
 
     // update
 
@@ -73,6 +82,7 @@ export const {
   useLazyGetSingleUserByUUidQuery,
   useUpdateUserProfileMutation,
   useDeleteUserMutation,
+  useChangePasswordAdminMutation,
 } = userApi;
 
 export type IUseCreateUserMutation = ReturnType<typeof useGetUserListQuery>;

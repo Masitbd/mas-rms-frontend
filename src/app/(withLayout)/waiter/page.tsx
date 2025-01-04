@@ -1,5 +1,6 @@
 "use client";
 
+import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
 import { Textarea } from "@/components/customers/TextArea";
 
 import WaiterListTable from "@/components/waiter/WaiterListTable";
@@ -11,20 +12,21 @@ import {
 import React, { useState } from "react";
 import { Button, Form, Loader } from "rsuite";
 import Swal from "sweetalert2";
+import omitDeep from "omit-empty-es";
 
 const MenuGroupPage = () => {
   const { data: waiters, isLoading } = useGetWaiterListQuery({});
 
   const [craeteMenu, { isLoading: creating }] = useCreateWaiterListMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: "",
     description: "",
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value: Record<string, any>) => {
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       ...value,
     }));
@@ -32,7 +34,7 @@ const MenuGroupPage = () => {
   // ? onsubmit
 
   const handleSubmit = async () => {
-    const res = await craeteMenu(formData).unwrap();
+    const res = await craeteMenu(omitDeep(formData)).unwrap();
     if (res.success) {
       Swal.fire({
         toast: true,
@@ -42,6 +44,11 @@ const MenuGroupPage = () => {
         timerProgressBar: true,
         title: "Waiter Added successfully",
         icon: "success",
+      });
+      setFormData({
+        name: "",
+        remarks: "",
+        branch: "",
       });
     }
   };
@@ -67,6 +74,7 @@ const MenuGroupPage = () => {
             <Form.ControlLabel>Waiter Name</Form.ControlLabel>
             <Form.Control name="name" />
           </Form.Group>
+          <BranchFieldProvider />
 
           {/*  */}
           <Form.Group controlId="remarks">

@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 
 import { MenuEditAndViewModal } from "./MenuEditAndViewModal";
 import { useDeleteMenuGroupMutation } from "@/redux/api/menugroup/menuGroup.api";
+import { useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 export type TMenuTableData = {
   _id: string;
@@ -25,6 +27,8 @@ export type TTableDataProps = {
 
 const { Column, HeaderCell, Cell } = Table;
 const MenuGroupTable = ({ data, isLoading }: TTableDataProps) => {
+  const session = useSession();
+  const userRole = session?.data?.user?.role;
   const [deleteMenu] = useDeleteMenuGroupMutation();
 
   const handleDelete = (id: string) => {
@@ -80,12 +84,15 @@ const MenuGroupTable = ({ data, isLoading }: TTableDataProps) => {
           </HeaderCell>
           <Cell dataKey="name" />
         </Column>
-        <Column flexGrow={3}>
-          <HeaderCell className="text-center text-lg font-semibold">
-            {"Description"}
-          </HeaderCell>
-          <Cell dataKey="description" />
-        </Column>
+
+        {(userRole == ENUM_USER.ADMIN || ENUM_USER.SUPER_ADMIN) && (
+          <Column flexGrow={2}>
+            <HeaderCell className="text-center text-lg font-semibold ">
+              {"Branch"}
+            </HeaderCell>
+            <Cell dataKey="branch.name" />
+          </Column>
+        )}
 
         <Column flexGrow={3}>
           <HeaderCell className="text-center text-lg font-semibold">
