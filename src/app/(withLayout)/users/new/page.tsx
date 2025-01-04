@@ -92,7 +92,10 @@ const NewUser = (props: PageProps) => {
       </div>
       <div className="my-5 flex items-end justify-end ">
         <div className="grid grid-cols-2 gap-5">
-          <PasswordChangerFormProvider mode={mode} id={userData?.uuid} />
+          <PasswordChangerFormProvider
+            mode={mode}
+            id={userData?.uuid as string}
+          />
           <Button
             onClick={() => submitHandler()}
             size="lg"

@@ -606,13 +606,14 @@ const BillMaster = (props: { mode: string }) => {
               appearance="primary"
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("save")}
-              loading={orderPostLoading}
+              loading={orderPostLoading || orderUpdateLoading}
               disabled={bill?.status == "posted"}
             >
               {props?.mode == ENUM_MODE.NEW ? "Save" : "Update"}
             </Button>
             <Button
               size="lg"
+              loading={orderPostLoading || orderUpdateLoading}
               appearance="primary"
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("save&print")}
@@ -626,6 +627,7 @@ const BillMaster = (props: { mode: string }) => {
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("exit")}
               disabled={bill?.status == "posted"}
+              loading={orderPostLoading || orderUpdateLoading}
             >
               {props?.mode == ENUM_MODE.NEW ? "Save & Exit" : "Update & Exit"}
             </Button>
@@ -637,6 +639,7 @@ const BillMaster = (props: { mode: string }) => {
               children={"Print"}
               onClick={() => handlePrint(bill?._id as string)}
               disabled={bill?.status == "posted"}
+              loading={orderPostLoading || orderUpdateLoading}
             />
 
             <Button
@@ -653,7 +656,9 @@ const BillMaster = (props: { mode: string }) => {
                   dispatch
                 )
               }
-              loading={changeStatusLoading}
+              loading={
+                changeStatusLoading || orderUpdateLoading || orderPostLoading
+              }
               disabled={bill?.status == "posted"}
             />
 
