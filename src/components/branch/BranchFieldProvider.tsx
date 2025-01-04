@@ -3,9 +3,9 @@ import { useGetBranchQuery } from "@/redux/api/branch/branch.api";
 import { TBranch } from "@/redux/features/order/orderSlice";
 import { useSession } from "next-auth/react";
 import React from "react";
-import { Form, InputPicker } from "rsuite";
+import { Form, InputPicker, TagPicker } from "rsuite";
 
-const BranchFieldProvider = () => {
+const BranchFieldProvider = (props: { usedFor?: string }) => {
   const session = useSession();
   const userRole = session?.data?.user?.role;
   const { data: branchData, isLoading: branchDataLoading } =
@@ -17,7 +17,7 @@ const BranchFieldProvider = () => {
         <Form.ControlLabel className="text-xl">Branch</Form.ControlLabel>
         <Form.Control
           name="branch"
-          accepter={InputPicker}
+          accepter={props?.usedFor == "consumption" ? TagPicker : InputPicker}
           data={branchData?.data?.map((bd: TBranch & { _id: string }) => ({
             label: bd?.name,
             value: bd._id,

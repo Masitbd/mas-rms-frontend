@@ -102,14 +102,14 @@ const BillMaster = (props: { mode: string }) => {
       if (result?.success) {
         Swal.fire("Success", result?.message ?? "Posted", "success");
 
-        if (button == "exit") {
-          cancelHandler();
-        }
         if (button == "save&print") {
           await handlePrint(result?.data?._id);
         }
         if (props.mode == ENUM_MODE.NEW) {
           router.push(`/order/new?mode=update&id=${result?.data?._id}`);
+        }
+        if (button == "exit") {
+          cancelHandler();
         }
       }
     } catch (err) {

@@ -104,14 +104,6 @@ const CustomerTable = ({
           </HeaderCell>
           <Cell dataKey="phone" />
         </Column>
-        {(userRole == ENUM_USER.ADMIN || ENUM_USER.SUPER_ADMIN) && (
-          <Column flexGrow={2}>
-            <HeaderCell className="text-center text-lg font-semibold ">
-              {"Branch"}
-            </HeaderCell>
-            <Cell dataKey="branch.name" />
-          </Column>
-        )}
 
         <Column flexGrow={3}>
           <HeaderCell className="text-center text-lg font-semibold ">

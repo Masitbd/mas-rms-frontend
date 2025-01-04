@@ -99,8 +99,7 @@ const CustomersPage = () => {
             <Form.ControlLabel>Discount Amount</Form.ControlLabel>
             <Form.Control name="discount" />
           </Form.Group>
-          <BranchFieldProvider />
-          {/*  */}
+
           <Form.Group controlId="address">
             <Form.ControlLabel>Address</Form.ControlLabel>
             <Form.Control name="address" accepter={Textarea} />

@@ -105,20 +105,20 @@ const RawMaterialTable = (props: IMaterialTableProps) => {
         )}
         <Column flexGrow={2} align="center">
           <HeaderCell children="... " flexGrow={1} />
-          <Cell>
+          <Cell align="center">
             {(rowdata: IRawMaterial) => {
               return (
                 <>
-                  <div className="grid grid-cols-6 items-center justify-items-center gap-5">
+                  <div className="grid grid-cols-2 gap-5">
                     <Button
-                      appearance="ghost"
+                      appearance="primary"
                       color="blue"
                       onClick={() => editHandler(rowdata)}
                     >
                       <EditIcon />
                     </Button>
                     <Button
-                      appearance="ghost"
+                      appearance="primary"
                       color="red"
                       onClick={() => deletHandler(rowdata)}
                     >

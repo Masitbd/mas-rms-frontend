@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { Form, Button, Loader, InputPicker } from "rsuite";
 import Swal from "sweetalert2";
+import omitDeep from "omit-empty-es";
 
 type TError = {
   data: {
@@ -47,7 +48,7 @@ const TablePage = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await craetTable(formData).unwrap();
+      const res = await craetTable(omitDeep(formData)).unwrap();
 
       if (res.success) {
         Swal.fire({
@@ -59,7 +60,7 @@ const TablePage = () => {
           title: "Table Added successfully",
           icon: "success",
         });
-        setFormData({ name: "", details: "" } as never);
+        setFormData({ name: "", details: "", branch: "" } as never);
       }
     } catch (err) {
       const error = err as TError;

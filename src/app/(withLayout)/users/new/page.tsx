@@ -22,6 +22,7 @@ import { Button, FormInstance, Message, toaster } from "rsuite";
 
 import { useRouter } from "next/navigation";
 import { PageProps } from "../../../../../.next/types/app/page";
+import PasswordChangerFormProvider from "@/components/users/PasswordChangerFormProvider";
 
 const NewUser = (props: PageProps) => {
   const router = useRouter();
@@ -89,16 +90,19 @@ const NewUser = (props: PageProps) => {
           mode={mode}
         />
       </div>
-      <div className="my-5 flex items-end justify-end">
-        <Button
-          onClick={() => submitHandler()}
-          size="lg"
-          loading={postLoading || updateLoading}
-          appearance="primary"
-          color="blue"
-        >
-          Submit
-        </Button>
+      <div className="my-5 flex items-end justify-end ">
+        <div className="grid grid-cols-2 gap-5">
+          <PasswordChangerFormProvider mode={mode} id={userData?.uuid} />
+          <Button
+            onClick={() => submitHandler()}
+            size="lg"
+            loading={postLoading || updateLoading}
+            appearance="primary"
+            color="blue"
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     </div>
   );

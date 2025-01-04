@@ -120,6 +120,8 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
     }
   };
 
+  console.log(formData);
+
   return (
     <div>
       <Form
@@ -136,7 +138,7 @@ const ConsumptionForm = (params: MenuItemFormProps) => {
           <Form.ControlLabel>ID</Form.ControlLabel>
           <Form.Control name="id" disabled />
         </Form.Group>
-        <BranchFieldProvider />
+        <BranchFieldProvider usedFor="consumption" />
         <Form.Group controlId="rate">
           <Form.ControlLabel>Rate</Form.ControlLabel>
           <Form.Control name="rate" type="number" />

@@ -15,6 +15,7 @@ import {
 } from "@/redux/api/raw-material-setup/rawMaterial.api";
 import Swal from "sweetalert2";
 import BranchFieldProvider from "../branch/BranchFieldProvider";
+import omitEmpty from "omit-empty-es";
 
 const RawMaterialForm = (props: IMaterialFormProps) => {
   const { formData, mode, setFormData, setMode } = props;
@@ -31,7 +32,7 @@ const RawMaterialForm = (props: IMaterialFormProps) => {
     try {
       switch (mode) {
         case ENUM_MODE.NEW:
-          const result = await post(v as IRawMaterial).unwrap();
+          const result = await post(omitEmpty(v) as IRawMaterial).unwrap();
           if (result?.success) {
             handleSuccess("Raw Material Added Successfully");
           }

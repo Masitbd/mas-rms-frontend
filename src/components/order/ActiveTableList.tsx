@@ -41,13 +41,13 @@ const ActiveTableList = () => {
                       {/* Text overlay */}
                       <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 text-white transition-opacity duration-300 ease-in-out group-hover:bg-opacity-70 p-2">
                         <h3 className="font-roboto text-sm font-semibold">
-                          Table ID: {t.tableName.tid}
+                          Table ID: {t?.tableName?.tid}
                         </h3>
                         <h3 className="font-roboto text-sm font-semibold">
-                          Bill No.: {t.billNo}
+                          Bill No.: {t?.billNo}
                         </h3>
                         <h3 className="font-roboto text-sm font-semibold">
-                          Waiter: {t.waiter.name}
+                          Waiter: {t?.waiter?.name}
                         </h3>
                       </div>
                     </div>

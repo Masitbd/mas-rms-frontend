@@ -67,7 +67,7 @@ const initialState: IOrder = {
   date: new Date(),
   guest: 0,
   sCharge: 0,
-  vat: 0,
+  vat: 5,
   percentDiscount: 0,
   discountAmount: 0,
   totalBill: 0,

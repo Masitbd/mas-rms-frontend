@@ -25,14 +25,14 @@ const TableActionButtonProvider = (props: {
   };
   return (
     <div className="grid grid-cols-3 gap-3">
-      <Button appearance="ghost" color="blue" onClick={() => editHandler()}>
+      <Button appearance="primary" color="blue" onClick={() => editHandler()}>
         <EditIcon />
       </Button>
 
-      <Button appearance="ghost" color="green" onClick={() => viewHandler()}>
+      <Button appearance="primary" color="green" onClick={() => viewHandler()}>
         <ViewIcon />
       </Button>
-      <Button appearance="ghost" color="red" onClick={() => deletHandler()}>
+      <Button appearance="primary" color="red" onClick={() => deletHandler()}>
         <TrashIcon />
       </Button>
     </div>

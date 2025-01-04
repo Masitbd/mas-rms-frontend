@@ -12,6 +12,7 @@ import {
 import React, { useState } from "react";
 import { Button, Form, Loader } from "rsuite";
 import Swal from "sweetalert2";
+import omitDeep from "omit-empty-es";
 
 const MenuGroupPage = () => {
   const { data: waiters, isLoading } = useGetWaiterListQuery({});
@@ -33,7 +34,7 @@ const MenuGroupPage = () => {
   // ? onsubmit
 
   const handleSubmit = async () => {
-    const res = await craeteMenu(formData).unwrap();
+    const res = await craeteMenu(omitDeep(formData)).unwrap();
     if (res.success) {
       Swal.fire({
         toast: true,
@@ -47,6 +48,7 @@ const MenuGroupPage = () => {
       setFormData({
         name: "",
         remarks: "",
+        branch: "",
       });
     }
   };

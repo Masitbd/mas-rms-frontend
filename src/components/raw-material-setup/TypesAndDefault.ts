@@ -11,6 +11,7 @@ export interface RawMaterialFormValues {
   rate?: number;
   conversion: number;
   description?: string;
+  branch: string; // Optional field
 }
 
 export const rawMaterialDefaultValue: RawMaterialFormValues = {
@@ -21,6 +22,7 @@ export const rawMaterialDefaultValue: RawMaterialFormValues = {
   conversion: 1000,
   rate: 0,
   description: "",
+  branch: "",
 };
 
 export const rawMaterialSetupFormmodel = Schema.Model({
