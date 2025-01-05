@@ -35,6 +35,7 @@ const ItemWiseRawMatConsumpPage = () => {
   if (formValue.startDate)
     queryParams.startDate = formatDate(formValue.startDate);
   if (formValue.endDate) queryParams.endDate = formatDate(formValue.endDate);
+  if (formValue.branch) queryParams.branch = formValue.branch;
 
   // Handle form submission
   const handleSubmit = async (

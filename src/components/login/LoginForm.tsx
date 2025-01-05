@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ILoginData, model } from "./ModalsAndTypes";
 config.autoAddCss = false;
@@ -21,6 +21,8 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const route = useRouter();
   const session = useSession();
+
+  console.log(session, "in login form");
 
   const handleChange = () => {
     setVisible(!visible);
@@ -38,13 +40,18 @@ const LoginForm = () => {
         email: credentials.email,
         password: credentials.password,
       });
-      console.log(result, "login rest");
+      // console.log(result, "login rest");
       if (result?.error) {
         setError(result.error);
       }
       if (result?.ok) {
         setLoading(false);
-        route.push("/welcome-page");
+        const updatedSession = await getSession();
+        if (updatedSession?.user?.role === "super-admin") {
+          route.push("/home");
+        } else {
+          route.push("/welcome-page");
+        }
       }
     } catch (error) {
       if (error) {
