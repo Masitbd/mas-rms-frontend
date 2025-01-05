@@ -151,7 +151,7 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
       <div className="grid grid-cols-2 gap-2">
         <Button
           children={<EyeCloseIcon />}
-          appearance="ghost"
+          appearance="primary"
           color="blue"
           onClick={() => handleViewButtonClick(order)}
         />
