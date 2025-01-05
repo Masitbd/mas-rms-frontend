@@ -7,6 +7,8 @@ import { Form, Button, Loader, Modal } from "rsuite";
 import Swal from "sweetalert2";
 import { Textarea } from "../customers/TextArea";
 import { useUpdateMenuGroupMutation } from "@/redux/api/menugroup/menuGroup.api";
+import { TTableData } from "../Table/Table";
+import BranchFieldProvider from "../branch/BranchFieldProvider";
 
 type TEdittableProps = {
   data: any;
@@ -25,7 +27,7 @@ export const MenuEditAndViewModal = ({
 
   const [updateMenu, { isLoading }] = useUpdateMenuGroupMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     uid: "",
     name: "",
     description: "",
@@ -37,6 +39,7 @@ export const MenuEditAndViewModal = ({
         uid: data.uid || "",
         name: data.name || "",
         description: data.description || "",
+        ...(data?.branch ? { branch: data?.branch?._id } : {}),
       });
     }
   }, [data]);
@@ -47,6 +50,7 @@ export const MenuEditAndViewModal = ({
       uid: event.uid,
       name: event.name,
       description: event.description,
+      branch: event.branch,
     });
   };
 
@@ -57,8 +61,6 @@ export const MenuEditAndViewModal = ({
       id: data?._id,
       data: formData,
     };
-
-    console.log(data, "data");
 
     const res = await updateMenu(options).unwrap();
 
@@ -107,6 +109,7 @@ export const MenuEditAndViewModal = ({
                 <Form.ControlLabel>Menu Group Name</Form.ControlLabel>
                 <Form.Control name="name" />
               </Form.Group>
+              <BranchFieldProvider />
               <Form.Group controlId="description">
                 <Form.ControlLabel>Description</Form.ControlLabel>
                 <Form.Control name="description" accepter={Textarea} />

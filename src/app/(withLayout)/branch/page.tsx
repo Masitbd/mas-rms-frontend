@@ -50,22 +50,34 @@ const BranchPage = () => {
   // ? onsubmit
 
   const handleSubmit = async () => {
-    const res = await craeteItem(formData).unwrap();
-    if (res.success) {
+    try {
+      const res = await craeteItem(formData).unwrap();
+      if (res.success) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          title: "Branch Added successfully",
+          icon: "success",
+        });
+        setFormData(itemFormInitialState);
+      }
+    } catch (error) {
+      console.error(error);
       Swal.fire({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
-        title: "Branch Added successfully",
-        icon: "success",
+        title: error ?? "Error Adding Branch",
+        icon: "error",
       });
-      setFormData(itemFormInitialState);
     }
   };
 
-  console.log(config.server_url);
   return (
     <div className="w-full max-w-6xl mx-auto  drop-shadow-md shadow-xl m-5 py-8 px-5 bg-[#fcfbfb]">
       <h1 className="text-center text-[#003CFF] text-2xl font-bold">

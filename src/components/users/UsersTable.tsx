@@ -68,7 +68,7 @@ const UsersTable = () => {
             <HeaderCell children="Branch" />
             <Cell dataKey="branch.name" />
           </Column>
-          <Column flexGrow={1}>
+          <Column flexGrow={0.5}>
             <HeaderCell children="Status" />
             <Cell>
               {(rowData) => (
@@ -76,9 +76,9 @@ const UsersTable = () => {
               )}
             </Cell>
           </Column>
-          <Column flexGrow={1}>
+          <Column flexGrow={1.5}>
             <HeaderCell children="..." />
-            <Cell>
+            <Cell align="center">
               {(rowData) => {
                 return (
                   <>

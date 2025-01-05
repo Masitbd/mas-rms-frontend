@@ -7,6 +7,10 @@ import TrashIcon from "@rsuite/icons/Trash";
 import { EditAndViewCustomerModal } from "./EditAndViewCustomerModal";
 import Swal from "sweetalert2";
 import { useDeleteCustomerListMutation } from "@/redux/api/customer/customer.api";
+import { TBranch } from "@/redux/features/order/orderSlice";
+import BranchTableFieldProvider from "../branch/BranchTableFieldProvider";
+import { useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 export type TCustomer = {
   _id: string;
@@ -20,6 +24,7 @@ export type TCustomer = {
   discountCard?: string;
   discount?: number;
   isActive?: boolean;
+  branch: TBranch;
 };
 
 const { Column, HeaderCell, Cell } = Table;
@@ -30,6 +35,8 @@ const CustomerTable = ({
   data: TCustomer[];
   isLoading: boolean;
 }) => {
+  const session = useSession();
+  const userRole = session?.data?.user?.role;
   const [deleteCustomer, { isLoading: deleting }] =
     useDeleteCustomerListMutation();
 
@@ -72,9 +79,9 @@ const CustomerTable = ({
         rowHeight={65}
         className="text-md"
       >
-        <Column flexGrow={2}>
+        <Column flexGrow={1}>
           <HeaderCell className="text-center text-lg font-semibold ">
-            {"Customer Id"}
+            {"Id"}
           </HeaderCell>
           <Cell dataKey="cid" />
         </Column>

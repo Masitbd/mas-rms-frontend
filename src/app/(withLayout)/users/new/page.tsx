@@ -19,15 +19,21 @@ import {
 } from "@/redux/api/users/user.api";
 import React, { Ref, useEffect, useRef, useState } from "react";
 import { Button, FormInstance, Message, toaster } from "rsuite";
-import { PageProps } from "../../../../../.next/types/app/layout";
+
+import { useRouter } from "next/navigation";
+import { PageProps } from "../../../../../.next/types/app/page";
+import PasswordChangerFormProvider from "@/components/users/PasswordChangerFormProvider";
 
 const NewUser = (props: PageProps) => {
+  const router = useRouter();
   const formRef = useRef<FormInstance>();
   const { mode, uuid } = props.searchParams;
   const [getSingle, { isLoading, isFetching }] =
     useLazyGetSingleUserByUUidQuery();
-  const [update, { isLoading: updateLoading }] = useUpdateUserProfileMutation();
-  const [post, { isLoading: postLoading }] = useCreateUserMutation();
+  const [update, { isLoading: updateLoading, isSuccess: updateSuccess }] =
+    useUpdateUserProfileMutation();
+  const [post, { isLoading: postLoading, isSuccess: postSuccess }] =
+    useCreateUserMutation();
   const [userData, setUserData] = useState<IuserFormData | undefined>();
 
   const submitHandler = async () => {
@@ -63,6 +69,14 @@ const NewUser = (props: PageProps) => {
       })();
     }
   }, []);
+
+  useEffect(() => {
+    if (postSuccess || updateSuccess) {
+      router.push("/users");
+
+      setUserData(undefined);
+    }
+  }, [postSuccess, updateSuccess]);
   return (
     <div className="shadow-lg bg-[#003CFF05] p-4 m-2">
       <div className="text-center text-[#194BEE] text-2xl font-bold font-roboto ">
@@ -76,16 +90,22 @@ const NewUser = (props: PageProps) => {
           mode={mode}
         />
       </div>
-      <div className="my-5 flex items-end justify-end">
-        <Button
-          onClick={() => submitHandler()}
-          size="lg"
-          loading={postLoading || updateLoading}
-          appearance="primary"
-          color="blue"
-        >
-          Submit
-        </Button>
+      <div className="my-5 flex items-end justify-end ">
+        <div className="grid grid-cols-2 gap-5">
+          <PasswordChangerFormProvider
+            mode={mode}
+            id={userData?.uuid as string}
+          />
+          <Button
+            onClick={() => submitHandler()}
+            size="lg"
+            loading={postLoading || updateLoading}
+            appearance="primary"
+            color="blue"
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     </div>
   );

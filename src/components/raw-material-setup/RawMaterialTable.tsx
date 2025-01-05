@@ -13,9 +13,13 @@ import {
 } from "@/redux/api/raw-material-setup/rawMaterial.api";
 import { ENUM_MODE } from "@/enums/EnumMode";
 import Swal from "sweetalert2";
+import { useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RawMaterialTable = (props: IMaterialTableProps) => {
+  const session = useSession();
+  const userRole = session?.data?.user?.role;
   const { setFormData, setMode } = props;
   const { Cell, Column, HeaderCell } = Table;
   const {
@@ -54,7 +58,7 @@ const RawMaterialTable = (props: IMaterialTableProps) => {
   const editHandler = async (payload: IRawMaterial) => {
     try {
       const result = await get(payload.id).unwrap();
-      console.log(result);
+
       if (result?.success) {
         setFormData(JSON.parse(JSON.stringify(result?.data)));
         setMode(ENUM_MODE.UPDATE);
@@ -91,22 +95,30 @@ const RawMaterialTable = (props: IMaterialTableProps) => {
           <HeaderCell children="Base Unit" flexGrow={1} />
           <Cell dataKey="baseUnit" />
         </Column>
+        {(userRole == ENUM_USER.ADMIN || ENUM_USER.SUPER_ADMIN) && (
+          <Column flexGrow={2}>
+            <HeaderCell className="text-center text-lg font-semibold ">
+              {"Branch"}
+            </HeaderCell>
+            <Cell dataKey="branch.name" />
+          </Column>
+        )}
         <Column flexGrow={2} align="center">
           <HeaderCell children="... " flexGrow={1} />
-          <Cell>
+          <Cell align="center">
             {(rowdata: IRawMaterial) => {
               return (
                 <>
-                  <div className="grid grid-cols-6 items-center justify-items-center gap-5">
+                  <div className="grid grid-cols-2 gap-5">
                     <Button
-                      appearance="ghost"
+                      appearance="primary"
                       color="blue"
                       onClick={() => editHandler(rowdata)}
                     >
                       <EditIcon />
                     </Button>
                     <Button
-                      appearance="ghost"
+                      appearance="primary"
                       color="red"
                       onClick={() => deletHandler(rowdata)}
                     >
