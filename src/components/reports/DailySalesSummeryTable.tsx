@@ -50,6 +50,7 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
   startDate,
   endDate,
 }) => {
+  console.log(data, "data");
   return (
     <div className="p-5">
       {/* <div className="text-center mb-10 flex flex-col items-center justify-center">

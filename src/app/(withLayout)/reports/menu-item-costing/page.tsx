@@ -41,7 +41,7 @@ const MenuItemConsumptionCostingPage = () => {
   return (
     <div>
       <h2 className="text-center text-xl font-semibold mt-5 px-5 py-2 bg-blue-600 text-gray-100 w-full max-w-80 mx-auto rounded-xl">
-        Item Wise Sales Reports
+        Menu Item Costing
       </h2>
 
       {!session.data?.user?.branch && (

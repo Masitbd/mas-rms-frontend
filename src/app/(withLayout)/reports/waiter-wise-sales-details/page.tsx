@@ -64,7 +64,7 @@ const WaiterWiseSalesDetailsPage = () => {
           onChange={handleChange}
           onSubmit={handleSubmit}
           formValue={formValue}
-          className="grid grid-cols-3 gap-10 justify-center  w-full"
+          className="grid grid-cols-4 gap-10 justify-center  justify-items-center w-full"
         >
           <Form.Group controlId="startDate">
             <Form.ControlLabel>Start Date</Form.ControlLabel>
