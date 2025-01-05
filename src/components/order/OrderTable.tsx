@@ -128,7 +128,7 @@ const OrderTable = () => {
         />
       </div>
       <div className="grid grid-cols-12 gap-2">
-        <div className="col-span-9">
+        <div className="xl:col-span-9 col-span-10">
           <Table
             autoHeight
             cellBordered
@@ -158,7 +158,7 @@ const OrderTable = () => {
                 {(rowdata) => {
                   return (
                     <>
-                      <div className="grid grid-cols-6 items-center justify-items-center gap-5">
+                      <div className="grid grid-cols-2 items-center justify-items-center gap-5">
                         <Button
                           appearance="primary"
                           color="blue"
@@ -200,7 +200,7 @@ const OrderTable = () => {
             />
           </div>
         </div>
-        <div className="col-span-3 ">
+        <div className="xl:col-span-3 col-span-2">
           <ActiveTableList />
         </div>
       </div>

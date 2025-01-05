@@ -21,7 +21,7 @@ const ActiveTableList = () => {
       <div className="flex justify-center items-center">
         {tableDataFetching || tableDataFetching ? <Loader size="md" /> : ""}
       </div>
-      <div className="grid grid-cols-2 gap-2 my-5">
+      <div className="grid xl:grid-cols-2 grid-cols-1 gap-2 my-5">
         {tableData?.data &&
           tableData?.data?.map((data: any) => {
             const t = data;
@@ -39,7 +39,7 @@ const ActiveTableList = () => {
                         alt="Image"
                       />
                       {/* Text overlay */}
-                      <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 text-white transition-opacity duration-300 ease-in-out group-hover:bg-opacity-70 p-2">
+                      <div className="absolute inset-0 flex flex-col :xl:justify-center xl:items-center bg-black bg-opacity-50 text-white transition-opacity duration-300 ease-in-out group-hover:bg-opacity-70 p-2">
                         <h3 className="font-roboto text-sm font-semibold">
                           Table ID: {t?.tableName?.tid}
                         </h3>

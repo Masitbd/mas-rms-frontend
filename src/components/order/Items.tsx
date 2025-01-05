@@ -81,7 +81,7 @@ const Items = () => {
     };
     dispatch(addItem(data));
     setItem(null as unknown as IMenuItemConsumption);
-    setQty(0);
+    setQty(1);
     if (itemCodeRef && itemCodeRef.current !== undefined) {
       itemCodeRef?.current?.open && itemCodeRef?.current?.open();
       itemCodeRef?.current?.target?.focus();
