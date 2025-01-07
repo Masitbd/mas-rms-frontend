@@ -35,6 +35,7 @@ const DueSalesStatementPage = () => {
   if (formValue.startDate)
     queryParams.startDate = formatDate(formValue.startDate);
   if (formValue.endDate) queryParams.endDate = formatDate(formValue.endDate);
+  if (formValue.branch) queryParams.branch = formValue.branch;
 
   // Handle form submission
   const handleSubmit = async (
@@ -49,6 +50,8 @@ const DueSalesStatementPage = () => {
   const { data, isLoading } = useGetDueStatementReportsQuery(queryParams, {
     skip: !isSearchEnable,
   });
+
+  console.log(data, "datea in sue");
 
   return (
     <div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useGetWaiterWiseSaleStatementReportsQuery } from "@/redux/api/report/report.api";
@@ -125,7 +126,7 @@ const WaiterWiseSalesDetailsPage = () => {
           </Button>
         </Form>
 
-        {data && data?.data?.length > 0 && (
+        {data && data?.data && (
           <WaiterSalesDetailsTable
             isLoading={isLoading}
             data={data.data}

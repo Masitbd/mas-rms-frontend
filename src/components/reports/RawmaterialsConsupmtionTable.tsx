@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Loader } from "rsuite";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { formatDate } from "@/utils/formateDate";
+import { TBranch } from "./DailySalesSummeryTable";
+import ReporetHeader from "@/utils/ReporetHeader";
+import { createPrintButton } from "@/utils/PrintButton";
 
 type TRecord = {
   rawMaterialName: string;
@@ -11,7 +17,10 @@ type TRecord = {
 };
 
 type TRawmaterialsConsupmtionTable = {
-  data: TRecord[];
+  data: {
+    branchInfo: TBranch;
+    result: TRecord[];
+  };
   isLoading: boolean;
   startDate: Date | null;
   endDate: Date | null;
@@ -23,26 +32,158 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
   startDate,
   endDate,
 }) => {
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "landscape",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        // Title
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+
+        {
+          text: `${data?.branchInfo?.address1}`,
+
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          style: "subheader",
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+
+        {
+          text: `Raw Materials Consumption: ${
+            formattedStartDate === formattedEndDate
+              ? formattedStartDate
+              : `from ${formattedStartDate} to ${formattedEndDate}`
+          }`,
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        // Table Header
+        {
+          table: {
+            headerRows: 1,
+            widths: ["*", "*", "*", "*"],
+            body: [
+              // Define the header row
+              [
+                { text: "Item Name", bold: true, alignment: "center" },
+                { text: "QTY", bold: true, alignment: "center" },
+                { text: "Rate/Unit", bold: true, alignment: "center" },
+                { text: "Amount", bold: true, alignment: "center" },
+              ],
+              // Define the data rows
+              ...data?.result?.map((item) =>
+                [
+                  {
+                    text: item.rawMaterialName || "N/A",
+                    alignment: "center",
+                    style: "dataStyle",
+                  },
+                  {
+                    text: item.totalQty?.toString() || "0",
+                    alignment: "center",
+                    style: "dataStyle",
+                  },
+                  {
+                    text: `${item.rate?.toFixed(2) || "0.00"} ${
+                      item.unit || ""
+                    }`,
+                    alignment: "center",
+                    style: "dataStyle",
+                  },
+                  {
+                    text: item.totalPrice?.toFixed(2) || "0.00",
+                    alignment: "center",
+                    style: "dataStyle",
+                  },
+                ].map((text) => ({ text, alignment: "center" }))
+              ),
+            ],
+          },
+          // Use predefined border styles
+        },
+
+        {
+          table: {
+            widths: ["*", "*", "*", "*"],
+            body: [
+              [
+                { text: "Grand Total", bold: true, alignment: "center" },
+                data.result?.reduce(
+                  (acc: number, item: any) => acc + item.totalQty,
+                  0
+                ),
+                data.result?.reduce(
+                  (acc: number, item: any) => acc + item.rate,
+                  0
+                ),
+                data.result?.reduce(
+                  (acc: number, item: any) => acc + item.totalPrice,
+                  0
+                ),
+              ].map((text) => ({ text, alignment: "center" })),
+            ],
+          },
+          margin: [0, 10, 0, 0],
+        },
+      ],
+      styles: {
+        headerStyle: {
+          fontSize: 14,
+          color: "black",
+          bold: true,
+        },
+        dataStyle: {
+          fontSize: 12,
+          color: "black",
+        },
+        grandTotalStyle: {
+          fontSize: 14,
+          color: "red",
+          bold: true,
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-          <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-            <Image
-              src={comapnyInfo?.data?.photoUrl}
-              alt="Header"
-              width={50}
-              height={50}
-            />{" "}
-            <p>{comapnyInfo?.data?.name}</p>
-          </div>
-          <p>{comapnyInfo?.data?.address}</p>
-          <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
-          <p className="italic text-red-600 text-center mb-5 font-semibold">
-            Investigation Income Statement : Between{" "}
-            {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-            {endDate ? formatDateString(endDate) : "N/A"}
-          </p>
-        </div> */}
+      {data?.result?.length > 0 && (
+        <ReporetHeader
+          data={data}
+          name="Raw Materials Consumption"
+          startDate={startDate}
+          endDate={endDate}
+        />
+      )}
+      {createPrintButton(generatePDF)}
 
       <div className="w-full">
         <div className="grid grid-cols-4 bg-gray-100 font-semibold text-center p-2">
@@ -53,8 +194,8 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         </div>
         {isLoading ? (
           <Loader />
-        ) : data?.length > 0 ? (
-          data?.map((record, recordIndex) => (
+        ) : data?.result?.length > 0 ? (
+          data?.result?.map((record, recordIndex) => (
             <div
               key={recordIndex}
               className="grid grid-cols-4 text-center p-2 border-b"
@@ -77,12 +218,23 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         <div className="grid grid-cols-4 text-center font-semibold text-lg p-2 ">
           <p className="text-violet-700">Grand Total</p>
           <p>
-            {data.reduce((acc: number, item: any) => acc + item.totalQty, 0)}
+            {data.result?.reduce(
+              (acc: number, item: any) => acc + item.totalQty,
+              0
+            )}
           </p>
 
-          <p>{data.reduce((acc: number, item: any) => acc + item.rate, 0)}</p>
           <p>
-            {data.reduce((acc: number, item: any) => acc + item.totalPrice, 0)}
+            {data.result?.reduce(
+              (acc: number, item: any) => acc + item.rate,
+              0
+            )}
+          </p>
+          <p>
+            {data.result?.reduce(
+              (acc: number, item: any) => acc + item.totalPrice,
+              0
+            )}
           </p>
         </div>
       </div>

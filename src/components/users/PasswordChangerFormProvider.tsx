@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ENUM_MODE } from "@/enums/EnumMode";
 import { ENUM_USER } from "@/enums/EnumUser";
 import { useSession } from "next-auth/react";

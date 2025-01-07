@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import Image from "next/image";
+import { formatDate } from "@/utils/formateDate";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
 import React from "react";
+import { TBranch } from "./DailySalesSummeryTable";
+import ReporetHeader from "@/utils/ReporetHeader";
 
 type TPaymentGroup = {
   paymentType: string;
@@ -34,7 +39,10 @@ type TGroup = {
 };
 
 type TDailySalesSummery = {
-  data: TGroup[];
+  data: {
+    branchInfo: TBranch;
+    result: TGroup[];
+  };
   startDate: Date | null;
   endDate: Date | null;
 };
@@ -44,26 +52,160 @@ const DailySalesTable: React.FC<TDailySalesSummery> = ({
   startDate,
   endDate,
 }) => {
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "landscape",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+        {
+          text: `${data?.branchInfo?.address1}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          style: "subheader",
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+        {
+          text: `Daily Sales Report: ${
+            formattedStartDate === formattedEndDate
+              ? formattedStartDate
+              : `from ${formattedStartDate} to ${formattedEndDate}`
+          }`,
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        ...data?.result?.map((group) => [
+          {
+            text: `Group Date: ${group.groupDate}`,
+            style: "subheader",
+            margin: [0, 10, 0, 5],
+          },
+          ...group.paymentGroups.map((paymentGroup) => [
+            {
+              text: `Payment Type: ${paymentGroup.paymentType}`,
+              style: "subheader",
+              margin: [0, 10, 0, 5],
+              color: paymentGroup?.paymentType === "Due" ? "red" : "green",
+            },
+            ...paymentGroup.timePeriods.map((timePeriod) => [
+              {
+                text: `Time Period: ${timePeriod.timePeriod}`,
+                style: "subheader",
+                margin: [0, 10, 0, 5],
+                background: "#eeeeee",
+              },
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ["*", "*", "*", "*", "*", "*", "*", "*", "*", "*"],
+                  body: [
+                    [
+                      { text: "Bill No", bold: true, alignment: "center" },
+                      { text: "Table", bold: true, alignment: "center" },
+                      { text: "Guest", bold: true, alignment: "center" },
+                      { text: "Payment Mode", bold: true, alignment: "center" },
+                      { text: "Total Bill", bold: true, alignment: "center" },
+                      { text: "Total VAT", bold: true, alignment: "center" },
+                      {
+                        text: "Service Charges",
+                        bold: true,
+                        alignment: "center",
+                      },
+                      { text: "Discount", bold: true, alignment: "center" },
+                      {
+                        text: "Partial Payment",
+                        bold: true,
+                        alignment: "center",
+                      },
+                      { text: "Net Payable", bold: true, alignment: "center" },
+                    ],
+                    ...timePeriod.records.map((record) => [
+                      { text: record.billNo || "N/A", alignment: "center" },
+                      { text: record.table || "N/A", alignment: "center" },
+                      { text: record.guest || 0, alignment: "center" },
+                      { text: record.pMode || "N/A", alignment: "center" },
+                      { text: record.totalBill || 0, alignment: "center" },
+                      {
+                        text: record.totalVat?.toFixed(2) || "0.00",
+                        alignment: "center",
+                      },
+                      { text: record.tSChargse || 0, alignment: "center" },
+                      { text: record.discount || 0, alignment: "center" },
+                      { text: record.pPayment || 0, alignment: "center" },
+                      {
+                        text: record.metPayable?.toFixed(2) || "0.00",
+                        alignment: "center",
+                      },
+                    ]),
+                  ],
+                },
+                margin: [0, 5, 0, 5],
+              },
+            ]),
+          ]),
+        ]),
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          italics: true,
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: "#eeeeee",
+          alignment: "center",
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-        <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-          <Image
-            src={comapnyInfo?.data?.photoUrl}
-            alt="Header"
-            width={50}
-            height={50}
-          />{" "}
-          <p>{comapnyInfo?.data?.name}</p>
-        </div>
-        <p>{comapnyInfo?.data?.address}</p>
-        <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
-        <p className="italic text-red-600 text-center mb-5 font-semibold">
-          Investigation Income Statement : Between{" "}
-          {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-          {endDate ? formatDateString(endDate) : "N/A"}
-        </p>
-      </div> */}
+      <ReporetHeader
+        data={data}
+        name="Daily Sales Report "
+        startDate={startDate}
+        endDate={endDate}
+      />
+
+      <div className="flex justify-end">
+        <button
+          onClick={generatePDF}
+          className="bg-blue-600 w-28 px-3 py-2 rounded-md text-white font-semibold my-4 "
+        >
+          Print
+        </button>
+      </div>
 
       <div className="w-full">
         <div className="grid grid-cols-10 bg-gray-100 font-semibold text-center p-2">
@@ -78,8 +220,8 @@ const DailySalesTable: React.FC<TDailySalesSummery> = ({
           <div>P Payment</div>
           <div>Net Payable</div>
         </div>
-        {data?.length > 0 ? (
-          data.map((group, groupIndex) => (
+        {data?.result?.length > 0 ? (
+          data.result?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
               {/* Group Date Row */}
               <div className="text-lg font-semibold p-2 mb-2">
@@ -142,13 +284,6 @@ const DailySalesTable: React.FC<TDailySalesSummery> = ({
           <p className="text-center mt-10 text-xl">No Data Found</p>
         )}
       </div>
-
-      {/* <button
-        onClick={generatePDF}
-        className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-      >
-        Print
-      </button> */}
     </div>
   );
 };
