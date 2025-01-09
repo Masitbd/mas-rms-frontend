@@ -92,6 +92,25 @@ const order = baseApi.injectEndpoints({
         "active-table-list-details",
       ],
     }),
+    dueCollection: build.mutation({
+      query: (data: {
+        id: string;
+        data: { amount: number; method: string; remark?: string };
+      }) => ({
+        url: `/order/due-collection/${data.id}`,
+        method: "PATCH",
+        body: data.data,
+        data: data.data,
+      }),
+      invalidatesTags: ["order", "single-order", "due-collection-history"],
+    }),
+    getDueCollectionHistory: build.query({
+      query: (data: { id: string }) => ({
+        url: `/order/due-collection/${data.id}`,
+        method: "GET",
+      }),
+      providesTags: ["order", "due-collection-history"],
+    }),
   }),
 });
 
@@ -105,6 +124,8 @@ export const {
   useUpdateOrderMutation,
   useStatusChangerMutation,
   useLazyGetSIngleOrderWithDetailsQuery,
+  useDueCollectionMutation,
+  useGetDueCollectionHistoryQuery,
 } = order;
 
 export type IStatusChanger = ReturnType<typeof useStatusChangerMutation>[0];

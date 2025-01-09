@@ -1,6 +1,8 @@
+import { ENUM_MODE } from "@/enums/EnumMode";
+import { ENUM_USER } from "@/enums/EnumUser";
 import { useAppDispatch } from "@/lib/hooks";
 import { IStatusChanger } from "@/redux/api/order/orderSlice";
-import { updateBillDetails } from "@/redux/features/order/orderSlice";
+import { IOrder, updateBillDetails } from "@/redux/features/order/orderSlice";
 import { AppDispatch } from "@/redux/store";
 import Swal from "sweetalert2";
 export const changeOrderStatus = async (
@@ -36,4 +38,20 @@ export const changeOrderStatus = async (
   } catch (err) {
     Swal.fire("Error", (err ?? "Failed to change status") as string, "error");
   }
+};
+
+export const isDueCollectionButtonVisible = (
+  mode: ENUM_MODE,
+  userRole: ENUM_USER,
+  order: IOrder
+) => {
+  if (mode == ENUM_MODE.UPDATE && userRole == ENUM_USER.ADMIN) {
+    return true;
+  }
+
+  if (mode == ENUM_MODE.UPDATE && order?.branch) {
+    if (userRole !== ENUM_USER.USER) return true;
+  }
+
+  return false;
 };

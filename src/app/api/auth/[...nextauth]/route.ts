@@ -35,12 +35,12 @@ async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
       });
 
     const accessToken: BackendAccessJWT = await res.data?.data?.accessToken;
-
     const { exp }: DecodedJWT = jwtDecode(accessToken as unknown as string);
 
     // Update the token and validity in the next-auth cookie
     nextAuthJWTCookie.data.validity.valid_until = exp;
-    nextAuthJWTCookie.data.tokens.accessToken = accessToken.accessToken;
+    nextAuthJWTCookie.data.tokens.accessToken =
+      accessToken as unknown as string;
 
     return nextAuthJWTCookie;
   } catch (error) {
@@ -134,6 +134,14 @@ const handler = NextAuth({
         return { ...token, data: user };
       }
 
+      if (
+        token?.data?.tokens?.refreshToken &&
+        !token.data?.tokens?.accessToken &&
+        Date.now() < token.data.validity.refresh_until * 1000
+      ) {
+        console.debug("Access token is being refreshed");
+        return await refreshAccessToken(token);
+      }
       // The current access token is still valid
       if (Date.now() < token.data.validity.valid_until * 1000) {
         console.debug("Access token is still valid");
