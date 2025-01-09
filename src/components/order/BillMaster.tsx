@@ -28,6 +28,9 @@ import { ENUM_MODE } from "@/enums/EnumMode";
 import CheckIcon from "@rsuite/icons/Check";
 import { changeOrderStatus } from "./OrderHelpers";
 import { TDocumentDefinitions } from "pdfmake/interfaces";
+import DueCollecton from "./DueCollecton";
+import DueCollection from "./DueCollecton";
+import { ENUM_USER } from "@/enums/EnumUser";
 
 pdfMake.vfs = pdfFonts as unknown as { [file: string]: string };
 
@@ -122,327 +125,349 @@ const BillMaster = (props: { mode: string }) => {
   const session = useSession();
 
   const handlePrint = async (id: string) => {
-    const Data = await getFullOrderData(id).unwrap();
-    const bill = Data?.data;
-    const numberToWord = new ToWords({
-      localeCode: "en-BD",
-      converterOptions: {
-        currency: true,
-        ignoreDecimal: false,
-        ignoreZeroCurrency: false,
-        doNotAddOnly: false,
-      },
-    });
-    const doc = {
-      pageSize: { width: 227, height: "auto" }, // Credit card size in mm
-      pageMargins: [2, 2, 2, 2], // Very small margins
-      content: [
-        {
-          text: bill?.branch?.name,
-          style: "header",
+    try {
+      // Changing status
+      const result = await changeStatus({
+        id: id,
+        data: { status: "posted" },
+      }).unwrap();
+      if (result?.success) {
+        if (result?.data) {
+          dispatch(updateBillDetails(result?.data));
+        }
+      }
+
+      // Generating pdf data
+
+      const Data = await getFullOrderData(id).unwrap();
+      const bill = Data?.data;
+      const numberToWord = new ToWords({
+        localeCode: "en-BD",
+        converterOptions: {
+          currency: true,
+          ignoreDecimal: false,
+          ignoreZeroCurrency: false,
+          doNotAddOnly: false,
         },
-        {
-          text: bill?.branch?.address1,
-          style: "subHeader",
-        },
-        {
-          text: bill?.branch?.address2,
-          style: "subHeader",
-        },
-        {
-          text: `Helpline: ${bill?.branch?.phone}`,
-          style: "subHeader",
-        },
-        {
-          table: {
-            widths: ["*"],
-            heights: [1],
-            body: [
-              [
-                {
-                  text: "   Customer Copy   ",
-                  border: [false, false, false, true],
-                  fillColor: "#eeeeee",
-                  style: { alignment: "center", fontSize: 10, bold: "true" },
-                },
+      });
+      const doc = {
+        pageSize: { width: 227, height: "auto" }, // Credit card size in mm
+        pageMargins: [2, 2, 2, 2], // Very small margins
+        content: [
+          {
+            text: bill?.branch?.name,
+            style: "header",
+          },
+          {
+            text: bill?.branch?.address1,
+            style: "subHeader",
+          },
+          {
+            text: bill?.branch?.address2,
+            style: "subHeader",
+          },
+          {
+            text: `Helpline: ${bill?.branch?.phone}`,
+            style: "subHeader",
+          },
+          {
+            table: {
+              widths: ["*"],
+              heights: [1],
+              body: [
+                [
+                  {
+                    text: "   Customer Copy   ",
+                    border: [false, false, false, true],
+                    fillColor: "#eeeeee",
+                    style: { alignment: "center", fontSize: 10, bold: "true" },
+                  },
+                ],
               ],
+            },
+            margin: [0, 2],
+          },
+
+          {
+            columns: [
+              {
+                stack: [
+                  {
+                    text: [
+                      { text: "Vat Reg: ", bold: true },
+                      bill?.branch?.vatNo,
+                    ],
+                    style: "infoText",
+                  },
+                  {
+                    text: [{ text: "Bill No.: ", bold: true }, bill.billNo],
+                    style: "infoText",
+                  },
+                  {
+                    text: [
+                      { text: "Table Name:", bold: true },
+                      bill?.tableName?.name,
+                    ],
+                    style: "infoText",
+                  },
+                  {
+                    text: [
+                      { text: "waiter Name ", bold: true },
+                      bill?.waiter?.name,
+                    ],
+                    style: "infoText",
+                  },
+
+                  {
+                    text: [
+                      { text: "Guest Name: ", bold: true },
+                      bill?.customer?.name,
+                    ],
+                    style: "infoText",
+                  },
+                ],
+                width: "60%",
+              },
+              {
+                stack: [
+                  {
+                    text: [
+                      { text: "Bill Date: ", bold: true },
+                      new Date(bill.date).toLocaleDateString(),
+                    ],
+                    style: "infoText",
+                  },
+                  {
+                    text: [
+                      { text: "Bill Time: ", bold: true },
+                      new Date(bill.date).toLocaleTimeString(),
+                    ],
+                    style: "infoText",
+                  },
+                  {
+                    text: [{ text: "Guest: ", bold: true }, bill.guest],
+                    style: "infoText",
+                  },
+                ],
+                width: "40%",
+                alignment: "center",
+              },
             ],
           },
-          margin: [0, 2],
-        },
-
-        {
-          columns: [
-            {
-              stack: [
-                {
-                  text: [
-                    { text: "Vat Reg: ", bold: true },
-                    bill?.branch?.vatNo,
-                  ],
-                  style: "infoText",
-                },
-                {
-                  text: [{ text: "Bill No.: ", bold: true }, bill.billNo],
-                  style: "infoText",
-                },
-                {
-                  text: [
-                    { text: "Table Name:", bold: true },
-                    bill?.tableName?.name,
-                  ],
-                  style: "infoText",
-                },
-                {
-                  text: [
-                    { text: "waiter Name ", bold: true },
-                    bill?.waiter?.name,
-                  ],
-                  style: "infoText",
-                },
-
-                {
-                  text: [
-                    { text: "Guest Name: ", bold: true },
-                    bill?.customer?.name,
-                  ],
-                  style: "infoText",
-                },
+          {
+            table: {
+              widths: [100, 20, 20, 30],
+              headerRows: 1,
+              body: [
+                [
+                  { text: "Item Name", bold: true },
+                  { text: "Qty", bold: true },
+                  { text: "Rate", bold: true },
+                  { text: "Amount", bold: true },
+                ],
+                ...(bill?.items?.map((item: any) => {
+                  return [
+                    { text: item?.item?.itemName },
+                    { text: item?.qty },
+                    { text: item?.rate },
+                    {
+                      text: parseFloat((item?.rate * item?.qty).toFixed(2)),
+                    },
+                  ];
+                }) as []),
               ],
-              width: "60%",
             },
-            {
-              stack: [
-                {
-                  text: [
-                    { text: "Bill Date: ", bold: true },
-                    new Date(bill.date).toLocaleDateString(),
-                  ],
-                  style: "infoText",
-                },
-                {
-                  text: [
-                    { text: "Bill Time: ", bold: true },
-                    new Date(bill.date).toLocaleTimeString(),
-                  ],
-                  style: "infoText",
-                },
-                {
-                  text: [{ text: "Guest: ", bold: true }, bill.guest],
-                  style: "infoText",
-                },
+            style: "infoText",
+            layout: "headerLineOnly",
+          },
+          {
+            table: {
+              widths: ["*"],
+              body: [
+                [
+                  {
+                    text: "",
+                    border: [false, false, false, true],
+                    style: { alignment: "center", fontSize: 10, bold: "true" },
+                  },
+                ],
               ],
-              width: "40%",
+            },
+            margin: [0, 2],
+          },
+          {
+            columns: [
+              {
+                stack: [
+                  {
+                    text: [{ text: "Food Amount: " }],
+                    style: "infoText",
+                  },
+                  {
+                    text: [{ text: "Total Discount: " }],
+                    style: "infoText",
+                  },
+                  {
+                    text: [{ text: `Vat(${bill?.vat}):` }],
+                    style: "infoText",
+                  },
+                  {
+                    text: [
+                      { text: `Service Charge(${bill?.serviceChargeRate}):` },
+                    ],
+                    style: "infoText",
+                  },
+                ],
+                width: "50%",
+                alignment: "right",
+              },
+              {
+                stack: [
+                  {
+                    text: [{ text: bill?.totalBill, bold: true }],
+                    style: "infoText",
+                  },
+                  {
+                    text: [{ text: bill?.totalDiscount }],
+                    style: "infoText",
+                  },
+                  {
+                    text: [{ text: bill?.totalVat }],
+                    style: "infoText",
+                  },
+                  {
+                    text: [{ text: bill?.serviceCharge }],
+                    style: "infoText",
+                  },
+                ],
+                width: "40%",
+                alignment: "right",
+              },
+            ],
+          },
+          {
+            table: {
+              widths: ["*"],
+              body: [
+                [
+                  {
+                    text: "",
+                    border: [false, false, false, true],
+                    style: { alignment: "center", fontSize: 10, bold: "true" },
+                  },
+                ],
+              ],
+            },
+            margin: [0, 2],
+          },
+          {
+            columns: [
+              {
+                stack: [
+                  {
+                    text: [{ text: "Net Payable: " }],
+                    style: "infoText",
+                  },
+                ],
+                width: "50%",
+                alignment: "right",
+              },
+              {
+                stack: [
+                  {
+                    text: [{ text: bill?.netPayable, bold: true }],
+                    style: "infoText",
+                  },
+                ],
+                width: "40%",
+                alignment: "right",
+              },
+            ],
+          },
+
+          {
+            text: numberToWord.convert(bill.netPayable),
+            style: {
+              fontSize: 8,
+              bold: true,
               alignment: "center",
             },
-          ],
-        },
-        {
-          table: {
-            widths: [100, 20, 20, 30],
-            headerRows: 1,
-            body: [
-              [
-                { text: "Item Name", bold: true },
-                { text: "Qty", bold: true },
-                { text: "Rate", bold: true },
-                { text: "Amount", bold: true },
-              ],
-              ...(bill?.items?.map((item: any) => {
-                return [
-                  { text: item?.item?.itemName },
-                  { text: item?.qty },
-                  { text: item?.rate },
+          },
+          {
+            columns: [
+              {
+                stack: [
                   {
-                    text: parseFloat((item?.rate * item?.qty).toFixed(2)),
+                    text: [{ text: new Date().toLocaleTimeString() }],
+                    style: "infoText",
                   },
-                ];
-              }) as []),
+                ],
+                width: "50%",
+                alignment: "left",
+              },
+              {
+                stack: [
+                  {
+                    text: [{ text: session?.data?.user?.name, bold: true }],
+                    style: "infoText",
+                  },
+                ],
+                width: "40%",
+                alignment: "right",
+              },
             ],
           },
-          style: "infoText",
-          layout: "headerLineOnly",
-        },
-        {
-          table: {
-            widths: ["*"],
-            body: [
-              [
-                {
-                  text: "",
-                  border: [false, false, false, true],
-                  style: { alignment: "center", fontSize: 10, bold: "true" },
-                },
+          {
+            table: {
+              widths: ["*"],
+              heights: [1],
+              body: [
+                [
+                  {
+                    text: "Thank you for coming!",
+                    border: [false, false, false, false],
+                    fillColor: "#eeeeee",
+                    style: { alignment: "center", fontSize: 9, bold: "true" },
+                  },
+                ],
               ],
-            ],
+            },
+            margin: [0, 2],
           },
-          margin: [0, 2],
-        },
-        {
-          columns: [
-            {
-              stack: [
-                {
-                  text: [{ text: "Food Amount: " }],
-                  style: "infoText",
-                },
-                {
-                  text: [{ text: "Total Discount: " }],
-                  style: "infoText",
-                },
-                {
-                  text: [{ text: `Vat(${bill?.vat}):` }],
-                  style: "infoText",
-                },
-                {
-                  text: [
-                    { text: `Service Charge(${bill?.serviceChargeRate}):` },
-                  ],
-                  style: "infoText",
-                },
-              ],
-              width: "50%",
-              alignment: "right",
-            },
-            {
-              stack: [
-                {
-                  text: [{ text: bill?.totalBill, bold: true }],
-                  style: "infoText",
-                },
-                {
-                  text: [{ text: bill?.totalDiscount }],
-                  style: "infoText",
-                },
-                {
-                  text: [{ text: bill?.totalVat }],
-                  style: "infoText",
-                },
-                {
-                  text: [{ text: bill?.serviceCharge }],
-                  style: "infoText",
-                },
-              ],
-              width: "40%",
-              alignment: "right",
-            },
-          ],
-        },
-        {
-          table: {
-            widths: ["*"],
-            body: [
-              [
-                {
-                  text: "",
-                  border: [false, false, false, true],
-                  style: { alignment: "center", fontSize: 10, bold: "true" },
-                },
-              ],
-            ],
-          },
-          margin: [0, 2],
-        },
-        {
-          columns: [
-            {
-              stack: [
-                {
-                  text: [{ text: "Net Payable: " }],
-                  style: "infoText",
-                },
-              ],
-              width: "50%",
-              alignment: "right",
-            },
-            {
-              stack: [
-                {
-                  text: [{ text: bill?.netPayable, bold: true }],
-                  style: "infoText",
-                },
-              ],
-              width: "40%",
-              alignment: "right",
-            },
-          ],
-        },
 
-        {
-          text: numberToWord.convert(bill.netPayable),
-          style: {
+          {
+            text: "Developed By Mass It  Sollutions",
+            style: {
+              fontSize: 7,
+              bold: true,
+              alignment: "center",
+            },
+          },
+        ],
+        styles: {
+          infoText: { fontSize: 8, margin: [0, 1, 0, 1] }, // Smaller font and tighter spacing
+          barcodeText: { fontSize: 4, bold: true }, // Reduced barcode font size
+          header: {
+            bold: true,
+            alignment: "center",
+            fontSize: 18,
+          },
+          subHeader: {
+            alignment: "center",
             fontSize: 8,
-            bold: true,
-            alignment: "center",
           },
         },
-        {
-          columns: [
-            {
-              stack: [
-                {
-                  text: [{ text: new Date().toLocaleTimeString() }],
-                  style: "infoText",
-                },
-              ],
-              width: "50%",
-              alignment: "left",
-            },
-            {
-              stack: [
-                {
-                  text: [{ text: session?.data?.user?.name, bold: true }],
-                  style: "infoText",
-                },
-              ],
-              width: "40%",
-              alignment: "right",
-            },
-          ],
-        },
-        {
-          table: {
-            widths: ["*"],
-            heights: [1],
-            body: [
-              [
-                {
-                  text: "Thank you for coming!",
-                  border: [false, false, false, false],
-                  fillColor: "#eeeeee",
-                  style: { alignment: "center", fontSize: 9, bold: "true" },
-                },
-              ],
-            ],
-          },
-          margin: [0, 2],
-        },
+      };
 
-        {
-          text: "Developed By Mass It  Sollutions",
-          style: {
-            fontSize: 7,
-            bold: true,
-            alignment: "center",
-          },
-        },
-      ],
-      styles: {
-        infoText: { fontSize: 8, margin: [0, 1, 0, 1] }, // Smaller font and tighter spacing
-        barcodeText: { fontSize: 4, bold: true }, // Reduced barcode font size
-        header: {
-          bold: true,
-          alignment: "center",
-          fontSize: 18,
-        },
-        subHeader: {
-          alignment: "center",
-          fontSize: 8,
-        },
-      },
-    };
-
-    pdfMake.createPdf(doc as unknown as TDocumentDefinitions).print();
+      pdfMake.createPdf(doc as unknown as TDocumentDefinitions).print();
+    } catch (error) {
+      console.error("Error generating PDF", error);
+      toaster.push(
+        <Message type="error">
+          {(error ?? "something went wrong") as string}
+        </Message>
+      );
+    }
   };
 
   return (
@@ -607,7 +632,10 @@ const BillMaster = (props: { mode: string }) => {
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("save")}
               loading={orderPostLoading || orderUpdateLoading}
-              disabled={bill?.status == "posted"}
+              disabled={
+                bill?.status == "posted" &&
+                session?.data?.user.role !== ENUM_USER.ADMIN
+              }
             >
               {props?.mode == ENUM_MODE.NEW ? "Save" : "Update"}
             </Button>
@@ -617,7 +645,10 @@ const BillMaster = (props: { mode: string }) => {
               appearance="primary"
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("save&print")}
-              disabled={bill?.status == "posted"}
+              disabled={
+                bill?.status == "posted" &&
+                session?.data?.user.role !== ENUM_USER.ADMIN
+              }
             >
               {props?.mode == ENUM_MODE.NEW ? "Save & Print" : "Update & Print"}
             </Button>
@@ -626,7 +657,10 @@ const BillMaster = (props: { mode: string }) => {
               appearance="primary"
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("exit")}
-              disabled={bill?.status == "posted"}
+              disabled={
+                bill?.status == "posted" &&
+                session?.data?.user.role !== ENUM_USER.ADMIN
+              }
               loading={orderPostLoading || orderUpdateLoading}
             >
               {props?.mode == ENUM_MODE.NEW ? "Save & Exit" : "Update & Exit"}
@@ -638,7 +672,10 @@ const BillMaster = (props: { mode: string }) => {
               endIcon={<FontAwesomeIcon icon={faPrint} />}
               children={"Print"}
               onClick={() => handlePrint(bill?._id as string)}
-              disabled={bill?.status == "posted"}
+              disabled={
+                bill?.status == "posted" &&
+                session?.data?.user.role !== ENUM_USER.ADMIN
+              }
               loading={orderPostLoading || orderUpdateLoading}
             />
 
@@ -659,8 +696,12 @@ const BillMaster = (props: { mode: string }) => {
               loading={
                 changeStatusLoading || orderUpdateLoading || orderPostLoading
               }
-              disabled={bill?.status == "posted"}
+              disabled={
+                bill?.status == "posted" &&
+                session?.data?.user.role !== ENUM_USER.ADMIN
+              }
             />
+            <DueCollection mode={props.mode as ENUM_MODE} order={bill} />
 
             <Button
               color="red"

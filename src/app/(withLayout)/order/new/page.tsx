@@ -9,11 +9,15 @@ import Items from "@/components/order/Items";
 import { ENUM_MODE } from "@/enums/EnumMode";
 import { useLazyGetOrderDataForPatchQuery } from "@/redux/api/order/orderSlice";
 import Loading from "@/app/Loading";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   resetBill,
   updateBillDetails,
 } from "@/redux/features/order/orderSlice";
+import DueCollectionTable from "@/components/order/DueCollectionTable";
+import { isDueCollectionButtonVisible } from "@/components/order/OrderHelpers";
+import { useSession } from "next-auth/react";
+import { ENUM_USER } from "@/enums/EnumUser";
 export type PageProps = {
   searchParams: { id: string; mode: ENUM_MODE };
 };
@@ -25,8 +29,13 @@ const NewOrder = (props: PageProps) => {
   ] = useLazyGetOrderDataForPatchQuery();
 
   const mode = props?.searchParams?.mode ?? ENUM_MODE.NEW;
+  const user = useSession();
+  const bill = useAppSelector((state) => state.order);
 
   const [loading, setLoading] = useState(false);
+
+  const [dueVisible, setDueVisible] = useState(false);
+
   useEffect(() => {
     if (mode == ENUM_MODE.UPDATE) {
       setLoading(true);
@@ -35,6 +44,11 @@ const NewOrder = (props: PageProps) => {
           dispatch(
             updateBillDetails(JSON.parse(JSON.stringify(data?.data?.data)))
           );
+
+          // changing visibility state of the dew amounts
+          if (data?.data?.data?._id && mode == ENUM_MODE.UPDATE) {
+            setDueVisible(true);
+          }
         }
       });
       setLoading(false);
@@ -81,6 +95,11 @@ const NewOrder = (props: PageProps) => {
           <BillMaster mode={mode} />
         </div>
       </div>
+      {dueVisible && (
+        <div>
+          <DueCollectionTable mode={mode} />
+        </div>
+      )}
     </div>
   );
 };
