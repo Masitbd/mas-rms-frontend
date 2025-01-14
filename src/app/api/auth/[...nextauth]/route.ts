@@ -11,7 +11,7 @@ import NextAuth, {
 import type { JWT } from "next-auth/jwt";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import config from "@/app/config";
+import config from "@/config";
 
 async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
   try {

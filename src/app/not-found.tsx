@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import Image from "next/image";
-import notFound from "./assets//images/notFound.png";
+import notFound from "../assets/images/notFound.png";
 import { Button } from "rsuite";
 import { NavLink } from "@/components/layout/Navlink";
 

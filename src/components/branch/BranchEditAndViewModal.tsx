@@ -7,7 +7,7 @@ import { Form, Button, Loader, Modal, Checkbox } from "rsuite";
 import Swal from "sweetalert2";
 
 import { useUpdateBranchMutation } from "@/redux/api/branch/branch.api";
-import { FormBranchDataType } from "@/app/(withLayout)/branch/page";
+import { FormBranchDataType } from "@/app/(indoorLayout)/branch/page";
 
 type TEdittableProps = {
   data: any;

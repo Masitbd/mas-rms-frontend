@@ -12,7 +12,7 @@ import {
   FormDataType,
   TMenuGroupItem,
   TMenuGroupOption,
-} from "@/app/(withLayout)/items/page";
+} from "@/app/(indoorLayout)/items/page";
 import BranchFieldProvider from "../branch/BranchFieldProvider";
 
 type TEdittableProps = {

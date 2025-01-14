@@ -1,6 +1,6 @@
 "use client";
 
-import config from "@/app/config";
+import config from "@/config";
 import BranchTable from "@/components/branch/BranchTable";
 import {
   useCreateBranchMutation,

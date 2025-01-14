@@ -30,6 +30,7 @@
     "remove-undefined-objects": "^5.0.0",
     "rsuite": "^5.73.1",
     "sweetalert2": "^11.15.10",
+    "tailwind-scrollbar-hide": "^2.0.0",
     "to-words": "^4.2.0"
   },
   "devDependencies": {

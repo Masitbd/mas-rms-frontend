@@ -7,7 +7,7 @@ import { useUpdateTableListMutation } from "@/redux/api/table/table.api";
 import Swal from "sweetalert2";
 import { TTableData } from "./Table";
 import BranchFieldProvider from "../branch/BranchFieldProvider";
-import { TTableFormData } from "@/app/(withLayout)/table/page";
+import { TTableFormData } from "@/app/(indoorLayout)/table/page";
 import { TBranch } from "@/redux/features/order/orderSlice";
 
 type TEdittableProps = {
