@@ -90,7 +90,7 @@ export const MobileNavMenu = ({
           </Nav>
         </ResuiteNavber>
       </div>
-      <div className="overflow-x-scroll w-[98%] mx-auto  scrollbar-hide bg-[#f7f7fa]">
+      <div className="overflow-x-scroll  mx-auto  scrollbar-hide bg-[#f7f7fa]">
         <Nav
           appearance="pills"
           onSelect={

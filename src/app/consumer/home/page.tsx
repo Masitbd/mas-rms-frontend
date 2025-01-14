@@ -1,8 +1,10 @@
 import ALlCategories from "@/components/consumer-home/ALlCategories";
 import DiscountedItems from "@/components/consumer-home/DiscountedItems";
 import Hero from "@/components/consumer-home/Hero";
+import KnowMoreAboutUs from "@/components/consumer-home/KnowMoreAboutUs";
 import PopularCategories from "@/components/consumer-home/PopularCategories";
 import Reviews from "@/components/consumer-home/Reiviews";
+import StatSection from "@/components/consumer-home/StatSection";
 import React from "react";
 
 const HomePage = () => {
@@ -22,6 +24,12 @@ const HomePage = () => {
       </div>
       <div>
         <Reviews />
+      </div>
+      <div>
+        <KnowMoreAboutUs />
+      </div>
+      <div>
+        <StatSection />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import ReviewManBg from "../../assets/images/reviewSectionManBg.png";
 import ReviewMan from "../../assets/images/ReviewMan.png";
 import { Avatar, Carousel, Rate } from "rsuite";
 import reviewMan from "../../assets/images//ReviewMan.png";
+import "./Custom.css";
 
 const Reviews = async () => {
   const posts = await fetch(`https://jsonplaceholder.typicode.com/posts`).then(
@@ -13,7 +14,7 @@ const Reviews = async () => {
   return (
     <div className="my-32">
       <div className="grid grid-cols-12 gap-5">
-        <div className="col-span-6  min-h-[30rem] flex flex-col justify-end">
+        <div className="lg:col-span-6  min-h-[30rem]  flex-col justify-end lg:flex  hidden ">
           <Image
             src={ReviewMan}
             height={500}
@@ -24,7 +25,7 @@ const Reviews = async () => {
             <Image src={ReviewManBg} fill className="z-10" />
           </div>
         </div>
-        <div className="col-span-6 flex flex-col justify-end">
+        <div className="lg:col-span-6  col-span-12 flex flex-col justify-end px-2 lg:px-0">
           <h3 className="text-lg text-[#FC8A06] font-semibold ">
             What They Say
           </h3>

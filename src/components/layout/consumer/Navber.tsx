@@ -30,7 +30,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <div className="w-[100vw] fixed">
+      <div className="w-[100vw] fixed " style={{ zIndex: 99999999 }}>
         {isMobile ? (
           <MobileNavMenu
             activeKey={activeKey}

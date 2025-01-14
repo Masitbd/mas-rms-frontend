@@ -9,9 +9,7 @@ const ALlCategories = async () => {
 
   return (
     <div className="my-10 lg:my-20">
-      <div className="lg:text-4xl text-base font-bold px-4">
-        Our Popular Categories
-      </div>
+      <div className="lg:text-4xl text-base font-bold px-4">Our Categories</div>
       <div className=" overflow-y-scroll w-[98vw] lg:w-full  scrollbar-hide mt-5">
         {/* item size and width */}
         <div
@@ -20,7 +18,7 @@ const ALlCategories = async () => {
         >
           {posts.slice(0, 18).map((post, index) => (
             <div
-              className="w-[12rem] h-[14rem] lg:col-span-2 col-span-6 rounded-xl overflow-hidden border-[#dcdcdc] border"
+              className="lg:w-[12rem] w-[10rem] h-[14rem] lg:col-span-2 col-span-6 rounded-xl overflow-hidden border-[#dcdcdc] border"
               key={index}
             >
               <div className="relative h-[10rem] w-full">
