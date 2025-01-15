@@ -66,6 +66,11 @@ const MenuItemsCostingTable: React.FC<TMenuItemConsumptionProps> = ({
             ...group?.itemGroups?.map((itemGroup) => [
               // Item Group Header
               {
+                text: itemGroup.branch,
+                style: "itemGroupHeader",
+                margin: [0, 5, 0, 5],
+              },
+              {
                 text: itemGroup.itemGroup,
                 style: "itemGroupHeader",
                 margin: [0, 5, 0, 5],
@@ -265,6 +270,9 @@ const MenuItemsCostingTable: React.FC<TMenuItemConsumptionProps> = ({
               {group?.itemGroups?.map((orderItemGroup, paymentIndex) => (
                 <div key={paymentIndex} className="mb-4">
                   {/* Payment Type Header */}
+                  <div className="text-lg font-bold p-2 border-b text-teal-700">
+                    {orderItemGroup?.branch}
+                  </div>
                   <div className="text-lg font-bold p-2 border-b text-violet-700">
                     {orderItemGroup.itemGroup}
                   </div>

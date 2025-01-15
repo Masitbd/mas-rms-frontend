@@ -17,6 +17,7 @@ type TItemGroups = {
   grandTotalQty: number;
   grandTotalRate: number;
   items: TRecord[];
+  branchName: string;
 };
 
 type TRecord = {
@@ -46,6 +47,7 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
   endDate,
   isLoading,
 }) => {
+  console.log(data, "data slaes item");
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
@@ -107,6 +109,11 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
             {
               text: orderItemGroup?.itemGroup || "N/A",
               style: "itemGroupHeader",
+              margin: [0, 10, 0, 10],
+            },
+            {
+              text: orderItemGroup?.branchName || "N/A",
+              style: "itemGroupHeader2",
               margin: [0, 10, 0, 10],
             },
 
@@ -215,6 +222,12 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
           color: "violet",
           margin: [0, 10, 0, 5],
         },
+        itemGroupHeader2: {
+          fontSize: 14,
+          bold: true,
+          color: "blue",
+          margin: [0, 10, 0, 5],
+        },
       },
     };
 
@@ -249,11 +262,17 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
               <div className="text-lg font-semibold p-2 mb-2 bg-slate-200 mt-2 rounded-md">
                 {group.menuGroup}
               </div>
+              <div className="text-lg font-semibold p-2 mb-2 bg-slate-200 mt-2 rounded-md">
+                {group.menuGroup}
+              </div>
 
               {/* Payment Types */}
               {group?.itemGroups?.map((orderItemGroup, paymentIndex) => (
                 <div key={paymentIndex} className="mb-4">
                   {/* Payment Type Header */}
+                  <div className="text-lg font-bold p-2 border-b text-teal-700">
+                    {orderItemGroup?.branchName}
+                  </div>
                   <div className="text-lg font-bold p-2 border-b text-violet-700">
                     {orderItemGroup.itemGroup}
                   </div>

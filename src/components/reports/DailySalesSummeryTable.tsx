@@ -66,6 +66,8 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
   startDate,
   endDate,
 }) => {
+  console.log(data, "data");
+
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
