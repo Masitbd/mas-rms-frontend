@@ -46,13 +46,13 @@ const MenuItemsPage = () => {
   return (
     <div>
       <h2 className="text-center text-xl font-semibold mt-5 px-5 py-2 bg-blue-600 text-gray-100 w-full max-w-80 mx-auto rounded-xl">
-        Item Wise Sales Reports
+        Menu group Item
       </h2>
       <Form
         onChange={handleChange}
         onSubmit={handleSubmit}
         formValue={formValue}
-        className="grid grid-cols-4 gap-10 justify-center  w-full"
+        className="grid grid-cols-3 gap-10 justify-center  w-full"
       >
         {!session.data?.user?.branch && (
           <Form.Group controlId="branch">

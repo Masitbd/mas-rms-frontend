@@ -105,7 +105,7 @@ export const MobileNavMenu = ({
           <Nav.Item as={NavLink} href="/consumer/home" eventKey={"1"}>
             Home
           </Nav.Item>
-          <Nav.Item as={NavLink} href="/consumer/home" eventKey={"2"}>
+          <Nav.Item as={NavLink} href="/consumer/category" eventKey={"2"}>
             Browse Menu
           </Nav.Item>
           <Nav.Item as={NavLink} href="/consumer/home" eventKey={"3"}>

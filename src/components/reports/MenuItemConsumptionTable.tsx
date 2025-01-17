@@ -2,9 +2,16 @@
 "use client";
 
 import { Loader } from "rsuite";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { formatDate } from "@/utils/formateDate";
+import { TBranch } from "./DailySalesSummeryTable";
+import ReporetHeader from "@/utils/ReporetHeader";
+import { createPrintButton } from "@/utils/PrintButton";
 
 export type TMenuItemConsumptionGroups = {
   itemGroup: string;
+  branch: string;
   granTotalBill: number;
   grandTotalQty: number;
   grandTotalRate: number;
@@ -39,7 +46,10 @@ export type TGroup = {
 };
 
 export type TMenuItemConsumptionProps = {
-  data: TGroup[];
+  data: {
+    branchInfo: TBranch;
+    result: TGroup[];
+  };
 
   isLoading: boolean;
 };
@@ -48,26 +58,246 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
   data,
   isLoading,
 }) => {
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "landscape",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        // Header Section
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+        {
+          text: `${data?.branchInfo?.address1}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+        {
+          text: "Menu Item Consumption",
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        // Data Section
+        ...data?.result?.map((group) => {
+          const groupContent = [
+            // Menu Group Header
+            {
+              text: group.menuGroup,
+              style: "groupHeader",
+              margin: [0, 10, 0, 5],
+            },
+
+            // Item Groups
+            ...group?.itemGroups?.map((itemGroup) => [
+              // Item Group Header
+              {
+                text: itemGroup?.branch,
+                style: "itemGroupHeader2",
+                margin: [0, 5, 0, 5],
+              },
+              {
+                text: itemGroup.itemGroup,
+                style: "itemGroupHeader",
+                margin: [0, 5, 0, 5],
+              },
+
+              // Items
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ["*", "*", "*", "*"],
+                  body: [
+                    // Table Headers
+                    [
+                      { text: "Code", style: "tableHeader" },
+                      { text: "Item Name", style: "tableHeader" },
+                      { text: "Rate", style: "tableHeader" },
+                      { text: "Cooking Time", style: "tableHeader" },
+                    ],
+                    // Items Rows
+                    ...itemGroup?.items?.map((item) => [
+                      item.code || "N/A",
+                      item.name,
+                      item.rate || 0,
+                      item.cookingTime || "N/A",
+                    ]),
+                  ],
+                },
+
+                margin: [0, 0, 0, 10],
+              },
+
+              // Consumptions
+              ...itemGroup?.items?.map((item) => {
+                if (!item.consumptions?.length) return null;
+                return [
+                  {
+                    text: `Consumptions for ${item.name}`,
+                    style: "consumptionHeader",
+                    margin: [0, 5, 0, 5],
+                  },
+                  {
+                    table: {
+                      widths: ["*", "*", "*"],
+                      body: [
+                        // Table Headers
+                        [
+                          { text: "Material Name", style: "tableHeader" },
+                          { text: "Rate", style: "tableHeader" },
+                          { text: "Base Unit", style: "tableHeader" },
+                        ],
+                        // Consumption Rows
+                        ...item.consumptions.map((consumption) => [
+                          consumption.materialName || "N/A",
+                          consumption.rate || 0,
+                          consumption.baseUnit || "N/A",
+                        ]),
+                      ],
+                    },
+                  },
+                ];
+              }),
+            ]),
+
+            // Menu Group Total Consumption
+            {
+              text: `${group.menuGroup}: ${group.menuGroupTotalConsumption}`,
+              style: "groupTotal",
+              alignment: "center",
+
+              margin: [0, 10, 0, 0],
+            },
+          ];
+
+          return groupContent;
+        }),
+
+        // Grand Total Section
+        {
+          table: {
+            widths: ["*", "*"],
+            body: [
+              ...data?.result?.map((item) => [
+                {
+                  text: item.menuGroup,
+                  alignment: "center",
+                  style: "menuGroupStyle",
+                },
+                {
+                  text: item.menuGroupTotalConsumption,
+                  alignment: "center",
+                  style: "consumptionStyle",
+                },
+              ]),
+              [
+                {
+                  text: "Grand Total:",
+                  alignment: "center",
+                  style: "grandTotalLabel",
+                },
+                {
+                  text: `${data?.result?.reduce(
+                    (acc, item) => acc + item.menuGroupTotalConsumption,
+                    0
+                  )}`,
+                  alignment: "center",
+                  style: "grandTotalValue",
+                },
+              ],
+            ],
+          },
+          layout: "noBorders",
+          margin: [0, 10, 0, 10],
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          italics: true,
+        },
+        groupHeader: {
+          fontSize: 16,
+          bold: true,
+        },
+        itemGroupHeader: {
+          fontSize: 14,
+          bold: true,
+        },
+        itemGroupHeader2: {
+          fontSize: 14,
+          bold: true,
+          color: "blue",
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: "#eeeeee",
+        },
+        consumptionHeader: {
+          italics: true,
+          margin: [0, 5, 0, 5],
+        },
+        groupTotal: {
+          bold: true,
+          color: "red",
+        },
+        grandTotalHeader: {
+          fontSize: 16,
+          bold: true,
+        },
+        grandTotalValue: {
+          fontSize: 16,
+          color: "green",
+        },
+        menuGroupStyle: {
+          color: "purple",
+          bold: true,
+          fontSize: 12,
+        },
+        consumptionStyle: {
+          color: "black",
+          fontSize: 12,
+        },
+        grandTotalLabel: {
+          color: "red",
+          bold: true,
+          fontSize: 14,
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-          <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-            <Image
-              src={comapnyInfo?.data?.photoUrl}
-              alt="Header"
-              width={50}
-              height={50}
-            />{" "}
-            <p>{comapnyInfo?.data?.name}</p>
-          </div>
-          <p>{comapnyInfo?.data?.address}</p>
-          <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
-          <p className="italic text-red-600 text-center mb-5 font-semibold">
-            Investigation Income Statement : Between{" "}
-            {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-            {endDate ? formatDateString(endDate) : "N/A"}
-          </p>
-        </div> */}
+      {data?.result?.length > 0 && (
+        <ReporetHeader data={data} name="Menu Item  consumption " />
+      )}
+      {createPrintButton(generatePDF)}
 
       <div className="w-full">
         <div className="grid grid-cols-4 bg-gray-100 font-semibold text-center p-2">
@@ -78,8 +308,8 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
         </div>
         {isLoading ? (
           <Loader />
-        ) : data?.length > 0 ? (
-          data?.map((group, groupIndex) => (
+        ) : data?.result?.length > 0 ? (
+          data?.result?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
               {/* Group Date Row */}
               <div className="text-lg font-semibold p-2 mb-2 bg-slate-200 mt-2 rounded-md">
@@ -90,6 +320,9 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
               {group?.itemGroups?.map((orderItemGroup, paymentIndex) => (
                 <div key={paymentIndex} className="mb-4">
                   {/* Payment Type Header */}
+                  <div className="text-lg font-bold p-2 border-b text-teal-700">
+                    {orderItemGroup.branch}
+                  </div>
                   <div className="text-lg font-bold p-2 border-b text-violet-700">
                     {orderItemGroup.itemGroup}
                   </div>
@@ -155,7 +388,7 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
       </div>
 
       <div className="border w-[500px] mx-auto mt-10">
-        {data?.map((item) => (
+        {data?.result?.map((item) => (
           <div
             key={item.menuGroup}
             className="grid grid-cols-2 justify-items-center  text-purple-700 font-semibold mx-auto py-2"
@@ -168,7 +401,7 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
         <div className="grid grid-cols-2 text-center text-lg border-t font-bold text-red-600">
           <p className="">GrandTotal:</p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { menuGroupTotalConsumption: any }) =>
                 acc + item.menuGroupTotalConsumption,
               0
@@ -176,13 +409,6 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
           </p>
         </div>
       </div>
-
-      {/* <button
-          onClick={generatePDF}
-          className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-        >
-          Print
-        </button> */}
     </div>
   );
 };

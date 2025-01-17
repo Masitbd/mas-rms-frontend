@@ -3,55 +3,178 @@
 import { Loader } from "rsuite";
 
 import React from "react";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { formatDate } from "@/utils/formateDate";
+import { TBranch } from "./DailySalesSummeryTable";
+import ReporetHeader from "@/utils/ReporetHeader";
+import { createPrintButton } from "@/utils/PrintButton";
 
 type TGroup = {
   totalAmount: number;
-  name: string;
+  waiterName: string;
+  branchName: string;
 };
 
 type TReportsTable = {
-  data: TGroup[];
+  data: {
+    branchInfo: TBranch;
+    result: TGroup[];
+  };
   isLoading: boolean;
   startDate: Date | null;
   endDate: Date | null;
 };
 
-const WaiterWiseSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
+const WaiterWiseSalesTable: React.FC<TReportsTable> = ({
+  data,
+  isLoading,
+  startDate,
+  endDate,
+}) => {
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "portrait",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        // Title
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+
+        {
+          text: `${data?.branchInfo?.address1}`,
+
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          style: "subheader",
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+
+        {
+          text: `Waiter Wise Sales Reports: ${
+            formattedStartDate === formattedEndDate
+              ? formattedStartDate
+              : `from ${formattedStartDate} to ${formattedEndDate}`
+          }`,
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        // Table Header
+        {
+          table: {
+            headerRows: 1,
+            widths: ["*", "*", "*"],
+            body: [
+              // Define the header row
+              [
+                { text: "Branch", bold: true, alignment: "center" },
+                { text: "Name", bold: true, alignment: "center" },
+                { text: "Total Amount", bold: true, alignment: "center" },
+              ],
+              // Define the data rows
+              ...data?.result?.map((paymentGroup) =>
+                [
+                  paymentGroup?.branchName || "N/A",
+                  paymentGroup?.waiterName || "N/A",
+                  paymentGroup?.totalAmount || 0,
+                ].map((text) => ({ text, alignment: "center" }))
+              ),
+            ],
+          },
+          // Use predefined border styles
+        },
+
+        // Total Summary
+        {
+          table: {
+            widths: ["*", "*"],
+            body: [
+              [
+                { text: "Grand Total", bold: true, alignment: "center" },
+                //
+                data?.result?.reduce(
+                  (acc: any, item: { totalAmount: any }) =>
+                    acc + item.totalAmount,
+                  0
+                ),
+              ].map((text) => ({ text, alignment: "center" })),
+            ],
+          },
+          margin: [0, 10, 0, 0],
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          italics: true,
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: "#eeeeee",
+          alignment: "center",
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-          <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-            <Image
-              src={comapnyInfo?.data?.photoUrl}
-              alt="Header"
-              width={50}
-              height={50}
-            />{" "}
-            <p>{comapnyInfo?.data?.name}</p>
-          </div>
-          <p>{comapnyInfo?.data?.address}</p>
-          <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
-          <p className="italic text-red-600 text-center mb-5 font-semibold">
-            Investigation Income Statement : Between{" "}
-            {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-            {endDate ? formatDateString(endDate) : "N/A"}
-          </p>
-        </div> */}
+      {data?.result?.length > 0 && (
+        <ReporetHeader
+          data={data}
+          name="Waiter Wise Sales Reports "
+          startDate={startDate}
+          endDate={endDate}
+        />
+      )}
+      {createPrintButton(generatePDF)}
 
       <div className="w-full">
-        <div className="grid grid-cols-2 bg-gray-100 font-semibold text-center p-2">
+        <div className="grid grid-cols-3 bg-gray-100 font-semibold text-center p-2">
+          <div>Branch</div>
           <div>Name</div>
           <div>Total Amount</div>
         </div>
         {isLoading ? (
           <Loader />
-        ) : data?.length > 0 ? (
-          data?.map((group, groupIndex) => (
+        ) : data?.result?.length > 0 ? (
+          data?.result?.map((group, groupIndex) => (
             <div
-              className="grid grid-cols-2 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
+              className="grid grid-cols-3 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
               key={groupIndex}
             >
-              <div>{group.name}</div>
+              <div>{group.branchName}</div>
+              <div>{group.waiterName}</div>
               <div>{group.totalAmount}</div>
             </div>
           ))
@@ -65,19 +188,13 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
         <div className="grid grid-cols-2 text-center text-lg border-t font-bold text-red-600">
           <p className="">GrandTotal:</p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { totalAmount: any }) => acc + item.totalAmount,
               0
             )}
           </p>
         </div>
       </div>
-      {/* <button
-          onClick={generatePDF}
-          className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-        >
-          Print
-        </button> */}
     </div>
   );
 };

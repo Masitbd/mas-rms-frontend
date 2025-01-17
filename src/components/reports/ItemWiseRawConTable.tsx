@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Loader } from "rsuite";
-import { TMenuItemConsumptionProps } from "./MenuItemConsumptionTable";
+
 import React from "react";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { formatDate } from "@/utils/formateDate";
+import ReporetHeader from "@/utils/ReporetHeader";
+import { createPrintButton } from "@/utils/PrintButton";
+import { TBranch } from "./DailySalesSummeryTable";
 
 export type TConsumption = {
   rawMaterialName: string;
@@ -11,19 +17,32 @@ export type TConsumption = {
   unit: string;
   totalQty: number;
   totalPrice: number;
+  itemCode?: string;
+  itemName?: string;
+  totalItemQty?: number;
+  totalAmount?: number;
 };
 
-type TGroup = {
+type TMaterials = {
   itemCode: string;
   itemName: string;
   itemRate: number;
+
   totalItemQty: number;
   totalAmount: number;
   consumptions: TConsumption[];
 };
 
+type TGroup = {
+  branch: string;
+  materials: TMaterials[];
+};
+
 type TItemWiseRawConProps = {
-  data: TGroup[];
+  data: {
+    branchInfo: TBranch;
+    result: TGroup[];
+  };
   isLoading: boolean;
   startDate: Date | null;
   endDate: Date | null;
@@ -35,27 +54,193 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
   startDate,
   endDate,
 }) => {
+  console.log(data, "data");
+
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "landscape",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        // Title and Branch Info
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+        {
+          text: `${data?.branchInfo?.address1}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          style: "subheader",
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+
+        {
+          text: `Item Wise Raw Consumption: ${
+            formattedStartDate === formattedEndDate
+              ? formattedStartDate
+              : `from ${formattedStartDate} to ${formattedEndDate}`
+          }`,
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        // Loop through each group (branch) and add its details
+        ...data?.result?.map((group) => [
+          // Branch info
+          {
+            text: `Branch: ${group?.branch}`,
+            style: "subheader",
+            alignment: "left",
+            margin: [0, 10, 0, 5],
+          },
+
+          // Table Header for Item Details
+          {
+            table: {
+              headerRows: 1,
+              widths: ["*", "*", "*", "*", "*"], // Adjust column widths
+              body: [
+                [
+                  { text: "Code", bold: true, alignment: "center" },
+                  { text: "Item Name", bold: true, alignment: "center" },
+                  { text: "QTY", bold: true, alignment: "center" },
+                  { text: "Rate/Unit", bold: true, alignment: "center" },
+                  { text: "Total Amount", bold: true, alignment: "center" },
+                ],
+                // Data rows for items in the current branch
+                ...group?.materials?.map((material) =>
+                  [
+                    material?.itemCode || "N/A",
+                    material?.itemName || "N/A",
+                    material?.totalItemQty || 0,
+                    material?.itemRate || "N/A",
+                    material?.totalItemQty * material?.itemRate || 0,
+                  ].map((text) => ({ text, alignment: "center" }))
+                ),
+              ],
+            },
+          },
+
+          // Materials section (materials & consumptions)
+          ...group?.materials?.map((material) => [
+            {
+              text: `Material: ${material?.itemName}`,
+              style: "subheader",
+              alignment: "left",
+              margin: [0, 10, 0, 5],
+            },
+            {
+              table: {
+                widths: ["*", "*", "*", "*"],
+                body: [
+                  [
+                    {
+                      text: "Consumption Qty",
+                      bold: true,
+                      alignment: "center",
+                    },
+                    {
+                      text: "Consumption Price",
+                      bold: true,
+                      alignment: "center",
+                    },
+                    { text: "Total Qty", bold: true, alignment: "center" },
+                    { text: "Total Price", bold: true, alignment: "center" },
+                  ],
+                  ...material?.consumptions?.map((consumption) =>
+                    [
+                      consumption?.totalQty || "N/A",
+                      consumption?.totalPrice || "N/A",
+                      consumption?.totalQty || "N/A",
+                      consumption?.totalPrice || "N/A",
+                    ].map((text) => ({ text, alignment: "center" }))
+                  ),
+                ],
+              },
+            },
+          ]),
+        ]),
+
+        // Grand Total Summary (same as before)
+        {
+          table: {
+            widths: [80, "*", 60, 60, 60],
+            body: [
+              [
+                { text: "Grand Total", bold: true, alignment: "center" },
+                data?.result?.reduce(
+                  (acc: any, group: any) =>
+                    acc +
+                    group?.materials?.reduce(
+                      (materialAcc: any, item: { totalItemQty: any }) =>
+                        materialAcc + item.totalItemQty,
+                      0
+                    ),
+                  0
+                ),
+                "",
+                "",
+                data?.result?.reduce(
+                  (acc: any, group: any) =>
+                    acc +
+                    group?.materials?.reduce(
+                      (materialAcc: any, item: { totalAmount: any }) =>
+                        materialAcc + item.totalAmount,
+                      0
+                    ),
+                  0
+                ),
+              ].map((text) => ({ text, alignment: "center" })),
+            ],
+          },
+          margin: [0, 10, 0, 0],
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          italics: true,
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-          <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-            <Image
-              src={comapnyInfo?.data?.photoUrl}
-              alt="Header"
-              width={50}
-              height={50}
-            />{" "}
-            <p>{comapnyInfo?.data?.name}</p>
-          </div>
-          <p>{comapnyInfo?.data?.address}</p>
-          <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
-          <p className="italic text-red-600 text-center mb-5 font-semibold">
-            Investigation Income Statement : Between{" "}
-            {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-            {endDate ? formatDateString(endDate) : "N/A"}
-          </p>
-        </div> */}
+      <ReporetHeader
+        data={data}
+        name="Item Wise Raw Consumption"
+        startDate={startDate}
+        endDate={endDate}
+      />
 
+      {createPrintButton(generatePDF)}
       <div className="w-full">
         <div className="grid grid-cols-5 bg-gray-100 font-semibold text-center p-2">
           <div>Code</div>
@@ -66,42 +251,55 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
         </div>
         {isLoading ? (
           <Loader />
-        ) : data?.length > 0 ? (
-          data?.map((group, groupIndex) => (
+        ) : data?.result?.length > 0 ? (
+          data?.result?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
-              <div className="grid grid-cols-5 text-center py-3 gap-4 border-b font-semibold text-blue-500">
-                <div>{group.itemCode}</div>
-                <div>{group.itemName}</div>
-                <div>{group.totalItemQty}</div>
-                <div>{group.itemRate}</div>
-                <div>{group.totalAmount}</div>
+              <div className="text-lg font-semibold p-2 mb-2 bg-slate-200 mt-2 rounded-md">
+                {group.branch}
               </div>
 
-              {/* Time Periods */}
-
-              {group?.consumptions?.length > 0 && (
-                <div className=" ">
-                  {group?.consumptions?.map((consumption, consumptionIndex) => (
-                    <div
-                      key={consumptionIndex}
-                      className="grid grid-cols-5 text-sm  border-b text-center py-1"
-                    >
-                      <div className="">
-                        {consumption.rawMaterialId || "N/A"}
-                      </div>
-                      <div className="">
-                        {consumption.rawMaterialName || "N/A"}
-                      </div>
-                      <div className="">{consumption.totalQty || "N/A"}</div>
-                      <div className="">
-                        {consumption.rate || "N/A"} {""} / {""}
-                        {consumption.unit || "N/A"}
-                      </div>
-                      <div className="">{consumption.totalPrice || "N/A"}</div>
+              {group?.materials?.map((items, index) => (
+                <div key={index + 1}>
+                  <div className="grid grid-cols-5 text-center py-3 gap-4 border-b font-semibold text-blue-500">
+                    <div>{items.itemCode}</div>
+                    <div>{items.itemName}</div>
+                    <div>{items.totalItemQty}</div>
+                    <div>{items.itemRate}</div>
+                    <div>{items.totalAmount}</div>
+                  </div>
+                  {items?.consumptions?.length > 0 && (
+                    <div className=" ">
+                      {items?.consumptions?.map(
+                        (consumption, consumptionIndex) => (
+                          <div
+                            key={consumptionIndex}
+                            className="grid grid-cols-5 text-sm  border-b text-center py-1"
+                          >
+                            <div className="">
+                              {consumption.rawMaterialId || "N/A"}
+                            </div>
+                            <div className="">
+                              {consumption.rawMaterialName || "N/A"}
+                            </div>
+                            <div className="">
+                              {consumption.totalQty || "N/A"}
+                            </div>
+                            <div className="">
+                              {consumption.rate || "N/A"} {""} / {""}
+                              {consumption.unit || "N/A"}
+                            </div>
+                            <div className="">
+                              {consumption.totalPrice || "N/A"}
+                            </div>
+                          </div>
+                        )
+                      )}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
+              ))}
+
+              {/* Time Periods */}
             </div>
           ))
         ) : (
@@ -110,11 +308,12 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
           </p>
         )}
       </div>
+
       <div className="border mx-auto mt-10">
         <div className="grid grid-cols-5 text-center text-lg border-t font-bold text-red-600">
           <p className="col-span-2">GrandTotal:</p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { totalItemQty: any }) =>
                 acc + item.totalItemQty,
               0
@@ -122,19 +321,13 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
           </p>
           <p></p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { totalAmount: any }) => acc + item.totalAmount,
               0
             )}
           </p>
         </div>
       </div>
-      {/* <button
-          onClick={generatePDF}
-          className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-        >
-          Print
-        </button> */}
     </div>
   );
 };

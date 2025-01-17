@@ -116,7 +116,7 @@ const ItemWiseRawMatConsumpPage = () => {
           )}
 
           <Button
-            className="max-h-11 mt-5"
+            className="max-h-11 mt-5 lg:col-span-3 w-full max-w-md mx-auto"
             size="sm"
             appearance="primary"
             type="submit"

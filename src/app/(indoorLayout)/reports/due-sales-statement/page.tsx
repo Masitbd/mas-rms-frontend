@@ -35,6 +35,7 @@ const DueSalesStatementPage = () => {
   if (formValue.startDate)
     queryParams.startDate = formatDate(formValue.startDate);
   if (formValue.endDate) queryParams.endDate = formatDate(formValue.endDate);
+  if (formValue.branch) queryParams.branch = formValue.branch;
 
   // Handle form submission
   const handleSubmit = async (
@@ -49,6 +50,8 @@ const DueSalesStatementPage = () => {
   const { data, isLoading } = useGetDueStatementReportsQuery(queryParams, {
     skip: !isSearchEnable,
   });
+
+  
 
   return (
     <div>
@@ -112,7 +115,7 @@ const DueSalesStatementPage = () => {
           )}
 
           <Button
-            className="max-h-11 mt-5"
+            className="max-h-11 mt-5 lg:col-span-3 w-full max-w-md mx-auto"
             size="sm"
             appearance="primary"
             type="submit"

@@ -10,6 +10,7 @@ export type IItems = {
   discount: number;
   isDiscount: boolean;
   isVat: boolean;
+  _id: string;
 };
 
 export type IUnregisteredCustomerInfo = {
