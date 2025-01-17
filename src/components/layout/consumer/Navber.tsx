@@ -11,6 +11,7 @@ import NavItemProvider from "./NavItemProvider";
 import { DesktopNavbar } from "./DesktopHamMenu";
 import { MobileNavMenu } from "./MobileNavMenu";
 import SignUpPopUp from "./SignUpPopUp";
+import Loading from "@/app/Loading";
 
 export const Navbar = () => {
   const [activeKey, setActiveKey] = useState<string>("");
@@ -28,6 +29,9 @@ export const Navbar = () => {
     }
   });
 
+  // if (!window) {
+  //   return <Loading />;
+  // }
   return (
     <>
       <div className="w-[100vw] fixed " style={{ zIndex: 99999999 }}>

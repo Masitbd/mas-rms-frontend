@@ -46,7 +46,7 @@ export const MobileNavMenu = ({
             </Nav.Item>
             {ismenuOpen && (
               <Nav.Item eventKey="2">
-                <div className="fixed top-20 right-0 bg-[#f7f7fa] w-[100vw] px-4 grid grid-cols-1 gap-y-4   divide-y divide-stone-400 py-5">
+                <div className="fixed top-28 right-0 bg-[#f7f7fa] w-[100vw] px-4 grid grid-cols-1 gap-y-4   divide-y divide-stone-400 py-5">
                   <div className="p-2 flex justify-center bg-[#e9e9eb] rounded-md">
                     Profile
                   </div>
@@ -68,6 +68,7 @@ export const MobileNavMenu = ({
             <Nav.Item>
               <FontAwesomeIcon icon={faCartShopping} className="" />
             </Nav.Item>
+
             {session?.status == "authenticated" ? (
               <Nav.Item onClick={() => setMenuOpen(!ismenuOpen)}>
                 <FontAwesomeIcon

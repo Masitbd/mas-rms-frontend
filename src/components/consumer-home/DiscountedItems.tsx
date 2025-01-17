@@ -7,7 +7,10 @@ const DiscountedItems = async () => {
   const posts = await fetch(`https://jsonplaceholder.typicode.com/posts`).then(
     (res) => res.json()
   );
-
+  const widthClass = `w-[${parseInt((12 * 350) / 16)}rem]`;
+  function generateDynamicWidth(value) {
+    return `w-[${value}rem]`;
+  }
   return (
     <div className="my-10 lg:my-20">
       <div className="lg:text-4xl text-base font-bold px-4">
@@ -16,14 +19,14 @@ const DiscountedItems = async () => {
       <div className=" overflow-y-scroll w-[98vw] lg:w-full  scrollbar-hide mt-5">
         {/* item size and width */}
         <div
-          className={`grid grid-cols-12 gap-5  ${
-            "w-[" + parseInt((12 * 350) / 16) + "rem]"
-          } lg:w-full lg:px-0 px-5`}
+          className={`grid grid-cols-12 gap-5  ${generateDynamicWidth(
+            parseInt((12 * 350) / 16)
+          )} lg:w-full lg:px-0 px-5`}
         >
           {posts.slice(0, 5).map((post, index) => (
             <div
               className="lg:w-[25rem] lg:h-[15rem] w-[20rem] h-[10rem] relative col-span-1 lg:col-span-4 gap-5 rounded-xl overflow-hidden  flex  items-end"
-              key={index}
+              key={post}
             >
               {/* Image of the food item */}
               <Image src={foodImage} fill />

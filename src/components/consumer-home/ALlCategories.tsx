@@ -13,12 +13,12 @@ const ALlCategories = async () => {
       <div className=" overflow-y-scroll w-[98vw] lg:w-full  scrollbar-hide mt-5">
         {/* item size and width */}
         <div
-          className={`grid grid-cols-12 gap-2  
-             lg:w-full lg:px-0 px-5`}
+          className={`lg:grid flex flex-row justify-around grid-cols-12 gap-2  w-[230rem]
+           lg:w-full lg:px-0 px-5`}
         >
           {posts.slice(0, 18).map((post, index) => (
             <div
-              className="lg:w-[12rem] w-[10rem] h-[14rem] lg:col-span-2 col-span-6 rounded-xl overflow-hidden border-[#dcdcdc] border"
+              className="lg:w-[12rem] w-[12rem] h-[14rem] lg:col-span-2 col-span-2 rounded-xl overflow-hidden border-[#dcdcdc] border"
               key={index}
             >
               <div className="relative h-[10rem] w-full">
