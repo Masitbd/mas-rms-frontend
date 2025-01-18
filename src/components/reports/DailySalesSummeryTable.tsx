@@ -1,6 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { formatDate } from "@/utils/formateDate";
+import ReporetHeader from "@/utils/ReporetHeader";
+
+export type TBranch = {
+  _id: string;
+  name: string;
+  address1: string;
+  phone: string;
+  vatNo: string;
+};
 
 type TDailyStatementSummary = {
   _id: {
@@ -40,7 +53,10 @@ type TGroup = {
 };
 
 type TDailySalesSummery = {
-  data: TGroup[];
+  data: {
+    branchInfo: TBranch;
+    result: TGroup[];
+  };
   startDate: Date | null;
   endDate: Date | null;
 };
@@ -50,27 +66,181 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
   startDate,
   endDate,
 }) => {
-  console.log(data, "data");
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "landscape",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        // Title
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+
+        {
+          text: `${data?.branchInfo?.address1}`,
+
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          style: "subheader",
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+
+        {
+          text: `Sales Reports Summery: ${
+            formattedStartDate === formattedEndDate
+              ? formattedStartDate
+              : `from ${formattedStartDate} to ${formattedEndDate}`
+          }`,
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        // Table Header
+        {
+          table: {
+            headerRows: 1, // Specify the number of header rows
+            widths: ["*", "*", "*", "*", "*", "*", "*", "*"], // Adjust column widths as needed
+            body: [
+              // Define the header row
+              [
+                { text: "Date", bold: true, alignment: "center" },
+                { text: "Total Guests", bold: true, alignment: "center" },
+                { text: "Total Bill", bold: true, alignment: "center" },
+                { text: "Total VAT", bold: true, alignment: "center" },
+                { text: "Service Charges", bold: true, alignment: "center" },
+                { text: "Net Payable", bold: true, alignment: "center" },
+                { text: "Total Due", bold: true, alignment: "center" },
+                { text: "Total Paid", bold: true, alignment: "center" },
+              ],
+              // Define the data rows
+              ...data?.result?.[0]?.dateWiseSummary?.map((paymentGroup) =>
+                [
+                  paymentGroup?._id?.date || "N/A",
+                  paymentGroup?.totalGuest || 0,
+                  paymentGroup?.totalBill || 0,
+                  paymentGroup?.totalVat?.toFixed(2) || "0.00",
+                  paymentGroup?.tSChargse || 0,
+                  paymentGroup?.metPayable?.toFixed(2) || "0.00",
+                  paymentGroup?.totalDue || 0,
+                  paymentGroup?.totalPaid || 0,
+                ].map((text) => ({ text, alignment: "center" }))
+              ),
+            ],
+          },
+          // Use predefined border styles
+        },
+
+        // Total Summary
+        {
+          table: {
+            widths: [80, "*", 60, 60, 60, 60, 60, 60],
+            body: [
+              [
+                { text: "Total Sales Amount", bold: true, alignment: "center" },
+                data?.result?.[0]?.total?.grandTotalGuest,
+                data?.result?.[0]?.total?.grandTotalBill,
+                data?.result?.[0]?.total?.grandTotalVat?.toFixed(2),
+                data?.result?.[0]?.total?.grandTotalScharge?.toFixed(2),
+                data?.result?.[0]?.total?.grandTotalPayable,
+                data?.result?.[0]?.total?.grandTotalDue,
+                data?.result?.[0]?.total?.grandTotalPaid,
+              ].map((text) => ({ text, alignment: "center" })),
+            ],
+          },
+          margin: [0, 10, 0, 0],
+        },
+
+        // Payment Mode Summary
+        {
+          text: "Payment Mode Summary",
+          style: "subheader",
+          margin: [0, 20, 0, 10],
+        },
+        {
+          table: {
+            widths: ["*", 60],
+            body: data?.result?.[0]?.paymentModeSummary?.map((item) => [
+              { text: item._id, alignment: "center" },
+              { text: item.total, alignment: "center" },
+            ]),
+          },
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          italics: true,
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: "#eeeeee",
+          alignment: "center",
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
       {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-        <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-          <Image
-            src={comapnyInfo?.data?.photoUrl}
-            alt="Header"
-            width={50}
-            height={50}
-          />{" "}
-          <p>{comapnyInfo?.data?.name}</p>
+        <div className="text-2xl font-bold flex items-center justify-center gap-5 mb-2">
+          <p>{data?.branchInfo?.name}</p>
         </div>
-        <p>{comapnyInfo?.data?.address}</p>
-        <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
+        <p>{data?.branchInfo?.address1}</p>
+        <p>HelpLine:{data?.branchInfo?.phone} </p>
+        <p className="font-semibold my-1">
+          VAT Registration No:{data?.branchInfo?.vatNo}{" "}
+        </p>
+        <div className="w-full h-[2px] bg-black"></div>
         <p className="italic text-red-600 text-center mb-5 font-semibold">
-          Investigation Income Statement : Between{" "}
-          {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-          {endDate ? formatDateString(endDate) : "N/A"}
+          Sales Reports Summery : Between{" "}
+          {startDate ? formatDate(startDate) : "N/A"} to{" "}
+          {endDate ? formatDate(endDate) : "N/A"}
         </p>
       </div> */}
+
+      <ReporetHeader
+        data={data}
+        name="Sales Report Summery"
+        startDate={startDate}
+        endDate={endDate}
+      />
+      <div className="flex justify-end">
+        <button
+          onClick={generatePDF}
+          className="bg-blue-600 w-28 px-3 py-2 rounded-md text-white font-semibold my-4 "
+        >
+          Print
+        </button>
+      </div>
 
       <div className="w-full">
         <div className="grid grid-cols-8 bg-gray-100 font-semibold text-center p-2">
@@ -88,28 +258,30 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
         </div>
 
         {/* Payment Types */}
-        {data?.[0]?.dateWiseSummary?.length > 0 ? (
-          data?.[0]?.dateWiseSummary?.map((paymentGroup, paymentIndex) => (
-            <div
-              key={paymentIndex}
-              className="grid grid-cols-8 text-center p-2 border-b"
-            >
-              <div className="text-green-600 font-semibold">
-                {paymentGroup._id.date}
+        {data?.result?.[0]?.dateWiseSummary?.length > 0 ? (
+          data?.result?.[0]?.dateWiseSummary?.map(
+            (paymentGroup, paymentIndex) => (
+              <div
+                key={paymentIndex}
+                className="grid grid-cols-8 text-center p-2 border-b"
+              >
+                <div className="text-green-600 font-semibold">
+                  {paymentGroup._id.date}
+                </div>
+
+                <div>{paymentGroup.totalGuest || 0}</div>
+
+                <div>{paymentGroup.totalBill || 0}</div>
+                <div>{paymentGroup.totalVat?.toFixed(2)}</div>
+
+                <div>{paymentGroup.tSChargse || 0}</div>
+
+                <div>{paymentGroup.metPayable?.toFixed(2) || 0}</div>
+                <div>{paymentGroup.totalDue || 0}</div>
+                <div>{paymentGroup.totalPaid || 0}</div>
               </div>
-
-              <div>{paymentGroup.totalGuest || 0}</div>
-
-              <div>{paymentGroup.totalBill || 0}</div>
-              <div>{paymentGroup.totalVat?.toFixed(2)}</div>
-
-              <div>{paymentGroup.tSChargse || 0}</div>
-
-              <div>{paymentGroup.metPayable?.toFixed(2) || 0}</div>
-              <div>{paymentGroup.totalDue || 0}</div>
-              <div>{paymentGroup.totalPaid || 0}</div>
-            </div>
-          ))
+            )
+          )
         ) : (
           <p className="text-center mt-10 text-xl text-red-500">
             No Data Found
@@ -118,28 +290,21 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
 
         <div className="grid grid-cols-8 border-b font-bold text-center">
           <div>Total Sales Amount</div>
-          <div>{data?.[0]?.total?.grandTotalGuest}</div>
-          <div>{data?.[0]?.total?.grandTotalBill}</div>
-          <div>{data?.[0]?.total?.grandTotalVat?.toFixed(2)}</div>
-          <div>{data?.[0]?.total?.grandTotalScharge?.toFixed(2)}</div>
-          <div>{data?.[0]?.total?.grandTotalPayable}</div>
-          <div>{data?.[0]?.total?.grandTotalDue}</div>
-          <div>{data?.[0]?.total?.grandTotalPaid}</div>
+          <div>{data?.result?.[0]?.total?.grandTotalGuest}</div>
+          <div>{data?.result?.[0]?.total?.grandTotalBill}</div>
+          <div>{data?.result?.[0]?.total?.grandTotalVat?.toFixed(2)}</div>
+          <div>{data?.result?.[0]?.total?.grandTotalScharge?.toFixed(2)}</div>
+          <div>{data?.result?.[0]?.total?.grandTotalPayable}</div>
+          <div>{data?.result?.[0]?.total?.grandTotalDue}</div>
+          <div>{data?.result?.[0]?.total?.grandTotalPaid}</div>
         </div>
       </div>
-
-      {/* <button
-        onClick={generatePDF}
-        className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-      >
-        Print
-      </button> */}
 
       <div className="mt-10 w-full max-w-3xl mx-auto border">
         <h1 className="text-lg font-bold p-2  border bg-gray-200 text-red-700">
           Payment Mode
         </h1>
-        {data?.[0]?.paymentModeSummary?.map((item, index) => (
+        {data?.result?.[0]?.paymentModeSummary?.map((item, index) => (
           <div
             key={index}
             className="grid grid-cols-2 text-center p-2 border-b"

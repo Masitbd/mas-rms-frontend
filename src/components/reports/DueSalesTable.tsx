@@ -3,6 +3,12 @@
 import { Loader } from "rsuite";
 import { TMenuItemConsumptionProps } from "./MenuItemConsumptionTable";
 import React from "react";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { formatDate } from "@/utils/formateDate";
+import { TBranch } from "./DailySalesSummeryTable";
+import { createPrintButton } from "@/utils/PrintButton";
+import ReporetHeader from "@/utils/ReporetHeader";
 
 type TGroup = {
   date: string;
@@ -15,33 +21,157 @@ type TGroup = {
 };
 
 export type TReportsTable = {
-  data: TGroup[];
+  data: {
+    branchInfo: TBranch;
+    result: TGroup[];
+  };
   isLoading: boolean;
   startDate: Date | null;
   endDate: Date | null;
 };
 
-const DueSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
+const DueSalesTable: React.FC<TReportsTable> = ({
+  data,
+  isLoading,
+  startDate,
+  endDate,
+}) => {
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "landscape",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        // Title
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+        {
+          text: `${data?.branchInfo?.address1}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          style: "subheader",
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+
+        {
+          text: `Sales Due Reports : ${
+            formattedStartDate === formattedEndDate
+              ? formattedStartDate
+              : `from ${formattedStartDate} to ${formattedEndDate}`
+          }`,
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        // Table Header
+        {
+          table: {
+            headerRows: 1,
+            widths: ["*", "*", "*", "*", "*", "*", "*"],
+            body: [
+              [
+                { text: "Bill Date", bold: true, alignment: "center" },
+                { text: "Total Guest", bold: true, alignment: "center" },
+                { text: "Total Bill", bold: true, alignment: "center" },
+                { text: "Vat", bold: true, alignment: "center" },
+                { text: "S.Charge", bold: true, alignment: "center" },
+                { text: "Discount", bold: true, alignment: "center" },
+                { text: "Due", bold: true, alignment: "center" },
+              ],
+              // Define the data rows
+              ...data?.result?.map((group) =>
+                [
+                  group.date || "N/A",
+                  group.totalGuests || 0,
+                  group.totalBills || 0,
+                  group.totalVat || 0,
+                  group.totalSCharge || 0,
+                  group.totalDiscount || 0,
+                  group.totalDue || 0,
+                ].map((text) => ({ text, alignment: "center" }))
+              ),
+            ],
+          },
+        },
+
+        // Total Summary
+        {
+          table: {
+            widths: ["*", "*", "*", "*", "*", "*", "*"],
+            body: [
+              [
+                { text: "Total Sales Amount", bold: true, alignment: "center" },
+                data?.result?.reduce((acc, item) => acc + item.totalGuests, 0),
+                data?.result?.reduce((acc, item) => acc + item.totalBills, 0),
+                data?.result
+                  ?.reduce((acc, item) => acc + item.totalVat, 0)
+                  .toFixed(2),
+                data?.result
+                  ?.reduce((acc, item) => acc + item.totalSCharge, 0)
+                  .toFixed(2),
+                data?.result
+                  ?.reduce((acc, item) => acc + item.totalDiscount, 0)
+                  .toFixed(2),
+                data?.result
+                  ?.reduce((acc, item) => acc + item.totalDue, 0)
+                  .toFixed(2),
+              ].map((text) => ({ text, alignment: "center" })),
+            ],
+          },
+          margin: [0, 10, 0, 0],
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          italics: true,
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: "#eeeeee",
+          alignment: "center",
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-          <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-            <Image
-              src={comapnyInfo?.data?.photoUrl}
-              alt="Header"
-              width={50}
-              height={50}
-            />{" "}
-            <p>{comapnyInfo?.data?.name}</p>
-          </div>
-          <p>{comapnyInfo?.data?.address}</p>
-          <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
-          <p className="italic text-red-600 text-center mb-5 font-semibold">
-            Investigation Income Statement : Between{" "}
-            {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-            {endDate ? formatDateString(endDate) : "N/A"}
-          </p>
-        </div> */}
+      <ReporetHeader
+        data={data}
+        name="Sales Due Reports  "
+        startDate={startDate}
+        endDate={endDate}
+      />
+
+      {createPrintButton(generatePDF)}
 
       <div className="w-full">
         <div className="grid grid-cols-7     bg-gray-100 font-semibold text-center p-2">
@@ -55,8 +185,8 @@ const DueSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
         </div>
         {isLoading ? (
           <Loader />
-        ) : data?.length > 0 ? (
-          data?.map((group, groupIndex) => (
+        ) : data?.result?.length > 0 ? (
+          data?.result?.map((group, groupIndex) => (
             <div
               key={groupIndex}
               className="grid grid-cols-7 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
@@ -78,41 +208,49 @@ const DueSalesTable: React.FC<TReportsTable> = ({ data, isLoading }) => {
       </div>
       <div className="border mx-auto mt-10">
         <div className="grid grid-cols-7 text-center text-lg border-t font-bold text-red-600 py-3">
-          <p className="col-span-2">GrandTotal:</p>
+          <p>GrandTotal:</p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
+              (acc: any, item: { totalGuests: number }) =>
+                acc + item.totalGuests,
+              0
+            )}
+          </p>
+          <p>
+            {data?.result?.reduce(
               (acc: any, item: { totalBills: number }) => acc + item.totalBills,
               0
             )}
           </p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { totalVat: number }) => acc + item.totalVat,
               0
             )}
           </p>
-          <p></p>
+
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { totalSCharge: number }) =>
                 acc + item.totalSCharge,
               0
             )}
           </p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
+              (acc: any, item: { totalDiscount: number }) =>
+                acc + item.totalDiscount,
+              0
+            )}
+          </p>
+          <p>
+            {data?.result?.reduce(
               (acc: any, item: { totalDue: number }) => acc + item.totalDue,
               0
             )}
           </p>
         </div>
       </div>
-      {/* <button
-          onClick={generatePDF}
-          className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-        >
-          Print
-        </button> */}
     </div>
   );
 };
