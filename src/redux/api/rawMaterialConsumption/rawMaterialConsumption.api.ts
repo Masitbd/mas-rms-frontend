@@ -63,8 +63,8 @@ const rawMaterialConsumption = baseApi.injectEndpoints({
       invalidatesTags: ["consumption"],
     }),
     updateConsumptionImages: build.mutation({
-      query: (data: { data: FormData; id: string }) => ({
-        url: `/image/${data?.id}`,
+      query: (data: { data: FormData; id: string; mode?: string }) => ({
+        url: `/image/${data.id}?mode=${data?.mode ? data?.mode : "multiple"}`,
         method: "PATCH",
         data: data?.data,
         contentType: "multipart/form-data",

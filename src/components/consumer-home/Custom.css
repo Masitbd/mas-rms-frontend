@@ -1,0 +1,10 @@
+.gradient-image-bg{
+background: rgb(3, 8, 31);
+    background: linear-gradient(30deg, rgba(3, 8, 31, 0.8925770991990546) 22%, rgba(3, 8, 31, 0.1922969871542367) 50%, rgba(255, 255, 255, 0.18669474625787819) 100%);
+        height: 100%;
+        width: 100%;
+}
+
+.rs-carousel-toolbar{
+    display: none;
+}

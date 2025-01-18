@@ -31,9 +31,6 @@ const CustomNavbar = ({
         <Nav.Item eventKey="3" as={NavLink} href="/order">
           Dashboard
         </Nav.Item>
-        <Nav.Item eventKey="3" as={NavLink} href="/order">
-          Dashboard
-        </Nav.Item>
       </Nav>
       <Nav pullRight className="mr-2">
         <Nav.Item>

@@ -2,12 +2,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Form, Button, Loader, Modal, Checkbox } from "rsuite";
+import {
+  Form,
+  Button,
+  Loader,
+  Modal,
+  Checkbox,
+  SelectPicker,
+  TagInput,
+} from "rsuite";
 
 import Swal from "sweetalert2";
 
 import { useUpdateBranchMutation } from "@/redux/api/branch/branch.api";
-import { FormBranchDataType } from "@/app/(withLayout)/branch/page";
+import { FormBranchDataType } from "@/app/(indoorLayout)/branch/page";
 
 type TEdittableProps = {
   data: any;
@@ -23,6 +31,12 @@ export const BranchEditAndViewModal = ({
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const availability = [
+    { label: "ONLINE", value: "online" },
+    { label: "OFFLINE", value: "offline" },
+
+    { label: "BOTH", value: "both" },
+  ];
 
   const [updateItem, { isLoading }] = useUpdateBranchMutation();
 
@@ -35,6 +49,7 @@ export const BranchEditAndViewModal = ({
     isActive: false,
     address1: "",
     address2: "",
+    availability: "offline",
   });
 
   useEffect(() => {
@@ -56,6 +71,8 @@ export const BranchEditAndViewModal = ({
       address1: event.address1,
       address2: event.address2,
       isActive: event.isActive,
+      availability: event.availability,
+      deliveryLocations: event.deliveryLocations,
     });
   };
 
@@ -160,6 +177,35 @@ export const BranchEditAndViewModal = ({
                 <Form.ControlLabel>Address Line 2</Form.ControlLabel>
                 <Form.Control name="address2" />
               </Form.Group>
+
+              {/*  */}
+
+              {/*brunch availability  */}
+              <Form.Group controlId="availability">
+                <Form.ControlLabel>Brunch Availability</Form.ControlLabel>
+                <Form.Control
+                  style={{ minWidth: "300px" }}
+                  name="availability"
+                  accepter={SelectPicker}
+                  data={availability.map((a) => {
+                    return { label: a.label, value: a.value };
+                  })}
+                  block
+                />
+              </Form.Group>
+
+              {/*Locations for delivery */}
+              {(formData?.availability == "online" ||
+                formData?.availability == "both") && (
+                <Form.Group controlId="deliveryLocations">
+                  <Form.ControlLabel>Delivery Locations</Form.ControlLabel>
+                  <Form.Control
+                    style={{ minWidth: "300px" }}
+                    name="deliveryLocations"
+                    accepter={TagInput}
+                  />
+                </Form.Group>
+              )}
 
               {/*  */}
 

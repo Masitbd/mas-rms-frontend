@@ -1,5 +1,5 @@
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
-import config from "@/app/config";
+import config from "@/config";
 import { axiosBaseQuery } from "@/shared/axios/axiosBaseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
 

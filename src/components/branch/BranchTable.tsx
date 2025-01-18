@@ -20,6 +20,8 @@ type TBranchData = {
   isActive: boolean;
   address1: string;
   address2: string;
+  deliveryLocations?: string[];
+  availability: string;
 };
 
 const BranchTable = ({
