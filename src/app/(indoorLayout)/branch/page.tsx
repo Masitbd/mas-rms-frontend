@@ -1,6 +1,5 @@
 "use client";
 
-import config from "@/config";
 import BranchTable from "@/components/branch/BranchTable";
 import {
   useCreateBranchMutation,
@@ -8,7 +7,15 @@ import {
 } from "@/redux/api/branch/branch.api";
 
 import React, { useState } from "react";
-import { Button, Checkbox, Form, Loader } from "rsuite";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Loader,
+  SelectPicker,
+  TagInput,
+  TagPicker,
+} from "rsuite";
 import Swal from "sweetalert2";
 
 export type FormBranchDataType = {
@@ -20,9 +27,17 @@ export type FormBranchDataType = {
   isActive: boolean;
   address1: string;
   address2: string;
+  deliveryLocations?: string[];
+  availability: string;
 };
 
 const BranchPage = () => {
+  const availability = [
+    { label: "ONLINE", value: "online" },
+    { label: "OFFLINE", value: "offline" },
+
+    { label: "BOTH", value: "both" },
+  ];
   const { data: items, isLoading } = useGetBranchQuery({});
 
   const [craeteItem, { isLoading: creating }] = useCreateBranchMutation();
@@ -35,6 +50,7 @@ const BranchPage = () => {
     isActive: false,
     address1: "",
     address2: "",
+    availability: "offline",
   };
 
   const [formData, setFormData] =
@@ -129,17 +145,6 @@ const BranchPage = () => {
           </Form.Group>
           {/* is active */}
 
-          {/* <Form.Group controlId="isActive">
-            <Form.Control
-              name="isActive"
-              accepter={Checkbox}
-              defaultChecked={formData?.isActive}
-              value={!formData?.isActive}
-            >
-              Is Active
-            </Form.Control>
-          </Form.Group> */}
-
           {/* address 1 */}
           <Form.Group controlId="address1">
             <Form.ControlLabel>Address Line 1</Form.ControlLabel>
@@ -150,6 +155,33 @@ const BranchPage = () => {
             <Form.ControlLabel>Address Line 2</Form.ControlLabel>
             <Form.Control name="address2" />
           </Form.Group>
+
+          {/*brunch availability  */}
+          <Form.Group controlId="availability">
+            <Form.ControlLabel>Brunch Availability</Form.ControlLabel>
+            <Form.Control
+              style={{ minWidth: "300px" }}
+              name="availability"
+              accepter={SelectPicker}
+              data={availability.map((a) => {
+                return { label: a.label, value: a.value };
+              })}
+              block
+            />
+          </Form.Group>
+
+          {/*Locations for delivery */}
+          {(formData?.availability == "online" ||
+            formData?.availability == "both") && (
+            <Form.Group controlId="deliveryLocations">
+              <Form.ControlLabel>Delivery Locations</Form.ControlLabel>
+              <Form.Control
+                style={{ minWidth: "300px" }}
+                name="deliveryLocations"
+                accepter={TagInput}
+              />
+            </Form.Group>
+          )}
 
           {/*  */}
 

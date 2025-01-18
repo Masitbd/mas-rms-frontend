@@ -10,7 +10,8 @@ export const imageUploader = async (
   mode: string,
   id?: string,
   updateFn?: TuseUpdateConsumptionImagesMutation[0],
-  postFn?: TuseUploadConsumptionImagesMutation[0]
+  postFn?: TuseUploadConsumptionImagesMutation[0],
+  imageMode?: string
 ) => {
   try {
     if (!Images.length) {
@@ -20,8 +21,11 @@ export const imageUploader = async (
     Images.forEach((image) => {
       formData.append("images", image.file as File);
     });
-    formData.forEach((value, key) => {
-      console.log(key, value);
+
+    console.log({
+      data: formData as FormData,
+      id: id as string,
+      mode: imageMode,
     });
     switch (mode) {
       case ENUM_MODE.NEW:
@@ -36,6 +40,7 @@ export const imageUploader = async (
           (await updateFn({
             data: formData as FormData,
             id: id as string,
+            mode: imageMode,
           }).unwrap());
 
         if (updateResult?.success) {

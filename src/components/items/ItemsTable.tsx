@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { Button, Table } from "rsuite";
+import { Button, Table, Tag } from "rsuite";
 import VisibleIcon from "@rsuite/icons/Visible";
 import EditIcon from "@rsuite/icons/Edit";
 import TrashIcon from "@rsuite/icons/Trash";
@@ -97,6 +97,16 @@ const ItemCategoryTable = ({ data, isLoading }: TTableDataProps) => {
             {"Categoy Name"}
           </HeaderCell>
           <Cell dataKey="name" />
+        </Column>
+        <Column flexGrow={3}>
+          <HeaderCell className="text-center text-lg font-semibold">
+            {"Popular"}
+          </HeaderCell>
+          <Cell>
+            {(data) => {
+              return data?.isPopular ? <Tag color="green">Popular</Tag> : "";
+            }}
+          </Cell>
         </Column>
         {(userRole == ENUM_USER.ADMIN || ENUM_USER.SUPER_ADMIN) && (
           <Column flexGrow={2}>
