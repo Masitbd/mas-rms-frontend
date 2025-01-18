@@ -29,5 +29,6 @@ export const baseApi = createApi({
     "reports",
     "waiterList",
     "branch",
+    "due-collection-history",
   ],
 });

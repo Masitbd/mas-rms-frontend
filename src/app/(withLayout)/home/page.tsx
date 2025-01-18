@@ -8,8 +8,10 @@ const DashHomPage = () => {
   return (
     <div>
       <div>
+
         {data?.data?.branchWiseData?.map((item: any) => (
           <div key={item.branchName}>
+
             <h1 className="my-16 text-2xl text-blue-600 font-bold text-center ">
               {item.branchName}
             </h1>
