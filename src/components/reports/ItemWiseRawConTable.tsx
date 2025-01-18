@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Loader } from "rsuite";
-import { TMenuItemConsumptionProps } from "./MenuItemConsumptionTable";
+
 import React from "react";
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { formatDate } from "@/utils/formateDate";
+import ReporetHeader from "@/utils/ReporetHeader";
+import { createPrintButton } from "@/utils/PrintButton";
+import { TBranch } from "./DailySalesSummeryTable";
 
 export type TConsumption = {
   rawMaterialName: string;
@@ -23,7 +29,10 @@ type TGroup = {
 };
 
 type TItemWiseRawConProps = {
-  data: TGroup[];
+  data: {
+    branchInfo: TBranch;
+    result: TGroup[];
+  };
   isLoading: boolean;
   startDate: Date | null;
   endDate: Date | null;
@@ -35,26 +44,150 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
   startDate,
   endDate,
 }) => {
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const generatePDF = () => {
+    const documentDefinition: any = {
+      pageOrientation: "landscape",
+      defaultStyle: {
+        fontSize: 12,
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+        // Title
+        {
+          text: `${data?.branchInfo?.name}`,
+          style: "header",
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+        {
+          text: `${data?.branchInfo?.address1}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `Phone: ${data?.branchInfo?.phone}`,
+          alignment: "center",
+          margin: [0, 0, 0, 4],
+        },
+        {
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+          style: "subheader",
+          alignment: "center",
+          margin: [0, 0, 0, 8],
+        },
+
+        {
+          text: `Item Wise Raw Consumption: ${
+            formattedStartDate === formattedEndDate
+              ? formattedStartDate
+              : `from ${formattedStartDate} to ${formattedEndDate}`
+          }`,
+          style: "subheader",
+          alignment: "center",
+          color: "red",
+          italic: true,
+          margin: [10, 0, 0, 20],
+        },
+
+        // Table Header for Item Details
+        {
+          table: {
+            headerRows: 1,
+            widths: ["*", "*", "*", "*", "*"], // Adjust column widths
+            body: [
+              [
+                { text: "Code", bold: true, alignment: "center" },
+                { text: "Item Name", bold: true, alignment: "center" },
+                { text: "QTY", bold: true, alignment: "center" },
+                { text: "Rate/Unit", bold: true, alignment: "center" },
+                { text: "Total Amount", bold: true, alignment: "center" },
+              ],
+              // Data rows for items
+              ...data?.result?.map((group) =>
+                [
+                  group?.itemCode || "N/A",
+                  group?.itemName || "N/A",
+                  group?.totalItemQty || 0,
+                  group?.itemRate || "N/A",
+                  group?.totalAmount || 0,
+                ].map((text) => ({ text, alignment: "center" }))
+              ),
+            ],
+          },
+        },
+
+        // Consumptions (if any) under each item
+        ...data?.result?.map((group) =>
+          group?.consumptions?.length > 0
+            ? [
+                {
+                  table: {
+                    headerRows: 1,
+                    widths: ["*", "*", "*", "*", "*"], // Adjust column widths
+                    body: [
+                      ...group?.consumptions?.map((consumption) =>
+                        [
+                          consumption.rawMaterialId || "N/A",
+                          consumption.rawMaterialName || "N/A",
+                          consumption.totalQty || "N/A",
+                          `${consumption.rate || "N/A"} / ${
+                            consumption.unit || "N/A"
+                          }`,
+                          consumption.totalPrice || "N/A",
+                        ].map((text) => ({ text, alignment: "center" }))
+                      ),
+                    ],
+                  },
+                },
+              ]
+            : []
+        ),
+
+        // Grand Total Summary
+        {
+          table: {
+            widths: [80, "*", 60, 60, 60],
+            body: [
+              [
+                { text: "Grand Total", bold: true, alignment: "center" },
+                data?.result?.reduce((acc, item) => acc + item.totalItemQty, 0),
+                "",
+                "",
+                data?.result?.reduce((acc, item) => acc + item.totalAmount, 0),
+              ].map((text) => ({ text, alignment: "center" })),
+            ],
+          },
+          margin: [0, 10, 0, 0],
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          italics: true,
+        },
+      },
+    };
+
+    pdfMake.createPdf(documentDefinition).print();
+  };
+
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-          <div className="text-xl font-bold flex items-center justify-center gap-5 mb-4">
-            <Image
-              src={comapnyInfo?.data?.photoUrl}
-              alt="Header"
-              width={50}
-              height={50}
-            />{" "}
-            <p>{comapnyInfo?.data?.name}</p>
-          </div>
-          <p>{comapnyInfo?.data?.address}</p>
-          <p>HelpLine:{comapnyInfo?.data?.phone} (24 Hours Open)</p>
-          <p className="italic text-red-600 text-center mb-5 font-semibold">
-            Investigation Income Statement : Between{" "}
-            {startDate ? formatDateString(startDate) : "N/A"} to{" "}
-            {endDate ? formatDateString(endDate) : "N/A"}
-          </p>
-        </div> */}
+      <ReporetHeader
+        data={data}
+        name="Item Wise Raw Consumption"
+        startDate={startDate}
+        endDate={endDate}
+      />
+
+      {createPrintButton(generatePDF)}
 
       <div className="w-full">
         <div className="grid grid-cols-5 bg-gray-100 font-semibold text-center p-2">
@@ -66,8 +199,8 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
         </div>
         {isLoading ? (
           <Loader />
-        ) : data?.length > 0 ? (
-          data?.map((group, groupIndex) => (
+        ) : data?.result?.length > 0 ? (
+          data?.result?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
               <div className="grid grid-cols-5 text-center py-3 gap-4 border-b font-semibold text-blue-500">
                 <div>{group.itemCode}</div>
@@ -114,7 +247,7 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
         <div className="grid grid-cols-5 text-center text-lg border-t font-bold text-red-600">
           <p className="col-span-2">GrandTotal:</p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { totalItemQty: any }) =>
                 acc + item.totalItemQty,
               0
@@ -122,19 +255,13 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
           </p>
           <p></p>
           <p>
-            {data?.reduce(
+            {data?.result?.reduce(
               (acc: any, item: { totalAmount: any }) => acc + item.totalAmount,
               0
             )}
           </p>
         </div>
       </div>
-      {/* <button
-          onClick={generatePDF}
-          className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-        >
-          Print
-        </button> */}
     </div>
   );
 };
