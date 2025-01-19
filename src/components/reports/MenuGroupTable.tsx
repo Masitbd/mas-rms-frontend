@@ -29,8 +29,10 @@ type TRecord = {
 
 type TGroup = {
   records: TRecord[];
+  menuGroups: { menuGroup: string; itemGroups: TItemGroups[] }[];
   itemGroups: TItemGroups[];
-  menuGroup: string;
+
+  branch: string;
 };
 
 type TDailySalesSummery = {
@@ -47,6 +49,7 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
 
   isLoading,
 }) => {
+
   const generatePDF = () => {
     const documentDefinition: any = {
       pageOrientation: "landscape",
@@ -57,23 +60,31 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
       content: [
         // Title
         {
-          text: `${data?.branchInfo?.name}`,
+
+          text: `${data?.branchInfo?.name || "Branch Name"}`,
+
           style: "header",
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
         {
-          text: `${data?.branchInfo?.address1}`,
+
+          text: `${data?.branchInfo?.address1 || "Address not available"}`,
+
           alignment: "center",
           margin: [0, 0, 0, 4],
         },
         {
-          text: `Phone: ${data?.branchInfo?.phone}`,
+
+          text: `Phone: ${data?.branchInfo?.phone || "Phone not available"}`,
+
           alignment: "center",
           margin: [0, 0, 0, 4],
         },
         {
-          text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+
+          text: `VAT Registration No: ${data?.branchInfo?.vatNo || "N/A"}`,
+
           style: "subheader",
           alignment: "center",
           margin: [0, 0, 0, 8],
@@ -91,65 +102,78 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
         // Data rows for Menu Groups and Items
         ...data?.result?.map((group) => [
           {
-            text: group?.menuGroup || "N/A",
+
+            text: group?.branch || "N/A",
+
             style: "groupHeader",
             margin: [0, 10, 0, 10],
           },
 
-          // Item Group Header Rows
-          ...group?.itemGroups?.map((orderItemGroup) => [
+
+          // Loop through Menu Groups
+          ...group?.menuGroups?.map((menuGroup) => [
             {
-              text: orderItemGroup?.itemGroup || "N/A",
+              text: menuGroup?.menuGroup || "N/A",
+
               style: "itemGroupHeader",
               margin: [0, 10, 0, 10],
             },
 
-            // Items table rows
-            {
-              table: {
-                headerRows: 1,
-                widths: ["*", "*", "*", "*"],
-                body: [
-                  [
-                    { text: "Code", bold: true, alignment: "center" },
-                    { text: "Item Name", bold: true, alignment: "center" },
 
-                    { text: "Rate", bold: true, alignment: "center" },
-                    { text: "Cooking Time", bold: true, alignment: "center" },
-                  ],
-                  // Map over the items for this group
-                  ...orderItemGroup?.items?.map((record) =>
+            // Loop through Item Groups
+            ...menuGroup?.itemGroups?.map((orderItemGroup) => [
+              {
+                text: orderItemGroup?.itemGroup || "N/A",
+                style: "itemGroupHeader",
+                margin: [0, 10, 0, 10],
+              },
+
+              // Items table rows
+              {
+                table: {
+                  headerRows: 1,
+                  widths: ["*", "*", "*", "*"],
+                  body: [
                     [
-                      record.code || "N/A",
-                      record.name || "N/A",
-
-                      record.rate || 0,
-                      record.cookingTime || 0,
-                    ].map((text) => ({ text, alignment: "center" }))
-                  ),
-                ],
+                      { text: "Code", bold: true, alignment: "center" },
+                      { text: "Item Name", bold: true, alignment: "center" },
+                      { text: "Rate", bold: true, alignment: "center" },
+                      { text: "Cooking Time", bold: true, alignment: "center" },
+                    ],
+                    // Map over the items for this group
+                    ...orderItemGroup?.items?.map((record) =>
+                      [
+                        record.code || "N/A",
+                        record.name || "N/A",
+                        record.rate || 0,
+                        record.cookingTime || "N/A",
+                      ].map((text) => ({ text, alignment: "center" }))
+                    ),
+                  ],
+                },
               },
-            },
 
-            // Grand Total Row for this Item Group
-            {
-              table: {
-                widths: ["*", "*", "*", "*"],
-                body: [
-                  [
-                    {
-                      text: `${orderItemGroup.itemGroup}`,
-                      bold: true,
-                      alignment: "center",
-                    },
-                    { text: "", bold: true, alignment: "right" },
-                    orderItemGroup?.items?.length || 0,
-                    { text: "", bold: true, alignment: "right" },
-                  ].map((text) => ({ text, alignment: "center" })),
-                ],
+              // Grand Total Row for this Item Group
+              {
+                table: {
+                  widths: ["*", "*", "*", "*"],
+                  body: [
+                    [
+                      {
+                        text: `${orderItemGroup.itemGroup}`,
+                        bold: true,
+                        alignment: "center",
+                      },
+                      { text: "", bold: true, alignment: "right" },
+                      orderItemGroup?.items?.length || 0,
+                      { text: "", bold: true, alignment: "right" },
+                    ].map((text) => ({ text, alignment: "center" })),
+                  ],
+                },
+                margin: [0, 10, 0, 20],
               },
-              margin: [0, 10, 0, 20],
-            },
+            ]),
+
           ]),
         ]),
       ],
@@ -198,42 +222,53 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
           data?.result?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
               {/* Group Date Row */}
-              <div className="text-lg font-semibold p-2 mb-2 bg-slate-200 mt-2 rounded-md">
-                {group.menuGroup}
+              <div className="text-lg font-semibold p-2 mb-2 bg-blue-50 text-blue-500 mt-2 rounded-md">
+                {group.branch}
               </div>
 
-              {/* Payment Types */}
-              {group?.itemGroups?.map((orderItemGroup, paymentIndex) => (
-                <div key={paymentIndex} className="mb-4">
-                  {/* Payment Type Header */}
-                  <div className="text-lg font-bold p-2 border-b text-violet-700">
-                    {orderItemGroup.itemGroup}
-                  </div>
-
-                  {/* Time Periods */}
-
-                  {orderItemGroup?.items?.map((record, recordIndex) => (
-                    <div
-                      key={recordIndex}
-                      className="grid grid-cols-4 text-center p-2 border-b"
-                    >
-                      <div>{record.code || "N/A"}</div>
-                      <div>{record.name}</div>
-                      <div>{record.rate || 0}</div>
-                      <div>{record.cookingTime}</div>
-                    </div>
-                  ))}
-
-                  <div className="grid grid-cols-4 font-bold mt-3">
-                    <div className="col-span-2 text-end text-violet-600">
-                      {orderItemGroup.itemGroup}
-                    </div>
-                    <div className="text-center ">
-                      {orderItemGroup?.items?.length}
-                    </div>
-                  </div>
+              {/* Menu Groups */}
+              {group?.menuGroups?.map((mGroup, mGroupIndex) => (
+                <div
+                  key={mGroupIndex}
+                  className="text-lg font-semibold p-2 mb-2 bg-slate-200 mt-2 rounded-md"
+                >
+                  {mGroup.menuGroup}
                 </div>
               ))}
+
+              {/* Payment Types */}
+              {group?.menuGroups?.map((mGroup, mGroupIndex) =>
+                mGroup?.itemGroups?.map((orderItemGroup, paymentIndex) => (
+                  <div key={paymentIndex} className="mb-4">
+                    {/* Payment Type Header */}
+                    <div className="text-lg font-bold p-2 border-b text-violet-700">
+                      {orderItemGroup.itemGroup}
+                    </div>
+
+                    {/* Time Periods */}
+                    {orderItemGroup?.items?.map((record, recordIndex) => (
+                      <div
+                        key={recordIndex}
+                        className="grid grid-cols-4 text-center p-2 border-b"
+                      >
+                        <div>{record.code || "N/A"}</div>
+                        <div>{record.name}</div>
+                        <div>{record.rate || 0}</div>
+                        <div>{record.cookingTime}</div>
+                      </div>
+                    ))}
+
+                    <div className="grid grid-cols-4 font-bold mt-3">
+                      <div className="col-span-2 text-end text-violet-600">
+                        {orderItemGroup.itemGroup}
+                      </div>
+                      <div className="text-center ">
+                        {orderItemGroup?.items?.length}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           ))
         ) : (

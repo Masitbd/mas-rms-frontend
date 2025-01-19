@@ -52,7 +52,7 @@ const MenuItemsPage = () => {
         onChange={handleChange}
         onSubmit={handleSubmit}
         formValue={formValue}
-        className="grid grid-cols-4 gap-10 justify-center  w-full"
+        className="grid grid-cols-3 gap-10 justify-center  w-full"
       >
         {!session.data?.user?.branch && (
           <Form.Group controlId="branch">

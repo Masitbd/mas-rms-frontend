@@ -34,6 +34,8 @@ export interface IMenuItemConsumption {
   discount?: number;
   waiterTip?: number;
   images?: TImage;
+  code?: string;
+  name?: string;
 }
 
 export const defaultMenuItemConsumption = {

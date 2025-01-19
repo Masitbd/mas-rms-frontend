@@ -27,6 +27,7 @@ type TDailyStatementSummary = {
   metPayable: number;
   totalDue: number;
   totalPaid: number;
+  branchName: string;
 };
 
 type TPaymentModeSummary = {
@@ -66,6 +67,7 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
   startDate,
   endDate,
 }) => {
+
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
@@ -121,10 +123,13 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
         {
           table: {
             headerRows: 1, // Specify the number of header rows
-            widths: ["*", "*", "*", "*", "*", "*", "*", "*"], // Adjust column widths as needed
+
+            widths: ["*", "*", "*", "*", "*", "*", "*", "*", "*"], // Adjust column widths as needed
             body: [
               // Define the header row
               [
+                { text: "Branch", bold: true, alignment: "center" },
+
                 { text: "Date", bold: true, alignment: "center" },
                 { text: "Total Guests", bold: true, alignment: "center" },
                 { text: "Total Bill", bold: true, alignment: "center" },
@@ -136,7 +141,9 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
               ],
               // Define the data rows
               ...data?.result?.[0]?.dateWiseSummary?.map((paymentGroup) =>
-                [
+
+                  paymentGroup?.branchName || "N/A",
+
                   paymentGroup?._id?.date || "N/A",
                   paymentGroup?.totalGuest || 0,
                   paymentGroup?.totalBill || 0,
@@ -210,22 +217,6 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
 
   return (
     <div className="p-5">
-      {/* <div className="text-center mb-10 flex flex-col items-center justify-center">
-        <div className="text-2xl font-bold flex items-center justify-center gap-5 mb-2">
-          <p>{data?.branchInfo?.name}</p>
-        </div>
-        <p>{data?.branchInfo?.address1}</p>
-        <p>HelpLine:{data?.branchInfo?.phone} </p>
-        <p className="font-semibold my-1">
-          VAT Registration No:{data?.branchInfo?.vatNo}{" "}
-        </p>
-        <div className="w-full h-[2px] bg-black"></div>
-        <p className="italic text-red-600 text-center mb-5 font-semibold">
-          Sales Reports Summery : Between{" "}
-          {startDate ? formatDate(startDate) : "N/A"} to{" "}
-          {endDate ? formatDate(endDate) : "N/A"}
-        </p>
-      </div> */}
 
       <ReporetHeader
         data={data}
@@ -242,8 +233,12 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
         </button>
       </div>
 
+
+   
+
       <div className="w-full">
-        <div className="grid grid-cols-8 bg-gray-100 font-semibold text-center p-2">
+        <div className="grid grid-cols-9 bg-gray-100 font-semibold text-center p-2">
+          <div>Branch</div>
           <div>Bill Date</div>
 
           <div>Guest </div>
@@ -263,11 +258,20 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
             (paymentGroup, paymentIndex) => (
               <div
                 key={paymentIndex}
-                className="grid grid-cols-8 text-center p-2 border-b"
+
+                className="grid grid-cols-9 text-center p-2 border-b"
               >
+                <div className="text-green-600 font-semibold">
+                  {paymentGroup?.branchName}
+                </div>
+                <div className=" font-semibold">{paymentGroup._id.date}</div>
+
+               
+              
                 <div className="text-green-600 font-semibold">
                   {paymentGroup._id.date}
                 </div>
+
 
                 <div>{paymentGroup.totalGuest || 0}</div>
 

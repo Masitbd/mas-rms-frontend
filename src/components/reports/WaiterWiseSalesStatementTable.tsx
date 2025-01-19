@@ -27,6 +27,7 @@ type TGroup = {
   categories: TCategory[];
   items: TItem[];
   waiterName: string;
+  branchName: string;
 };
 
 type TReportsTable = {
@@ -93,6 +94,13 @@ const WaiterSalesDetailsTable: React.FC<TReportsTable> = ({
           const groupContent = [
             // Menu Group Header
             {
+
+              text: group.branchName,
+              style: "groupHeader2",
+              margin: [0, 10, 0, 5],
+            },
+            {
+
               text: group.waiterName,
               style: "groupHeader",
               margin: [0, 10, 0, 5],
@@ -101,6 +109,13 @@ const WaiterSalesDetailsTable: React.FC<TReportsTable> = ({
             // Item Groups
             ...group?.categories?.map((itemGroup) => [
               {
+
+                text: itemGroup.categoryName,
+                style: "groupHeader3",
+                margin: [0, 10, 0, 5],
+              },
+              {
+
                 table: {
                   headerRows: 1,
                   widths: ["*", "*", "*", "*", "*"],
@@ -199,6 +214,18 @@ const WaiterSalesDetailsTable: React.FC<TReportsTable> = ({
           fontSize: 16,
           bold: true,
         },
+h
+        groupHeader2: {
+          fontSize: 16,
+          bold: true,
+          color: "teal",
+        },
+        groupHeader3: {
+          fontSize: 16,
+          bold: true,
+          color: "blue",
+        },
+
         itemGroupHeader: {
           fontSize: 14,
           bold: true,
@@ -270,12 +297,17 @@ const WaiterSalesDetailsTable: React.FC<TReportsTable> = ({
           data?.result?.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-8">
               <div>
-                {group?.waiterName}
+                <p className="text-teal-700 font-bold my-2">
+                  {group?.branchName}
+                </p>
+                <p className="p-1 bg-gray-100 rounded">{group?.waiterName}</p>
                 {/* Payment Types */}
                 {group?.categories?.map((orderItemGroup, paymentIndex) => (
                   <div key={paymentIndex} className="mb-4">
                     {/* Payment Type Header */}
-
+                    <p className="text-violet-700 font-bold my-2">
+                      {orderItemGroup?.categoryName}
+                    </p>
                     {/* Time Periods */}
 
                     {orderItemGroup?.items?.map((record, recordIndex) => (

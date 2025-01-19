@@ -14,6 +14,10 @@ type TRecord = {
   rate: number;
   unit: string;
   totalPrice: number;
+  branch: string;
+  itemName: string;
+  itemCode: string;
+  materials: TRecord[];
 };
 
 type TRawmaterialsConsupmtionTable = {
@@ -46,7 +50,9 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         // Title
         {
           text: `${data?.branchInfo?.name}`,
-          style: "header",
+
+          style: "headerStyle",
+
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
@@ -65,7 +71,9 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         },
         {
           text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
-          style: "subheader",
+
+          style: "subheaderStyle",
+
           alignment: "center",
           margin: [0, 0, 0, 8],
         },
@@ -76,7 +84,9 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
               ? formattedStartDate
               : `from ${formattedStartDate} to ${formattedEndDate}`
           }`,
-          style: "subheader",
+
+          style: "subheaderStyle",
+
           alignment: "center",
           color: "red",
           italic: true,
@@ -87,63 +97,61 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         {
           table: {
             headerRows: 1,
-            widths: ["*", "*", "*", "*"],
+
+            widths: ["*", "*", "*", "*", "*"], // Adjusted column widths
             body: [
-              // Define the header row
               [
-                { text: "Item Name", bold: true, alignment: "center" },
-                { text: "QTY", bold: true, alignment: "center" },
-                { text: "Rate/Unit", bold: true, alignment: "center" },
-                { text: "Amount", bold: true, alignment: "center" },
+                { text: "Code", style: "tableHeader" },
+                { text: "Item Name", style: "tableHeader" },
+                { text: "QTY", style: "tableHeader" },
+                { text: "Rate/Unit", style: "tableHeader" },
+                { text: "Total Amount", style: "tableHeader" },
               ],
-              // Define the data rows
-              ...data?.result?.map((item) =>
-                [
-                  {
-                    text: item.rawMaterialName || "N/A",
-                    alignment: "center",
-                    style: "dataStyle",
-                  },
-                  {
-                    text: item.totalQty?.toString() || "0",
-                    alignment: "center",
-                    style: "dataStyle",
-                  },
-                  {
-                    text: `${item.rate?.toFixed(2) || "0.00"} ${
-                      item.unit || ""
-                    }`,
-                    alignment: "center",
-                    style: "dataStyle",
-                  },
-                  {
-                    text: item.totalPrice?.toFixed(2) || "0.00",
-                    alignment: "center",
-                    style: "dataStyle",
-                  },
-                ].map((text) => ({ text, alignment: "center" }))
-              ),
+              // Material Rows
+              ...data?.result
+                ?.map((group) =>
+                  group?.materials?.map((item) => [
+                    item?.itemCode || "N/A",
+                    item?.itemName || "N/A",
+                    item?.totalQty || 0,
+                    item?.rate ? `${item.rate} / ${item.unit || "N/A"}` : "N/A",
+                    item?.totalPrice || 0,
+                  ])
+                )
+                .flat(), // Flatten the array for table body
             ],
           },
-          // Use predefined border styles
+          margin: [0, 10, 0, 10],
         },
 
+        // Grand Total Section
         {
           table: {
-            widths: ["*", "*", "*", "*"],
+            widths: ["*", "*", "*", "*", "*"],
             body: [
               [
                 { text: "Grand Total", bold: true, alignment: "center" },
+                "", // Empty cell for Item Name column
                 data.result?.reduce(
-                  (acc: number, item: any) => acc + item.totalQty,
+                  (acc: number, group: any) =>
+                    acc +
+                    group?.materials?.reduce(
+                      (subAcc: number, item: any) =>
+                        subAcc + (item?.totalQty || 0),
+                      0
+                    ),
                   0
                 ),
+                "", // Empty cell for Rate/Unit column
                 data.result?.reduce(
-                  (acc: number, item: any) => acc + item.rate,
-                  0
-                ),
-                data.result?.reduce(
-                  (acc: number, item: any) => acc + item.totalPrice,
+                  (acc: number, group: any) =>
+                    acc +
+                    group?.materials?.reduce(
+                      (subAcc: number, item: any) =>
+                        subAcc + (item?.totalPrice || 0),
+                      0
+                    ),
+
                   0
                 ),
               ].map((text) => ({ text, alignment: "center" })),
@@ -158,6 +166,21 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
           color: "black",
           bold: true,
         },
+
+        subheaderStyle: {
+          fontSize: 12,
+          color: "black",
+          italic: true,
+          alignment: "center",
+        },
+        tableHeader: {
+          fontSize: 12,
+          color: "black",
+          bold: true,
+          alignment: "center",
+          fillColor: "#f0f0f0",
+        },
+
         dataStyle: {
           fontSize: 12,
           color: "black",
@@ -186,27 +209,41 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
       {createPrintButton(generatePDF)}
 
       <div className="w-full">
-        <div className="grid grid-cols-4 bg-gray-100 font-semibold text-center p-2">
+        <div className="grid grid-cols-5 bg-gray-100 font-semibold text-center p-2">
+          <div>Code</div>
           <div>Item Name</div>
-          <div>QTY </div>
-          <div>Rate/Unit </div>
-          <div>Amount </div>
+          <div>QTY</div>
+          <div>Rate/Unit</div>
+          <div>Total Amount</div>
         </div>
         {isLoading ? (
           <Loader />
         ) : data?.result?.length > 0 ? (
-          data?.result?.map((record, recordIndex) => (
-            <div
-              key={recordIndex}
-              className="grid grid-cols-4 text-center p-2 border-b"
-            >
-              <div>{record.rawMaterialName || "N/A"}</div>
-              <div>{record.totalQty}</div>
-              <div className="flex gap-4 justify-center">
-                <p>{record.rate?.toFixed(2) || 0}</p>
-                <p>{record.unit}</p>
+
+          data?.result?.map((group, groupIndex) => (
+            <div key={groupIndex}>
+              <div className="text-lg font-bold p-2 border-b text-teal-700">
+                {group?.branch}
+
               </div>
-              <div>{record.totalPrice}</div>
+
+              {/* Materials */}
+              {group?.materials?.map((item, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-5 text-center py-3 gap-4 border-b font-semibold text-blue-500"
+                >
+                  <div>{item?.itemCode || "N/A"}</div>
+                  <div>{item?.itemName || "N/A"}</div>
+                  <div>{item?.totalQty || 0}</div>
+                  <div>
+                    {item?.rate
+                      ? `${item.rate} / ${item.unit || "N/A"}`
+                      : "N/A"}
+                  </div>
+                  <div>{item?.totalPrice || 0}</div>
+                </div>
+              ))}
             </div>
           ))
         ) : (
@@ -215,36 +252,29 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
           </p>
         )}
 
-        <div className="grid grid-cols-4 text-center font-semibold text-lg p-2 ">
-          <p className="text-violet-700">Grand Total</p>
-          <p>
-            {data.result?.reduce(
-              (acc: number, item: any) => acc + item.totalQty,
-              0
-            )}
-          </p>
-
-          <p>
-            {data.result?.reduce(
-              (acc: number, item: any) => acc + item.rate,
-              0
-            )}
-          </p>
-          <p>
-            {data.result?.reduce(
-              (acc: number, item: any) => acc + item.totalPrice,
-              0
-            )}
-          </p>
-        </div>
       </div>
+      <div className="grid grid-cols-5 text-center font-semibold text-lg p-2 ">
+        <p className="text-violet-700 col-span-2">Grand Total</p>
+        <p>
+          {data.result?.reduce(
+            (acc: number, item: any) => acc + item.totalQty,
+            0
+          )}
+        </p>
 
-      {/* <button
-          onClick={generatePDF}
-          className="bg-blue-600 px-3 py-2 rounded-md text-white font-semibold mt-4"
-        >
-          Print
-        </button> */}
+        <p>
+          {data.result?.reduce(
+            (acc: number, item: any) => acc + item?.rate || 0,
+            0
+          )}
+        </p>
+        <p>
+          {data.result?.reduce(
+            (acc: number, item: any) => acc + item.totalPrice,
+            0
+          )}
+        </p>
+      </div>
     </div>
   );
 };

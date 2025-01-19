@@ -11,6 +11,7 @@ import { createPrintButton } from "@/utils/PrintButton";
 
 export type TMenuItemConsumptionGroups = {
   itemGroup: string;
+  branch: string;
   granTotalBill: number;
   grandTotalQty: number;
   grandTotalRate: number;
@@ -110,6 +111,13 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
             ...group?.itemGroups?.map((itemGroup) => [
               // Item Group Header
               {
+
+                text: itemGroup?.branch,
+                style: "itemGroupHeader2",
+                margin: [0, 5, 0, 5],
+              },
+              {
+
                 text: itemGroup.itemGroup,
                 style: "itemGroupHeader",
                 margin: [0, 5, 0, 5],
@@ -241,6 +249,13 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
           fontSize: 14,
           bold: true,
         },
+
+        itemGroupHeader2: {
+          fontSize: 14,
+          bold: true,
+          color: "blue",
+        },
+
         tableHeader: {
           bold: true,
           fillColor: "#eeeeee",
@@ -309,6 +324,9 @@ const MenuItemConsumptionTable: React.FC<TMenuItemConsumptionProps> = ({
               {group?.itemGroups?.map((orderItemGroup, paymentIndex) => (
                 <div key={paymentIndex} className="mb-4">
                   {/* Payment Type Header */}
+                  <div className="text-lg font-bold p-2 border-b text-teal-700">
+                    {orderItemGroup.branch}
+                  </div>
                   <div className="text-lg font-bold p-2 border-b text-violet-700">
                     {orderItemGroup.itemGroup}
                   </div>

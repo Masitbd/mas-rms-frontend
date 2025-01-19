@@ -10,6 +10,14 @@ const itemsCategoryApi = baseApi.injectEndpoints({
       }),
       providesTags: ["itemCategory"],
     }),
+    getItemsByCategory: build.query({
+      query: (params) => ({
+        url: "/item-categories/items",
+        method: "GET",
+        params: params,
+      }),
+      providesTags: ["itemCategory"],
+    }),
 
     //  crate table
     createItemsCategory: build.mutation({
@@ -48,5 +56,6 @@ export const {
   useGetItemsCategoryQuery,
   useCreateItemsCategoryMutation,
   useUpdateItemsCategoryMutation,
+  useGetItemsByCategoryQuery,
   useDeleteItemsCategoryMutation,
 } = itemsCategoryApi;

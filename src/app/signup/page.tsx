@@ -14,7 +14,7 @@ const SignUp = () => {
         <SingupForm />
       </div>
       <div className="lg:relative static z-10">
-        <Image className="signup-image" src={regImage} fill />
+        <Image className="signup-image" src={regImage} alt="img" fill />
       </div>
     </div>
   );

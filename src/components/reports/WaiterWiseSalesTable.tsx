@@ -12,7 +12,8 @@ import { createPrintButton } from "@/utils/PrintButton";
 
 type TGroup = {
   totalAmount: number;
-  name: string;
+  waiterName: string;
+  branchName: string;
 };
 
 type TReportsTable = {
@@ -86,17 +87,23 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({
         {
           table: {
             headerRows: 1,
-            widths: ["*", "*"],
+
+            widths: ["*", "*", "*"],
             body: [
               // Define the header row
               [
+                { text: "Branch", bold: true, alignment: "center" },
+
                 { text: "Name", bold: true, alignment: "center" },
                 { text: "Total Amount", bold: true, alignment: "center" },
               ],
               // Define the data rows
               ...data?.result?.map((paymentGroup) =>
                 [
-                  paymentGroup?.name || "N/A",
+
+                  paymentGroup?.branchName || "N/A",
+                  paymentGroup?.waiterName || "N/A",
+
                   paymentGroup?.totalAmount || 0,
                 ].map((text) => ({ text, alignment: "center" }))
               ),
@@ -157,7 +164,8 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({
       {createPrintButton(generatePDF)}
 
       <div className="w-full">
-        <div className="grid grid-cols-2 bg-gray-100 font-semibold text-center p-2">
+        <div className="grid grid-cols-3 bg-gray-100 font-semibold text-center p-2">
+          <div>Branch</div>
           <div>Name</div>
           <div>Total Amount</div>
         </div>
@@ -166,10 +174,11 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({
         ) : data?.result?.length > 0 ? (
           data?.result?.map((group, groupIndex) => (
             <div
-              className="grid grid-cols-2 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
+              className="grid grid-cols-3 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
               key={groupIndex}
             >
-              <div>{group.name}</div>
+              <div>{group.branchName}</div>
+              <div>{group.waiterName}</div>
               <div>{group.totalAmount}</div>
             </div>
           ))

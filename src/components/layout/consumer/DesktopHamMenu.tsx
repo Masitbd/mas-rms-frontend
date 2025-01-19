@@ -53,7 +53,7 @@ export const DesktopNavbar = ({
               activeKey={activeKey}
               eventKey="3"
               name="Browse Menu"
-              href="/consumer/home"
+              href="/consumer/category"
             />
             <NavItemProvider
               activeKey={activeKey}

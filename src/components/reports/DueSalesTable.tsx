@@ -18,6 +18,7 @@ type TGroup = {
   totalDiscount: number;
   totalGuests: number;
   totalDue: number;
+  branchName: string;
 };
 
 export type TReportsTable = {
@@ -88,9 +89,12 @@ const DueSalesTable: React.FC<TReportsTable> = ({
         {
           table: {
             headerRows: 1,
-            widths: ["*", "*", "*", "*", "*", "*", "*"],
+
+            widths: ["*", "*", "*", "*", "*", "*", "*", "*"],
             body: [
               [
+                { text: "Branch", bold: true, alignment: "center" },
+
                 { text: "Bill Date", bold: true, alignment: "center" },
                 { text: "Total Guest", bold: true, alignment: "center" },
                 { text: "Total Bill", bold: true, alignment: "center" },
@@ -102,6 +106,9 @@ const DueSalesTable: React.FC<TReportsTable> = ({
               // Define the data rows
               ...data?.result?.map((group) =>
                 [
+
+                  group.branchName || "N/A",
+
                   group.date || "N/A",
                   group.totalGuests || 0,
                   group.totalBills || 0,
@@ -174,7 +181,8 @@ const DueSalesTable: React.FC<TReportsTable> = ({
       {createPrintButton(generatePDF)}
 
       <div className="w-full">
-        <div className="grid grid-cols-7     bg-gray-100 font-semibold text-center p-2">
+        <div className="grid grid-cols-8     bg-gray-100 font-semibold text-center p-2">
+          <div>Branch </div>
           <div>Bill Date </div>
           <div>Total Guest </div>
           <div>Total Bill </div>
@@ -189,8 +197,9 @@ const DueSalesTable: React.FC<TReportsTable> = ({
           data?.result?.map((group, groupIndex) => (
             <div
               key={groupIndex}
-              className="grid grid-cols-7 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
+              className="grid grid-cols-8 border-b text-neutral-800 font-semibold bg-gray-50 mb-3 text-center p-2"
             >
+              <div>{group.branchName || "N/A"}</div>
               <div>{group.date || "N/A"}</div>
               <div>{group.totalGuests}</div>
               <div>{group.totalBills || 0}</div>
