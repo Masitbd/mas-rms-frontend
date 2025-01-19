@@ -1,16 +1,43 @@
+import { ENUM_PROVIDER } from "@/enums/ProviderEnum";
+import { useSignUpByUserMutation } from "@/redux/api/users/user.api";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Checkbox, Divider, Form } from "rsuite";
+import Swal from "sweetalert2";
 
 const SingupForm = () => {
+  const [formData, setFormdata] = useState<Record<string, string>>();
+  const [post, { isLoading }] = useSignUpByUserMutation();
+  const handleSIgnUp = async () => {
+    const userData = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      provider: ENUM_PROVIDER.LOCAL,
+    };
+
+    try {
+      const result = await post(userData).unwrap();
+      if (result.success) {
+        Swal.fire("success", "Account Created successfully", "success");
+      }
+    } catch (error) {
+      Swal.fire("Error", (error ?? "Failed to sign up") as string, "error");
+    }
+  };
   return (
-    <Form fluid className="lg:w-[50%] w-[80%]  user-signup-form">
+    <Form
+      fluid
+      className="lg:w-[50%] w-[80%]  user-signup-form"
+      onChange={setFormdata}
+      formValue={formData}
+    >
       <h2 className="text-4xl font-semibold my-5">Get Started Now</h2>
       <Form.Group controlId="name">
         <Form.ControlLabel className="text-lg font-bold font-roboto">
           Name
         </Form.ControlLabel>
-        <Form.Control name="Name" placeholder="Enter name" size="lg" />
+        <Form.Control name="name" placeholder="Enter name" size="lg" />
       </Form.Group>
       <Form.Group controlId="email">
         <Form.ControlLabel className="text-lg font-bold font-roboto">
@@ -45,6 +72,9 @@ const SingupForm = () => {
         size="lg"
         style={{ backgroundColor: "#FC8A06", fontWeight: "bold" }}
         appearance="primary"
+        loading={isLoading}
+        disabled={isLoading}
+        onClick={() => handleSIgnUp()}
       >
         Submit
       </Button>

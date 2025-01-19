@@ -6,8 +6,11 @@ import Question2 from "./Question2";
 import Question4 from "./Question4";
 import Question5 from "./Question5";
 import Question3 from "./Question3";
+import { useSession } from "next-auth/react";
 
 const KnowMoreAboutUs = () => {
+  const session = useSession();
+  console.log(session);
   const [activeKey, setActiveKey] = useState("1");
   const buttonProvider = (key: string, title: string) => {
     return (

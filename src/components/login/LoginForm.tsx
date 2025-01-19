@@ -22,8 +22,6 @@ const LoginForm = () => {
   const route = useRouter();
   const session = useSession();
 
-  console.log(session, "in login form");
-
   const handleChange = () => {
     setVisible(!visible);
   };
