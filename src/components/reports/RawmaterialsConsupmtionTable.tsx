@@ -50,24 +50,30 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         // Title
         {
           text: `${data?.branchInfo?.name}`,
+
           style: "headerStyle",
+
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
 
         {
           text: `${data?.branchInfo?.address1}`,
+
           alignment: "center",
           margin: [0, 0, 0, 4],
         },
         {
           text: `Phone: ${data?.branchInfo?.phone}`,
+
           alignment: "center",
           margin: [0, 0, 0, 4],
         },
         {
           text: `VAT Registration No: ${data?.branchInfo?.vatNo}`,
+
           style: "subheaderStyle",
+
           alignment: "center",
           margin: [0, 0, 0, 8],
         },
@@ -78,7 +84,9 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
               ? formattedStartDate
               : `from ${formattedStartDate} to ${formattedEndDate}`
           }`,
+
           style: "subheaderStyle",
+
           alignment: "center",
           color: "red",
           italic: true,
@@ -89,6 +97,7 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         {
           table: {
             headerRows: 1,
+
             widths: ["*", "*", "*", "*", "*"], // Adjusted column widths
             body: [
               [
@@ -142,6 +151,7 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
                         subAcc + (item?.totalPrice || 0),
                       0
                     ),
+
                   0
                 ),
               ].map((text) => ({ text, alignment: "center" })),
@@ -156,6 +166,7 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
           color: "black",
           bold: true,
         },
+
         subheaderStyle: {
           fontSize: 12,
           color: "black",
@@ -169,6 +180,7 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
           alignment: "center",
           fillColor: "#f0f0f0",
         },
+
         dataStyle: {
           fontSize: 12,
           color: "black",
@@ -207,10 +219,12 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
         {isLoading ? (
           <Loader />
         ) : data?.result?.length > 0 ? (
+
           data?.result?.map((group, groupIndex) => (
             <div key={groupIndex}>
               <div className="text-lg font-bold p-2 border-b text-teal-700">
                 {group?.branch}
+
               </div>
 
               {/* Materials */}
@@ -237,6 +251,7 @@ const RawmaterialsConsupmtionTable: React.FC<TRawmaterialsConsupmtionTable> = ({
             No Data Found
           </p>
         )}
+
       </div>
       <div className="grid grid-cols-5 text-center font-semibold text-lg p-2 ">
         <p className="text-violet-700 col-span-2">Grand Total</p>

@@ -89,10 +89,12 @@ const DueSalesTable: React.FC<TReportsTable> = ({
         {
           table: {
             headerRows: 1,
+
             widths: ["*", "*", "*", "*", "*", "*", "*", "*"],
             body: [
               [
                 { text: "Branch", bold: true, alignment: "center" },
+
                 { text: "Bill Date", bold: true, alignment: "center" },
                 { text: "Total Guest", bold: true, alignment: "center" },
                 { text: "Total Bill", bold: true, alignment: "center" },
@@ -104,7 +106,9 @@ const DueSalesTable: React.FC<TReportsTable> = ({
               // Define the data rows
               ...data?.result?.map((group) =>
                 [
+
                   group.branchName || "N/A",
+
                   group.date || "N/A",
                   group.totalGuests || 0,
                   group.totalBills || 0,

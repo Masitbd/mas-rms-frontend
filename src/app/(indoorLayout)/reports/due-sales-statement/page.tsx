@@ -51,7 +51,6 @@ const DueSalesStatementPage = () => {
     skip: !isSearchEnable,
   });
 
-  
 
   return (
     <div>

@@ -49,7 +49,6 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
 
   isLoading,
 }) => {
-  // console.log(data, "menu greoup");
 
   const generatePDF = () => {
     const documentDefinition: any = {
@@ -61,23 +60,31 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
       content: [
         // Title
         {
+
           text: `${data?.branchInfo?.name || "Branch Name"}`,
+
           style: "header",
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
         {
+
           text: `${data?.branchInfo?.address1 || "Address not available"}`,
+
           alignment: "center",
           margin: [0, 0, 0, 4],
         },
         {
+
           text: `Phone: ${data?.branchInfo?.phone || "Phone not available"}`,
+
           alignment: "center",
           margin: [0, 0, 0, 4],
         },
         {
+
           text: `VAT Registration No: ${data?.branchInfo?.vatNo || "N/A"}`,
+
           style: "subheader",
           alignment: "center",
           margin: [0, 0, 0, 8],
@@ -95,18 +102,23 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
         // Data rows for Menu Groups and Items
         ...data?.result?.map((group) => [
           {
+
             text: group?.branch || "N/A",
+
             style: "groupHeader",
             margin: [0, 10, 0, 10],
           },
+
 
           // Loop through Menu Groups
           ...group?.menuGroups?.map((menuGroup) => [
             {
               text: menuGroup?.menuGroup || "N/A",
+
               style: "itemGroupHeader",
               margin: [0, 10, 0, 10],
             },
+
 
             // Loop through Item Groups
             ...menuGroup?.itemGroups?.map((orderItemGroup) => [
@@ -161,6 +173,7 @@ const MenuGroupItemTable: React.FC<TDailySalesSummery> = ({
                 margin: [0, 10, 0, 20],
               },
             ]),
+
           ]),
         ]),
       ],

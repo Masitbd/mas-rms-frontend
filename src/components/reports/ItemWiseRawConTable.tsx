@@ -54,7 +54,6 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
   startDate,
   endDate,
 }) => {
-  console.log(data, "data");
 
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
@@ -67,7 +66,7 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
       },
       pageMargins: [20, 20, 20, 20],
       content: [
-        // Title and Branch Info
+
         {
           text: `${data?.branchInfo?.name}`,
           style: "header",
@@ -181,13 +180,16 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
           ]),
         ]),
 
-        // Grand Total Summary (same as before)
+     
+
+
         {
           table: {
             widths: [80, "*", 60, 60, 60],
             body: [
               [
                 { text: "Grand Total", bold: true, alignment: "center" },
+
                 data?.result?.reduce(
                   (acc: any, group: any) =>
                     acc +
@@ -210,6 +212,7 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
                     ),
                   0
                 ),
+
               ].map((text) => ({ text, alignment: "center" })),
             ],
           },
@@ -240,7 +243,9 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
         endDate={endDate}
       />
 
+
       {createPrintButton(generatePDF)}
+
       <div className="w-full">
         <div className="grid grid-cols-5 bg-gray-100 font-semibold text-center p-2">
           <div>Code</div>

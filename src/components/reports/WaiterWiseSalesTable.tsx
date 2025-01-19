@@ -87,19 +87,23 @@ const WaiterWiseSalesTable: React.FC<TReportsTable> = ({
         {
           table: {
             headerRows: 1,
+
             widths: ["*", "*", "*"],
             body: [
               // Define the header row
               [
                 { text: "Branch", bold: true, alignment: "center" },
+
                 { text: "Name", bold: true, alignment: "center" },
                 { text: "Total Amount", bold: true, alignment: "center" },
               ],
               // Define the data rows
               ...data?.result?.map((paymentGroup) =>
                 [
+
                   paymentGroup?.branchName || "N/A",
                   paymentGroup?.waiterName || "N/A",
+
                   paymentGroup?.totalAmount || 0,
                 ].map((text) => ({ text, alignment: "center" }))
               ),

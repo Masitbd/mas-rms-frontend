@@ -47,7 +47,7 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
   endDate,
   isLoading,
 }) => {
-  console.log(data, "data slaes item");
+
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
@@ -111,11 +111,13 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
               style: "itemGroupHeader",
               margin: [0, 10, 0, 10],
             },
+
             {
               text: orderItemGroup?.branchName || "N/A",
               style: "itemGroupHeader2",
               margin: [0, 10, 0, 10],
             },
+
 
             // Items table rows
             {
@@ -222,12 +224,14 @@ const ItemWiseSalesTable: React.FC<TDailySalesSummery> = ({
           color: "violet",
           margin: [0, 10, 0, 5],
         },
+
         itemGroupHeader2: {
           fontSize: 14,
           bold: true,
           color: "blue",
           margin: [0, 10, 0, 5],
         },
+
       },
     };
 

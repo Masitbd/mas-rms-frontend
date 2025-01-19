@@ -15,6 +15,7 @@ const SignUpPopUp = (props: {
         size="xs"
         onClose={() => props.setOpen(!props.isOpen)}
         backdrop={true}
+        style={{ zIndex: 999999999 }}
       >
         <Modal.Header></Modal.Header>
         <Modal.Body>

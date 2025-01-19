@@ -8,19 +8,19 @@ const PopularCategories = async () => {
   );
 
   return (
-    <div className="my-10 lg:my-20">
+    <div className="my-10 lg:my-20 mx-auto">
       <div className="lg:text-4xl text-base font-bold px-4">
         Our Popular Categories
       </div>
-      <div className=" overflow-y-scroll w-[98vw] lg:w-full  scrollbar-hide mt-5">
+      <div className=" overflow-y-scroll w-full  scrollbar-hide mt-5">
         {/* item size and width */}
         <div
-          className={`grid grid-cols-12 gap-2  w-[84rem]
-           lg:w-full lg:px-0 px-5`}
+          className={`grid grid-cols-12 lg:gap-2 gap-0.5  
+             lg:w-full lg:px-0 px-0.5 place-items-center gap-y-2 md:gap-y-5`}
         >
           {posts.slice(0, 6).map((post, index) => (
             <div
-              className="w-[12rem] h-[14rem] col-span-2 rounded-xl overflow-hidden border-[#dcdcdc] border"
+              className="lg:w-[12rem] w-[11rem] lg:h-[14rem] h-[12] col-span-6 lg:col-span-2 rounded-xl overflow-hidden border-[#dcdcdc] border "
               key={index}
             >
               <div className="relative h-[10rem] w-full">

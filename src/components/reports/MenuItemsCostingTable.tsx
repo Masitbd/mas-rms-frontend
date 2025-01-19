@@ -66,11 +66,13 @@ const MenuItemsCostingTable: React.FC<TMenuItemConsumptionProps> = ({
             ...group?.itemGroups?.map((itemGroup) => [
               // Item Group Header
               {
+
                 text: itemGroup.branch,
                 style: "itemGroupHeader",
                 margin: [0, 5, 0, 5],
               },
               {
+
                 text: itemGroup.itemGroup,
                 style: "itemGroupHeader",
                 margin: [0, 5, 0, 5],

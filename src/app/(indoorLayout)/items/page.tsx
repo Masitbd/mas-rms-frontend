@@ -1,15 +1,31 @@
 "use client";
 
 import BranchFieldProvider from "@/components/branch/BranchFieldProvider";
+import ImageCropperModal from "@/components/items/ImageCropper";
 import ItemCategoryTable from "@/components/items/ItemsTable";
+import { imageUploader } from "@/components/menu-item-consumption/ConsumptionHelper";
+import { ENUM_MODE } from "@/enums/EnumMode";
 
 import {
   useCreateItemsCategoryMutation,
   useGetItemsCategoryQuery,
 } from "@/redux/api/items/items.api";
 import { useGetMenuGroupQuery } from "@/redux/api/menugroup/menuGroup.api";
+import {
+  useUpdateConsumptionImagesMutation,
+  useUploadConsumptionImagesMutation,
+} from "@/redux/api/rawMaterialConsumption/rawMaterialConsumption.api";
 import React, { useState } from "react";
-import { Button, Form, Loader, SelectPicker } from "rsuite";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Loader,
+  Message,
+  SelectPicker,
+  toaster,
+} from "rsuite";
+import { ValueType } from "rsuite/esm/Checkbox";
 import SchemaTyped from "rsuite/esm/Schema/Schema";
 import Swal from "sweetalert2";
 
@@ -18,6 +34,8 @@ export type FormDataType = {
   name: string;
   menuGroup: string | unknown;
   branch?: string;
+  image?: string;
+  isPopular: false;
 };
 
 export type TMenuGroupOption = {
@@ -31,6 +49,10 @@ export type TMenuGroupItem = {
 
 const ItemsCategoryPage = () => {
   const { data: menus, isLoading: menuLoading } = useGetMenuGroupQuery({});
+  const [croppedImage, setCroppedImage] = useState<Blob | null>(null);
+  const [post, { isLoading: ImagePostLoading }] =
+    useUploadConsumptionImagesMutation();
+  const [update] = useUpdateConsumptionImagesMutation();
 
   const { data: items, isLoading } = useGetItemsCategoryQuery(undefined);
 
@@ -48,6 +70,7 @@ const ItemsCategoryPage = () => {
     name: "",
     branch: null,
     menuGroup: null,
+    isPopular: false,
   };
 
   const [formData, setFormData] = useState<FormDataType>(
@@ -63,22 +86,58 @@ const ItemsCategoryPage = () => {
   };
   // ? onsubmit
 
-  const handleSubmit = async () => {
-    const res = await craeteItem(formData).unwrap();
-    if (res.success) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        title: "Item Added successfully",
-        icon: "success",
-      });
-      setFormData(itemFormInitialState as unknown as FormDataType);
+  const handleImageUpload = async () => {
+    if (croppedImage) {
+      try {
+        const mimeType = croppedImage.type; // Get the correct mime type (e.g., 'image/jpeg', 'image/png')
+        const fileExtension = mimeType.split("/")[1]; // Extract the file extension (e.g., 'jpeg', 'png')
+        const croppedFile = new File(
+          [croppedImage],
+          `cropped-image.${fileExtension}`,
+          { type: mimeType }
+        );
+
+        const imageData = await imageUploader(
+          [{ url: URL.createObjectURL(croppedImage), file: croppedFile }],
+          ENUM_MODE.NEW,
+          "",
+          update,
+          post
+        );
+
+        return imageData;
+      } catch (error) {
+        // toaster.push(<Message type="error">{error as string}</Message>);
+      }
     }
   };
 
+  const handleSubmit = async () => {
+    try {
+      const imageId = await handleImageUpload();
+      if (imageId) {
+        formData.image = imageId;
+        // Reset the image
+        setCroppedImage(null);
+      }
+      const res = await craeteItem(formData).unwrap();
+      if (res.success) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          title: "Item Added successfully",
+          icon: "success",
+        });
+        itemFormInitialState.isPopular = false;
+        setFormData(itemFormInitialState as unknown as FormDataType);
+      }
+    } catch (error) {}
+  };
+
+  console.log(formData);
   return (
     <div className="w-full max-w-5xl mx-auto  drop-shadow-md shadow-xl m-5 mt-10 py-8 px-5 bg-[#FAFBFF]">
       <h1 className="text-center text-[#003CFF] text-2xl font-bold">
@@ -122,11 +181,42 @@ const ItemsCategoryPage = () => {
             <Form.ControlLabel>Category Name</Form.ControlLabel>
             <Form.Control name="name" />
           </Form.Group>
+          <Form.Group controlId="isPopular">
+            <Form.ControlLabel>Display on Popular</Form.ControlLabel>
+            <Form.Control
+              name="isPopular"
+              accepter={Checkbox}
+              value={!formData?.isPopular as unknown as ValueType}
+              defaultChecked={formData?.isPopular}
+              checked={formData?.isPopular}
+            />
+          </Form.Group>
 
           <BranchFieldProvider />
 
           {/*  */}
 
+          {/* Image */}
+          <Form.Group>
+            <Form.ControlLabel>Category Image</Form.ControlLabel>
+            <div className="flex ">
+              <ImageCropperModal
+                setCroppedImageState={setCroppedImage}
+                id="10000"
+              />
+              <div className="flex items-center ms-4">
+                {croppedImage ? (
+                  <img
+                    src={URL.createObjectURL(croppedImage)}
+                    alt="croppedImage"
+                    style={{ width: "50%", height: "auto" }}
+                  />
+                ) : (
+                  <p>No image uploaded yet.</p>
+                )}
+              </div>
+            </div>
+          </Form.Group>
           <Form.Group className="w-full max-w-[300px]  ms-48">
             <Button
               className="w-full"
@@ -139,7 +229,11 @@ const ItemsCategoryPage = () => {
               }}
               type="submit"
             >
-              {creating ? <Loader content="Loading..." /> : "Save"}
+              {creating || ImagePostLoading ? (
+                <Loader content="Loading..." />
+              ) : (
+                "Save"
+              )}
             </Button>
           </Form.Group>
         </Form>
