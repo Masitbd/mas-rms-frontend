@@ -1,7 +1,8 @@
 import Credentials from "next-auth/providers/credentials";
-
+import GoogleProvider from "next-auth/providers/google";
 import NextAuth, {
   AuthValidity,
+  Awaitable,
   BackendAccessJWT,
   BackendJWT,
   DecodedJWT,
@@ -12,6 +13,8 @@ import type { JWT } from "next-auth/jwt";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import config from "@/config";
+import { ENUM_PROVIDER } from "@/enums/ProviderEnum";
+import { jwtDecypherAndUserInfoProvider } from "@/helpers/JWTDeccypherAndInfoProvider";
 
 async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
   try {
@@ -71,6 +74,7 @@ const handler = NextAuth({
             .post(`${config.server_url}/auth/login`, {
               email: credentials?.email,
               password: credentials?.password,
+              provider: ENUM_PROVIDER.LOCAL,
             })
             .catch((err) => {
               if (err?.response?.data?.message)
@@ -80,30 +84,14 @@ const handler = NextAuth({
 
           const tokens: BackendJWT = await res?.data?.data;
 
-          const access: DecodedJWT = jwtDecode(tokens.accessToken);
-          const refresh: DecodedJWT = jwtDecode(tokens.refreshToken);
-          // Extract the user from the access token
-          const user: UserObject = {
-            name: access?.name,
-            email: access?.email,
-            id: access?.id,
-            role: access?.role,
-            uuid: access?.uuid,
-          };
-          if (Object.hasOwn(access, "branch")) {
-            user.branch = access?.branch;
-          }
-          // Extract the auth validity from the tokens
-          const validity: AuthValidity = {
-            valid_until: access.exp,
-            refresh_until: refresh.exp,
-          };
           // Return the object that next-auth calls 'User'
           // (which we've defined in next-auth.d.ts)
 
+          const { user, validity, decodedRefresh } =
+            jwtDecypherAndUserInfoProvider(tokens);
           return {
             // User object needs to have a string id so use refresh token id
-            id: refresh.jti,
+            id: decodedRefresh.jti,
             tokens: tokens,
             user: user,
             validity: validity,
@@ -111,6 +99,17 @@ const handler = NextAuth({
         } catch (error) {
           throw Error("Authentication error" + error);
         }
+      },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
       },
     }),
   ],
@@ -127,29 +126,73 @@ const handler = NextAuth({
         ? Promise.resolve(url)
         : Promise.resolve(baseUrl);
     },
-    async jwt({ token, user, account }) {
-      // Initial signin contains a 'User' object from authorize method
-      if (user && account) {
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      session,
+      trigger,
+    }): Promise<JWT> {
+      if (
+        account?.provider == "google" &&
+        (trigger == "signUp" || trigger == "signIn")
+      ) {
+        try {
+          // Getging the token form server
+          const result = await axios
+            .post(`${config.server_url}/user/user-sign-up`, {
+              provider: ENUM_PROVIDER.GOOGLE as string,
+              idToken: account.id_token,
+            })
+            .catch((err) => {
+              if (err?.response?.data?.message)
+                throw Error(err.response.data.message);
+              else throw Error(err);
+            });
+
+          const { user, validity, decodedRefresh } =
+            jwtDecypherAndUserInfoProvider(result?.data?.data);
+
+          return {
+            ...token,
+            id: decodedRefresh.jti,
+            data: {
+              tokens: result?.data?.data,
+              user: user,
+              validity: validity,
+              id: decodedRefresh.jti as string,
+            },
+          };
+        } catch (error) {
+          throw Error(error as string);
+        }
+      }
+
+      // // Initial signin contains a 'User' object from authorize method
+      if (user && account && account.provider !== "google") {
         console.debug("Initial signin");
+        console.log("token", token);
+        console.log("user", user);
         return { ...token, data: user };
       }
 
       if (
         token?.data?.tokens?.refreshToken &&
         !token.data?.tokens?.accessToken &&
-        Date.now() < token.data.validity.refresh_until * 1000
+        Date.now() < token.data.validity?.refresh_until * 1000
       ) {
         console.debug("Access token is being refreshed");
         return await refreshAccessToken(token);
       }
       // The current access token is still valid
-      if (Date.now() < token.data.validity.valid_until * 1000) {
+      if (Date.now() < token.data.validity?.valid_until * 1000) {
         console.debug("Access token is still valid");
         return token;
       }
 
       // The refresh token is still valid
-      if (Date.now() < token.data.validity.refresh_until * 1000) {
+      if (Date.now() < token.data.validity?.refresh_until * 1000) {
         console.debug("Access token is being refreshed");
         return await refreshAccessToken(token);
       }

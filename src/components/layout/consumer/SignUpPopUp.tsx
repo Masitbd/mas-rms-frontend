@@ -3,6 +3,7 @@ import { Button, Modal } from "rsuite";
 import facebookLogo from "../../../assets/logos/facebookLogo.svg";
 import Image from "next/image";
 import { NavLink } from "../Navlink";
+import { signIn } from "next-auth/react";
 
 const SignUpPopUp = (props: {
   isOpen: boolean;
@@ -41,6 +42,7 @@ const SignUpPopUp = (props: {
                 &nbsp; Continue with Facebook
               </Button>
               <Button
+                onClick={() => signIn("google")}
                 appearance="default"
                 className="w-full"
                 startIcon={

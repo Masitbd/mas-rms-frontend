@@ -54,6 +54,16 @@ const userApi = baseApi.injectEndpoints({
       invalidatesTags: ["user-list", "single-user"],
     }),
 
+    signUpByUser: build.mutation({
+      query: (data) => ({
+        url: `/user/user-sign-up`,
+        method: "POST",
+        body: data,
+        data: data,
+      }),
+      invalidatesTags: ["user-list", "single-user"],
+    }),
+
     // update
 
     // updateWaiterList: build.mutation({
@@ -83,6 +93,7 @@ export const {
   useUpdateUserProfileMutation,
   useDeleteUserMutation,
   useChangePasswordAdminMutation,
+  useSignUpByUserMutation,
 } = userApi;
 
 export type IUseCreateUserMutation = ReturnType<typeof useGetUserListQuery>;
