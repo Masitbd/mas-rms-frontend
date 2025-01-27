@@ -2,7 +2,7 @@
 "use client";
 import { Loader } from "rsuite";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import pdfMake from "pdfmake/build/pdfmake";
 import "pdfmake/build/vfs_fonts";
 import { formatDate } from "@/utils/formateDate";
@@ -54,7 +54,6 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
   startDate,
   endDate,
 }) => {
-
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
@@ -66,7 +65,6 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
       },
       pageMargins: [20, 20, 20, 20],
       content: [
-
         {
           text: `${data?.branchInfo?.name}`,
           style: "header",
@@ -180,9 +178,6 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
           ]),
         ]),
 
-     
-
-
         {
           table: {
             widths: [80, "*", 60, 60, 60],
@@ -212,7 +207,6 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
                     ),
                   0
                 ),
-
               ].map((text) => ({ text, alignment: "center" })),
             ],
           },
@@ -242,7 +236,6 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
         startDate={startDate}
         endDate={endDate}
       />
-
 
       {createPrintButton(generatePDF)}
 
@@ -318,18 +311,21 @@ const ItemWiseRawConTable: React.FC<TItemWiseRawConProps> = ({
         <div className="grid grid-cols-5 text-center text-lg border-t font-bold text-red-600">
           <p className="col-span-2">GrandTotal:</p>
           <p>
-            {data?.result?.reduce(
-              (acc: any, item: { totalItemQty: any }) =>
-                acc + item.totalItemQty,
-              0
-            )}
+            {
+              data?.result?.reduce(
+                (acc: any, item: any) =>
+                  (acc + item.totalItemQty, 0) as unknown as TGroup
+              ) as unknown as ReactNode
+            }
           </p>
           <p></p>
           <p>
-            {data?.result?.reduce(
-              (acc: any, item: { totalAmount: any }) => acc + item.totalAmount,
-              0
-            )}
+            {
+              data?.result?.reduce(
+                (acc: any, item: any) => acc + item.totalAmount,
+                0
+              ) as unknown as ReactNode
+            }
           </p>
         </div>
       </div>

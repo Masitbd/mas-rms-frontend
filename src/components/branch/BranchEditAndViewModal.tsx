@@ -10,12 +10,14 @@ import {
   Checkbox,
   SelectPicker,
   TagInput,
+  InputPicker,
 } from "rsuite";
 
 import Swal from "sweetalert2";
 
 import { useUpdateBranchMutation } from "@/redux/api/branch/branch.api";
 import { FormBranchDataType } from "@/app/(indoorLayout)/branch/page";
+import { divisionData } from "../consumer-profile/consumerProfileHelper";
 
 type TEdittableProps = {
   data: any;
@@ -50,6 +52,8 @@ export const BranchEditAndViewModal = ({
     address1: "",
     address2: "",
     availability: "offline",
+    division: "",
+    city: "",
   });
 
   useEffect(() => {
@@ -73,6 +77,8 @@ export const BranchEditAndViewModal = ({
       isActive: event.isActive,
       availability: event.availability,
       deliveryLocations: event.deliveryLocations,
+      division: event.division,
+      city: event.city,
     });
   };
 
@@ -153,6 +159,22 @@ export const BranchEditAndViewModal = ({
               <Form.Group controlId="vatNo">
                 <Form.ControlLabel>Vat Reg No:</Form.ControlLabel>
                 <Form.Control name="vatNo" />
+              </Form.Group>
+              <Form.Group controlId="division">
+                <Form.ControlLabel>Division</Form.ControlLabel>
+                <Form.Control
+                  name="division"
+                  accepter={InputPicker}
+                  data={divisionData.map((dd) => ({
+                    label: dd,
+                    value: dd.toLowerCase(),
+                  }))}
+                  style={{ minWidth: "300px" }}
+                />
+              </Form.Group>
+              <Form.Group controlId="city">
+                <Form.ControlLabel>City</Form.ControlLabel>
+                <Form.Control name="city" />
               </Form.Group>
               {/* is active */}
 

@@ -1,6 +1,9 @@
+import { TDeliveryAddress } from "@/components/consumer-profile/consumerProfileHelper";
 import { TCustomer } from "@/components/customers/CustomerTable";
 import { IMenuItemConsumption } from "@/components/menu-item-consumption/TypesAndDefault";
 import { TTableData } from "@/components/Table/Table";
+import { DELIVERY_METHOD } from "@/enums/DeliveryMethod";
+import { ORDER_PLATFORM } from "@/enums/EnumPlatform";
 import { createSlice, createAsyncThunk, Action } from "@reduxjs/toolkit";
 
 export type IItems = {
@@ -61,9 +64,14 @@ export type IOrder = {
   guestType: string;
   status: string;
   branch: string | TBranch;
+  deliveryMethod: DELIVERY_METHOD;
+  deliveryCharge: number;
+  deliveryAddress?: TDeliveryAddress;
+  platform: string;
 };
 
 const initialState: IOrder = {
+  deliveryCharge: 0,
   billNo: 0,
   date: new Date(),
   guest: 0,
@@ -84,6 +92,7 @@ const initialState: IOrder = {
   items: [],
   serviceChargeRate: 0,
   status: "not-Posted",
+  platform: ORDER_PLATFORM.OFFLINE,
 } as unknown as IOrder;
 
 const balanceUpdater = (state: IOrder) => {
@@ -147,7 +156,8 @@ const balanceUpdater = (state: IOrder) => {
       state.totalBill +
       state.totalVat -
       state.totalDiscount +
-      state.serviceCharge;
+      state.serviceCharge +
+      state.deliveryCharge;
 
     state.due = state.netPayable - (state.paid ?? 0) - (state?.pPayment ?? 0);
 

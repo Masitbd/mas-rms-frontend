@@ -1,11 +1,45 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Input, Button, InputGroup } from "rsuite";
 import leftHeroBg from "../../assets/images/leftHeroBG.png";
 import heroFood1 from "../../assets/images/hero-food1.jpg";
+import { useLazyGetDoesDeliverQuery } from "@/redux/api/branch/branch.api";
 
 const HeroSection = () => {
+  const initialStatus = {
+    error: false,
+    initialized: false,
+    message: "",
+  };
+  const [location, setLocation] = useState("");
+  const [status, setStatus] = useState(initialStatus);
+  const [get, { isLoading, data, isSuccess, isUninitialized }] =
+    useLazyGetDoesDeliverQuery();
+  const buttonHandler = async () => {
+    if (location.length) {
+      try {
+        const result = await get(location).unwrap();
+        if (result?.success) {
+          setStatus({
+            ...status,
+            initialized: true,
+            error: false,
+            message: result?.message ?? "No Deliveries available in this area.",
+          });
+        }
+      } catch (error) {
+        console.log("e", error);
+        setStatus({
+          ...status,
+          initialized: true,
+          error: true,
+          message: (error ?? "Failed to fetch data.") as string,
+        });
+      }
+    }
+  };
+
   return (
     <div className="mx-auto lg:bg-white lg:w-[100%] w-[95%] lg:p-0 p-5 rounded-lg shadow-md overflow-hidden grid grid-cols-12 min-h-[283px] lg:min-h-[600px] border-[#A1A1A1] my-5  bg-[#03081F]">
       <div className="lg:pl-14 lg:col-span-6  lg:text-start lg:bg-white col-span-12 flex flex-col justify-center items-center text-center">
@@ -30,6 +64,10 @@ const HeroSection = () => {
               size="lg"
               placeholder="e.g. Mirpur"
               type="text"
+              onChange={(v) => {
+                setLocation(v.toLowerCase() as unknown as string);
+                setStatus({ ...initialStatus });
+              }}
             />
             <InputGroup.Addon className="!rounded-full !p-0">
               <Button
@@ -37,16 +75,21 @@ const HeroSection = () => {
                 color="orange"
                 size="lg"
                 className="!rounded-full lg:w-44 lg:h-14 !font-bold"
+                onClick={() => buttonHandler()}
+                loading={isLoading}
               >
                 Search
               </Button>
             </InputGroup.Addon>
           </InputGroup>
         </div>
-        <p className="mt-2 text-sm text-red-600">
-          Sorry, we don’t deliver to your area.
-        </p>
-        <p className="text-sm text-green-600">We deliver to your area.</p>
+        {status.initialized && status.error ? (
+          <p className="mt-2 text-sm text-red-600">
+            Sorry, we don’t deliver to your area.
+          </p>
+        ) : (
+          <p className="text-sm text-green-600">{data?.data}</p>
+        )}
       </div>
       <div className="relative mt-10 col-span-6 ml-14 invisible lg:visible">
         {/* Pizza eating image */}
@@ -60,6 +103,7 @@ const HeroSection = () => {
           src={heroFood1}
           width={500}
           className="z-20 absolute rounded-3xl bottom-14 -left-16 opacity-90"
+          alt="Food Image"
         />
         {/* Notifications */}
         <div className="bg-white p-2 rounded shadow text-sm z-50 absolute left-28 w-80 top-20 h-20">

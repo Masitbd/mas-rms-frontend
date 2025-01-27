@@ -67,7 +67,6 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
   startDate,
   endDate,
 }) => {
-
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
@@ -141,7 +140,7 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
               ],
               // Define the data rows
               ...data?.result?.[0]?.dateWiseSummary?.map((paymentGroup) =>
-
+                [
                   paymentGroup?.branchName || "N/A",
 
                   paymentGroup?._id?.date || "N/A",
@@ -217,7 +216,6 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
 
   return (
     <div className="p-5">
-
       <ReporetHeader
         data={data}
         name="Sales Report Summery"
@@ -232,9 +230,6 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
           Print
         </button>
       </div>
-
-
-   
 
       <div className="w-full">
         <div className="grid grid-cols-9 bg-gray-100 font-semibold text-center p-2">
@@ -258,7 +253,6 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
             (paymentGroup, paymentIndex) => (
               <div
                 key={paymentIndex}
-
                 className="grid grid-cols-9 text-center p-2 border-b"
               >
                 <div className="text-green-600 font-semibold">
@@ -266,12 +260,9 @@ const DailySalesSummeryTable: React.FC<TDailySalesSummery> = ({
                 </div>
                 <div className=" font-semibold">{paymentGroup._id.date}</div>
 
-               
-              
                 <div className="text-green-600 font-semibold">
                   {paymentGroup._id.date}
                 </div>
-
 
                 <div>{paymentGroup.totalGuest || 0}</div>
 

@@ -9,6 +9,8 @@ import { Dispatch, SetStateAction, SyntheticEvent, useState } from "react";
 import ThreeColumnsIcon from "@rsuite/icons/ThreeColumns";
 
 export const MobileNavMenu = ({
+  isCartOpen,
+  setCartOpen,
   setPopUpOpen,
   onSelect,
   activeKey,
@@ -17,6 +19,8 @@ export const MobileNavMenu = ({
   onSelect: SyntheticEvent<Element, Event>;
   activeKey: string;
   setPopUpOpen: Dispatch<SetStateAction<boolean>>;
+  isCartOpen: boolean;
+  setCartOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const session = useSession();
   const [ismenuOpen, setMenuOpen] = useState(false);
@@ -65,7 +69,7 @@ export const MobileNavMenu = ({
             )}
           </Nav>
           <Nav pullRight className="">
-            <Nav.Item>
+            <Nav.Item onClick={() => setCartOpen(!isCartOpen)}>
               <FontAwesomeIcon icon={faCartShopping} className="" />
             </Nav.Item>
 

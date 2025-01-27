@@ -12,11 +12,13 @@ import { DesktopNavbar } from "./DesktopHamMenu";
 import { MobileNavMenu } from "./MobileNavMenu";
 import SignUpPopUp from "./SignUpPopUp";
 import Loading from "@/app/Loading";
+import Cart from "./Cart";
 
 export const Navbar = () => {
   const [activeKey, setActiveKey] = useState<string>("");
   const [isMobile, setMobile] = useState(false);
   const [popUpOpen, setPopUpOpen] = useState<boolean>(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   useEffect(() => {
     if (window) {
@@ -40,12 +42,16 @@ export const Navbar = () => {
             activeKey={activeKey}
             onSelect={setActiveKey as unknown as SyntheticEvent<Element, Event>}
             setPopUpOpen={setPopUpOpen}
+            isCartOpen={cartOpen}
+            setCartOpen={setCartOpen}
           />
         ) : (
           <DesktopNavbar
             activeKey={activeKey}
             onSelect={setActiveKey as unknown as SyntheticEvent<Element, Event>}
             setPopUpOpen={setPopUpOpen}
+            cartOpen={cartOpen}
+            setCartOpen={setCartOpen}
           />
         )}
       </div>
@@ -54,6 +60,7 @@ export const Navbar = () => {
 
       <div>
         <SignUpPopUp isOpen={popUpOpen} setOpen={setPopUpOpen} />
+        <Cart isOpen={cartOpen} setOpen={setCartOpen} />
       </div>
     </>
   );

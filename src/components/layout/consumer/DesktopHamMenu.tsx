@@ -8,6 +8,8 @@ import NavItemProvider from "./NavItemProvider";
 import { Dispatch, SetStateAction, SyntheticEvent } from "react";
 
 export const DesktopNavbar = ({
+  cartOpen,
+  setCartOpen,
   setPopUpOpen,
   onSelect,
   activeKey,
@@ -16,6 +18,8 @@ export const DesktopNavbar = ({
   onSelect: SyntheticEvent<Element, Event>;
   activeKey: string;
   setPopUpOpen: Dispatch<SetStateAction<boolean>>;
+  cartOpen: boolean;
+  setCartOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const session = useSession();
   return (
@@ -59,13 +63,13 @@ export const DesktopNavbar = ({
               activeKey={activeKey}
               eventKey="4"
               name="Special Offer"
-              href="/consumer/home"
+              href="/consumer/category"
             />
             <NavItemProvider
               activeKey={activeKey}
               eventKey="5"
               name="Track Order"
-              href="/consumer/home"
+              href="/consumer/orders"
             />
 
             <NavItemProvider
@@ -77,7 +81,7 @@ export const DesktopNavbar = ({
           </>
         </Nav>
         <Nav pullRight className="">
-          <Nav.Item>
+          <Nav.Item onClick={() => setCartOpen(!cartOpen)}>
             <FontAwesomeIcon icon={faCartShopping} className="" />
           </Nav.Item>
           {session?.status == "authenticated" ? (
@@ -91,12 +95,10 @@ export const DesktopNavbar = ({
               }
             >
               <div className="">
-                <Nav.Item as={NavLink} href="/profile">
+                <Nav.Item as={NavLink} href="/consumer/profile">
                   Profile
                 </Nav.Item>
-                <Nav.Item as={NavLink} href="/order">
-                  Dashboard
-                </Nav.Item>
+
                 <Nav.Item onClick={() => signOut()}>
                   <Button appearance="primary" color="red">
                     Logout

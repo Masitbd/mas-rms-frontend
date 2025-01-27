@@ -87,7 +87,7 @@ const RawMaterialForm = (props: IMaterialFormProps) => {
           <Form.ControlLabel>Conversion</Form.ControlLabel>
           <Form.Control name="conversion" size="lg" type="number" />
         </Form.Group>
-        <BranchFieldProvider />
+
         <Form.Group>
           <Form.ControlLabel>Description</Form.ControlLabel>
           <Form.Control name="description" accepter={Textarea} />

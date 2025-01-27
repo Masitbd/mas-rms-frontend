@@ -4,6 +4,8 @@ import { Button, Radio } from "rsuite";
 import bkashLogo from "../../assets/images//bkashlogo.png";
 import ssl from "../../assets/images/sslCommerz.png";
 import cash from "../../assets/images/cash.png";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { updateBillDetails } from "@/redux/features/order/orderSlice";
 
 const Payment = () => {
   const paymentMethod = [
@@ -23,6 +25,9 @@ const Payment = () => {
       value: "ssl-commerze",
     },
   ];
+
+  const dispatch = useAppDispatch();
+  const bill = useAppSelector((state) => state?.order);
   return (
     <div className=" w-full h-full lg:p-6 p-3  rounded-xl border border-[#DCDCDC] bg-white">
       <div className="flex flex-row justify-between">
@@ -34,8 +39,15 @@ const Payment = () => {
             <div
               className="flex items-center bg-[#FAFBFF] rounded-xl border border-[#DCDCDC] px-4 py-2 cursor-pointer my-2"
               key={index}
+              onClick={() =>
+                dispatch(updateBillDetails({ paymentMode: pm.value }))
+              }
             >
-              <Radio className="mr-3" value={pm.value} />
+              <Radio
+                className="mr-3"
+                value={pm.value}
+                checked={bill.paymentMode == pm.value}
+              />
               <Image src={pm.image} width={40} alt="Bkash" className="mx-2" />
               <h2 className="text-lg">{pm.name}</h2>
             </div>

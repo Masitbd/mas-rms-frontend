@@ -30,5 +30,8 @@ export const baseApi = createApi({
     "waiterList",
     "branch",
     "due-collection-history",
+    "delivery-addresses",
+    "single-delivery-address",
+    "user-orders",
   ],
 });

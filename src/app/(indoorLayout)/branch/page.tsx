@@ -1,6 +1,7 @@
 "use client";
 
 import BranchTable from "@/components/branch/BranchTable";
+import { divisionData } from "@/components/consumer-profile/consumerProfileHelper";
 import {
   useCreateBranchMutation,
   useGetBranchQuery,
@@ -11,6 +12,7 @@ import {
   Button,
   Checkbox,
   Form,
+  InputPicker,
   Loader,
   SelectPicker,
   TagInput,
@@ -29,6 +31,8 @@ export type FormBranchDataType = {
   address2: string;
   deliveryLocations?: string[];
   availability: string;
+  division: string;
+  city: string;
 };
 
 const BranchPage = () => {
@@ -51,6 +55,8 @@ const BranchPage = () => {
     address1: "",
     address2: "",
     availability: "offline",
+    division: "",
+    city: "",
   };
 
   const [formData, setFormData] =
@@ -145,6 +151,22 @@ const BranchPage = () => {
           </Form.Group>
           {/* is active */}
 
+          <Form.Group controlId="division">
+            <Form.ControlLabel>Division</Form.ControlLabel>
+            <Form.Control
+              name="division"
+              accepter={InputPicker}
+              data={divisionData.map((dd) => ({
+                label: dd,
+                value: dd.toLowerCase(),
+              }))}
+              style={{ minWidth: "300px" }}
+            />
+          </Form.Group>
+          <Form.Group controlId="city">
+            <Form.ControlLabel>City</Form.ControlLabel>
+            <Form.Control name="city" />
+          </Form.Group>
           {/* address 1 */}
           <Form.Group controlId="address1">
             <Form.ControlLabel>Address Line 1</Form.ControlLabel>

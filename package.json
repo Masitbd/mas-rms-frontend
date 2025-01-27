@@ -29,6 +29,7 @@
     "react-easy-crop": "^5.2.0",
     "react-image-crop": "^11.0.7",
     "react-redux": "^9.1.2",
+    "redux-persist": "^6.0.0",
     "remove-undefined-objects": "^5.0.0",
     "rsuite": "^5.73.1",
     "sweetalert2": "^11.15.10",
