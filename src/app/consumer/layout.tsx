@@ -25,7 +25,7 @@ export default function RootLayout({
             <Header>
               <Navbar />
             </Header>
-            <Container className="rs-container-has-sidebar">
+            <Container className="rs-container-has-sidebar min-h-[80vh]">
               <Content>{children}</Content>
             </Container>
             <Footer>

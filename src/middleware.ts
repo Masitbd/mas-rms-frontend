@@ -1,7 +1,14 @@
 import { getToken } from "next-auth/jwt";
 
 import { NextRequest, NextResponse } from "next/server";
-const unprotectedRoutes = ["/login", "/consumer/home", "/signup"];
+import { ENUM_USER } from "./enums/EnumUser";
+const unprotectedRoutes = [
+  "/login",
+  "/consumer/home",
+  "/signup",
+  "/consumer/category",
+  "/",
+];
 export default async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
@@ -27,6 +34,19 @@ export default async function middleware(req: NextRequest) {
     return response;
   }
 
+  if (req.nextUrl.pathname == "/" && token?.data?.user?.role) {
+    if (token?.data?.user?.role == "user") {
+      return NextResponse.redirect(`${req.nextUrl.origin}/consumer/home`);
+    }
+    if (token?.data?.user?.role == ENUM_USER.SUPER_ADMIN) {
+      return NextResponse.redirect(`${req.nextUrl.origin}/home`);
+    } else {
+      return NextResponse.redirect(`${req.nextUrl.origin}/welcome-page`);
+    }
+  }
+  if (req.nextUrl.pathname == "/") {
+    return NextResponse.redirect(`${req.nextUrl.origin}/consumer/home`);
+  }
   return NextResponse.next();
 }
 

@@ -3,7 +3,7 @@ import { baseApi } from "../baseApi";
 const itemsCategoryApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getItemsCategory: build.query({
-      query: (params?: { menuGroup?: string; isPopular: boolean }) => ({
+      query: (params?: { menuGroup?: string; isPopular?: boolean }) => ({
         url: "/item-categories",
         method: "GET",
         params: params,

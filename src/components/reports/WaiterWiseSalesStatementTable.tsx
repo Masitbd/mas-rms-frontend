@@ -94,13 +94,11 @@ const WaiterSalesDetailsTable: React.FC<TReportsTable> = ({
           const groupContent = [
             // Menu Group Header
             {
-
               text: group.branchName,
               style: "groupHeader2",
               margin: [0, 10, 0, 5],
             },
             {
-
               text: group.waiterName,
               style: "groupHeader",
               margin: [0, 10, 0, 5],
@@ -109,13 +107,11 @@ const WaiterSalesDetailsTable: React.FC<TReportsTable> = ({
             // Item Groups
             ...group?.categories?.map((itemGroup) => [
               {
-
                 text: itemGroup.categoryName,
                 style: "groupHeader3",
                 margin: [0, 10, 0, 5],
               },
               {
-
                 table: {
                   headerRows: 1,
                   widths: ["*", "*", "*", "*", "*"],
@@ -214,7 +210,7 @@ const WaiterSalesDetailsTable: React.FC<TReportsTable> = ({
           fontSize: 16,
           bold: true,
         },
-h
+
         groupHeader2: {
           fontSize: 16,
           bold: true,

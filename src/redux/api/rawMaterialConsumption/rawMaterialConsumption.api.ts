@@ -15,6 +15,13 @@ const rawMaterialConsumption = baseApi.injectEndpoints({
       }),
       providesTags: ["consumption"],
     }),
+    getDiscountedConsumption: build.query({
+      query: () => ({
+        url: "/raw-material-consumption/discounted/items",
+        method: "GET",
+      }),
+      providesTags: ["consumption"],
+    }),
     getSingleConsumption: build.query({
       query: (id: string) => ({
         url: `/raw-material-consumption/${id}`,
@@ -92,6 +99,7 @@ export const {
   useUploadConsumptionImagesMutation,
   useUpdateConsumptionImagesMutation,
   useDeleteConsumptionImageMutation,
+  useGetDiscountedConsumptionQuery,
 } = rawMaterialConsumption;
 
 export type TuseUploadConsumptionImagesMutation = ReturnType<

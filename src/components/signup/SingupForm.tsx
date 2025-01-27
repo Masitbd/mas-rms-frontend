@@ -1,18 +1,20 @@
 import { ENUM_PROVIDER } from "@/enums/ProviderEnum";
 import { useSignUpByUserMutation } from "@/redux/api/users/user.api";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Button, Checkbox, Divider, Form } from "rsuite";
 import Swal from "sweetalert2";
 
 const SingupForm = () => {
+  const router = useRouter();
   const [formData, setFormdata] = useState<Record<string, string>>();
   const [post, { isLoading }] = useSignUpByUserMutation();
   const handleSIgnUp = async () => {
     const userData = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
+      name: formData?.name,
+      email: formData?.email,
+      password: formData?.password,
       provider: ENUM_PROVIDER.LOCAL,
     };
 
@@ -20,6 +22,7 @@ const SingupForm = () => {
       const result = await post(userData).unwrap();
       if (result.success) {
         Swal.fire("success", "Account Created successfully", "success");
+        router?.push("/login");
       }
     } catch (error) {
       Swal.fire("Error", (error ?? "Failed to sign up") as string, "error");

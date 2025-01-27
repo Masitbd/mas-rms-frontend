@@ -1,15 +1,18 @@
+"use client";
 import CategoryDelivery from "@/components/consumer-components/CategoryDelivery";
 import CategoryHero from "@/components/consumer-components/CategoryHero";
 import CategoryLayout from "@/components/consumer-components/CategoryLayout";
 import mapImg from "@/assets/images/mapImg.png";
 import Image from "next/image";
 import CustonmerReviews from "@/components/consumer-components/CustonmerReviews";
+import DeliveryAddressConfirmtion from "@/components/consumer-components/DeliveryAddressConfirmtion";
 
-const CategoryPage = () => {
+const CategoryPage = (props: { searchParams: { categoryId: string } }) => {
   return (
-    <div className="max-w-7xl mx-auto lg:mt-28 mt-36 px-2">
+    <div className="max-w-7xl mx-auto lg:mt-28 mt-36 lg:px-2 px-0">
+      <DeliveryAddressConfirmtion />
       <CategoryHero />
-      <CategoryLayout />
+      <CategoryLayout categoryId={props?.searchParams?.categoryId} />
       <CategoryDelivery />
       <div className="my-10 relative">
         <div>

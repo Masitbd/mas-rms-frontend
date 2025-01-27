@@ -47,6 +47,8 @@ const LoginForm = () => {
         const updatedSession = await getSession();
         if (updatedSession?.user?.role === "super-admin") {
           route.push("/home");
+        } else if (updatedSession?.user?.role == "user") {
+          route.push("/consumer/home");
         } else {
           route.push("/welcome-page");
         }

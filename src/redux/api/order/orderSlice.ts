@@ -16,6 +16,7 @@ const order = baseApi.injectEndpoints({
         "single-kitchen-order",
         "active-table-list",
         "active-table-list-details",
+        "user-orders",
       ],
     }),
     updateOrder: build.mutation({
@@ -111,6 +112,14 @@ const order = baseApi.injectEndpoints({
       }),
       providesTags: ["order", "due-collection-history"],
     }),
+
+    getUserOrders: build.query({
+      query: () => ({
+        url: `/order/user-orders/`,
+        method: "GET",
+      }),
+      providesTags: ["user-orders"],
+    }),
   }),
 });
 
@@ -124,8 +133,10 @@ export const {
   useUpdateOrderMutation,
   useStatusChangerMutation,
   useLazyGetSIngleOrderWithDetailsQuery,
+  useGetSIngleOrderWithDetailsQuery,
   useDueCollectionMutation,
   useGetDueCollectionHistoryQuery,
+  useGetUserOrdersQuery,
 } = order;
 
 export type IStatusChanger = ReturnType<typeof useStatusChangerMutation>[0];

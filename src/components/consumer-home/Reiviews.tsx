@@ -20,9 +20,10 @@ const Reviews = async () => {
             height={500}
             width={600}
             className="z-50 absolute left-[12rem]"
+            alt="text"
           />
           <div className="h-[23rem] relative w-[70%]">
-            <Image src={ReviewManBg} fill className="z-10" />
+            <Image src={ReviewManBg} fill className="z-10" alt="Text" />
           </div>
         </div>
         <div className="lg:col-span-6  col-span-12 flex flex-col justify-end px-2 lg:px-0">
@@ -36,7 +37,7 @@ const Reviews = async () => {
           {/* Moovable  */}
           <div className="mt-5">
             <Carousel className=" !bg-white !h-[18rem]" autoplay shape="bar">
-              {posts.slice(0, 5).map((post, index) => (
+              {posts.slice(0, 5).map((post: any, index: number) => (
                 <div
                   className="flex flex-col justify-end !bg-white"
                   key={index}
@@ -51,7 +52,10 @@ const Reviews = async () => {
 
                   <div className="mt-14">
                     <div className="flex items-center ">
-                      <Avatar src={reviewMan} className="!rounded-full" />
+                      <Avatar
+                        src={reviewMan as unknown as string}
+                        className="!rounded-full"
+                      />
                       <div className="mx-4">
                         <p> Nafisa Hossain Apon</p>
                         <p className="text-sm text-[#828282]">

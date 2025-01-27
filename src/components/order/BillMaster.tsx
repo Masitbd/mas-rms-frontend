@@ -79,6 +79,7 @@ const BillMaster = (props: { mode: string }) => {
         serviceChargeRate: bill?.serviceChargeRate ?? 0,
         discountCard: bill?.discountCard,
         customer: bill?.customer,
+        platform: bill?.platform,
       } as IOrder;
 
       if (

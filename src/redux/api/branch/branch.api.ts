@@ -9,6 +9,26 @@ const branchApi = baseApi.injectEndpoints({
       }),
       providesTags: ["branch"],
     }),
+    getDoesDeliver: build.query({
+      query: (param: string) => ({
+        url: `/branch/does-deliver/${param}`,
+        method: "GET",
+      }),
+      providesTags: ["branch"],
+    }),
+    getDeliverableCIty: build.query({
+      query: (params: string) => ({
+        url: `/branch/deliverable-city/${params}`,
+        method: "GET",
+      }),
+    }),
+    getDeliverableZone: build.query({
+      query: (params: { division: string; city: string }) => ({
+        url: `/branch/deliverable-zone/zone`,
+        method: "GET",
+        params,
+      }),
+    }),
 
     //  crate table
     createBranch: build.mutation({
@@ -48,4 +68,9 @@ export const {
   useGetBranchQuery,
   useUpdateBranchMutation,
   useDeleteBranchMutation,
+  useGetDeliverableCItyQuery,
+  useLazyGetDeliverableCItyQuery,
+  useLazyGetDeliverableZoneQuery,
+  useGetDoesDeliverQuery,
+  useLazyGetDoesDeliverQuery,
 } = branchApi;

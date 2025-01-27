@@ -3,6 +3,7 @@ import DeliveryAddress from "@/components/checkout/DeliveryAddress";
 import OrderDetails from "@/components/checkout/OrderDetails";
 import Payment from "@/components/checkout/Payment";
 import PersonalDetails from "@/components/checkout/PersonalDetails";
+import { useAppSelector } from "@/lib/hooks";
 import React from "react";
 
 const Checkout = () => {
