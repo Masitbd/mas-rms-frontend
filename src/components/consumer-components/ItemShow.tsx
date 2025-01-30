@@ -40,6 +40,8 @@ const ItemShow = ({
   isLoading: boolean;
   isFetching: boolean;
 }) => {
+  // console.log(items, "items");
+
   return (
     <div className="mt-20 md:px-10">
       {(isFetching || isLoading) && <Loading />}

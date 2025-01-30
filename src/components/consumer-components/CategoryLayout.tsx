@@ -28,12 +28,23 @@ const styles = {
 
 const CategoryLayout = ({ categoryId }: { categoryId: string }) => {
   const [activeKey, setActiveKey] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchQuery(searchTerm);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   const [id, setId] = useState("");
 
   const queryPrams: Record<string, any> = {};
 
   if (id) queryPrams.id = id;
+  if (searchQuery) queryPrams.search = searchQuery;
 
   const handleItemClick = (itemId: string) => {
     setId(itemId);
@@ -47,6 +58,8 @@ const CategoryLayout = ({ categoryId }: { categoryId: string }) => {
     isFetching: itemFetching,
   } = useGetItemsByCategoryQuery(queryPrams);
 
+  // console.log(items, "in cate layout");
+
   useEffect(() => {
     if (!id && categoryId) {
       setId(categoryId);
@@ -59,7 +72,11 @@ const CategoryLayout = ({ categoryId }: { categoryId: string }) => {
       <div className="bg-[#FC8A06] w-full max-w-7xl mx-auto h-16  px-2  md:px-8 flex items-center justify-center gap-5">
         <div className="flex-1">
           <InputGroup inside className="w-full max-w-md">
-            <Input placeholder="Search for menu" />
+            <Input
+              placeholder="Search for menu"
+              value={searchTerm}
+              onChange={(value) => setSearchTerm(value)}
+            />
             <InputGroup.Button>
               <SearchIcon />
             </InputGroup.Button>
