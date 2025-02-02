@@ -68,7 +68,7 @@ const MyCart = () => {
     return { disabled: false, reason: "" };
   };
   return (
-    <div className="bg-[#F9F9F9] border-[1px] h-full max-h-[1150px] mt-10 overflow-y-auto w-full lg:w-[260px] flex flex-col">
+    <div className="bg-[#F9F9F9] border-[1px] h-full max-h-[1150px] lg:mt-10 mt-0 overflow-y-auto w-full lg:w-[260px] flex flex-col">
       <div className="flex bg-[#028643] py-6 justify-center items-center ">
         <Image width={30} height={30} src={basketImg} alt="basket" />
         <p className="text-white font-bold md:text-xl">My Basket</p>

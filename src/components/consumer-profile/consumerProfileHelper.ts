@@ -1,6 +1,6 @@
 import { Schema } from "rsuite";
 
-const { StringType } = Schema.Types;
+const { StringType, NumberType } = Schema.Types;
 
 export const deliveryLocationModel = Schema.Model({
   name: StringType().isRequired("Full Name is required."),
@@ -44,3 +44,37 @@ export interface TDeliveryAddress {
   userId: string;
   isDefault: boolean;
 }
+
+export const profileModal = Schema.Model({
+  name: StringType().isRequired("Name is required"),
+  email: StringType()
+    .isEmail("Please enter a valid email")
+    .isRequired("Email is required"),
+  phone: StringType().addRule((value) => {
+    if (value && !/^\d{10}$/.test(value)) {
+      return false;
+    }
+    return true;
+  }, "Please enter a valid 11-digit phone number"),
+  age: NumberType().min(0, "Age cannot be negative"),
+  gender: StringType(),
+});
+
+export const genderOptions = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+  { label: "Other", value: "other" },
+];
+
+export const initialProfileValue = {
+  name: "",
+  email: "",
+  phone: "",
+  age: "",
+  gender: "",
+};
+export const resetPasswordModel = Schema.Model({
+  email: StringType()
+    .isEmail("Please enter a valid email")
+    .isRequired("Email is required"),
+});

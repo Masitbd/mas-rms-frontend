@@ -21,7 +21,7 @@ const Cart = ({
         <Modal.Header>
           <Modal.Title></Modal.Title>
         </Modal.Header>
-        <Modal.Body className="flex items-center justify-center mt-5">
+        <Modal.Body className="">
           <MyCart />
         </Modal.Body>
       </Modal>

@@ -7,6 +7,7 @@ const profileApi = baseApi.injectEndpoints({
         url: "/profile",
         method: "GET",
       }),
+      providesTags: ["single-profile"],
     }),
   }),
 });

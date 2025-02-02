@@ -12,7 +12,11 @@ import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import CharacterAuthorizeIcon from "@rsuite/icons/CharacterAuthorize";
 import { ILoginData, model } from "./ModalsAndTypes";
+import ForgetPassword from "../consumer-profile/ForgetPassword";
+import { NavLink } from "../layout/Navlink";
+import Link from "next/link";
 config.autoAddCss = false;
 
 const LoginForm = () => {
@@ -62,6 +66,8 @@ const LoginForm = () => {
     }
   }
 
+  const [forgetPasswordOpen, setForgetPasswordOpen] = useState(false);
+
   return (
     <div>
       <Form
@@ -104,7 +110,23 @@ const LoginForm = () => {
           </InputGroup>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group className="grid grid-cols-2 gap-2">
+          <Button
+            type="submit"
+            style={{ whiteSpace: "pre" }}
+            className="w-full text-lg font-bold whitespace-pre"
+            size="lg"
+            appearance="primary"
+            loading={session.status === "loading" || loading}
+            color="green"
+            as={Link}
+            href="/signup"
+          >
+            <div className="text-lg flex items-center space-x-3">
+              <span>Sign Up</span> {`  `}
+              <CharacterAuthorizeIcon />
+            </div>
+          </Button>
           <Button
             type="submit"
             style={{ backgroundColor: "#003CFF", whiteSpace: "pre" }}
@@ -119,6 +141,11 @@ const LoginForm = () => {
             </div>
           </Button>
         </Form.Group>
+        <ForgetPassword
+          resetModalOpen={forgetPasswordOpen}
+          setResetModalOpen={setForgetPasswordOpen}
+          showText={true}
+        />
       </Form>
     </div>
   );
