@@ -16,7 +16,10 @@ import config from "@/config";
 import { ENUM_PROVIDER } from "@/enums/ProviderEnum";
 import { jwtDecypherAndUserInfoProvider } from "@/helpers/JWTDeccypherAndInfoProvider";
 
-async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
+async function refreshAccessToken(
+  nextAuthJWTCookie: JWT,
+  trigger?: string
+): Promise<JWT> {
   try {
     // Get a new access token from backend using the refresh token
 
@@ -38,9 +41,15 @@ async function refreshAccessToken(nextAuthJWTCookie: JWT): Promise<JWT> {
       });
 
     const accessToken: BackendAccessJWT = await res.data?.data?.accessToken;
-    const { exp }: DecodedJWT = jwtDecode(accessToken as unknown as string);
+    const { exp, ...rest }: DecodedJWT = jwtDecode(
+      accessToken as unknown as string
+    );
 
     // Update the token and validity in the next-auth cookie
+
+    if (trigger == "update") {
+      nextAuthJWTCookie.data.user = rest;
+    }
     nextAuthJWTCookie.data.validity.valid_until = exp;
     nextAuthJWTCookie.data.tokens.accessToken =
       accessToken as unknown as string;
@@ -134,6 +143,10 @@ const handler = NextAuth({
       session,
       trigger,
     }): Promise<JWT> {
+      if (trigger == "update") {
+        console.log("Updating user info");
+        return await refreshAccessToken(token, trigger);
+      }
       if (
         account?.provider == "google" &&
         (trigger == "signUp" || trigger == "signIn")
@@ -204,7 +217,10 @@ const handler = NextAuth({
       console.debug("Both tokens have expired");
       return { ...token, error: "RefreshTokenExpired" } as JWT;
     },
-    async session({ session, token }) {
+    async session({ session, token, trigger }) {
+      if (trigger == "update") {
+        console.debug("from session");
+      }
       session.user = token.data.user;
       session.validity = token.data.validity;
       session.error = token.error;

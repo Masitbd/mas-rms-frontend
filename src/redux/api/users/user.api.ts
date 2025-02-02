@@ -35,7 +35,7 @@ const userApi = baseApi.injectEndpoints({
         body: data.profile,
         data: data.profile,
       }),
-      invalidatesTags: ["user-list", "single-user"],
+      invalidatesTags: ["user-list", "single-user", "single-profile"],
     }),
     deleteUser: build.mutation({
       query: (uuid: string) => ({
@@ -64,25 +64,22 @@ const userApi = baseApi.injectEndpoints({
       invalidatesTags: ["user-list", "single-user"],
     }),
 
-    // update
-
-    // updateWaiterList: build.mutation({
-    //   query: (options) => ({
-    //     url: `/waiter/${options.id}`,
-    //     method: "PATCH",
-    //     body: options.data,
-    //     data: options?.data,
-    //   }),
-    //   invalidatesTags: ["waiterList"],
-    // }),
-
-    // deleteWaiterList: build.mutation({
-    //   query: (id) => ({
-    //     url: `/waiter/${id}`,
-    //     method: "DELETE",
-    //   }),
-    //   invalidatesTags: ["waiterList"],
-    // }),
+    changePassword: build.mutation({
+      query: (data) => ({
+        url: `/auth/change-password`,
+        method: "POST",
+        body: data,
+        data: data,
+      }),
+    }),
+    forgetPassword: build.mutation({
+      query: (data) => ({
+        url: `/auth/forgot-password`,
+        method: "POST",
+        body: data,
+        data: data,
+      }),
+    }),
   }),
 });
 
@@ -94,6 +91,8 @@ export const {
   useDeleteUserMutation,
   useChangePasswordAdminMutation,
   useSignUpByUserMutation,
+  useChangePasswordMutation,
+  useForgetPasswordMutation,
 } = userApi;
 
 export type IUseCreateUserMutation = ReturnType<typeof useGetUserListQuery>;

@@ -125,7 +125,6 @@ const ProductVariationModal = ({
   };
 
   const handleRemove = (id: string) => {
-    console.log(id);
     dispatch(removeItem(id));
   };
 
@@ -173,11 +172,11 @@ const ProductVariationModal = ({
           {/* <Modal.Title>Modal Title</Modal.Title> */}
         </Modal.Header>
         <Modal.Body>
-          <div className="w-full h-96 max-h-72 relative">
+          <div className="w-full lg:h-96 h-56 relative rounded-xl ">
             <Image
               src={item?.images?.files[0]?.secure_url || burgerImg}
               alt="Image"
-              className="h-52"
+              className="h-52 rounded-xl border border-stone-400"
               fill
             />
           </div>

@@ -33,5 +33,6 @@ export const baseApi = createApi({
     "delivery-addresses",
     "single-delivery-address",
     "user-orders",
+    "single-profile",
   ],
 });

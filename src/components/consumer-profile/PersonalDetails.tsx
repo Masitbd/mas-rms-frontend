@@ -1,9 +1,17 @@
 import { useSession } from "next-auth/react";
-import React, { ReactNode } from "react";
+import React, { ReactNode, SetStateAction } from "react";
 import { Button } from "rsuite";
 import { IProfile } from "../users/Types&Defaults";
 
-const PersonalDetails = ({ profileData }: { profileData: IProfile }) => {
+const PersonalDetails = ({
+  profileData,
+  profileModalOpen,
+  setProfileModalOpen,
+}: {
+  profileData: IProfile;
+  profileModalOpen: boolean;
+  setProfileModalOpen: React.Dispatch<SetStateAction<boolean>>;
+}) => {
   const personalDetailsFields: Array<keyof typeof profileData> = [
     "name",
     "age",
@@ -15,7 +23,12 @@ const PersonalDetails = ({ profileData }: { profileData: IProfile }) => {
       <div className="flex flex-row justify-between">
         <h2 className="text-2xl font-bold ">Personal Details</h2>
         <h5 className="font-semibold">
-          <Button size="sm" appearance="subtle" className="!font-semibold">
+          <Button
+            size="sm"
+            appearance="subtle"
+            className="!font-semibold"
+            onClick={() => setProfileModalOpen(true)}
+          >
             Change
           </Button>
         </h5>

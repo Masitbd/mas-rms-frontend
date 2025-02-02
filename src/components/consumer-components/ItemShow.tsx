@@ -54,10 +54,10 @@ const ItemShow = ({
               {group?.items?.map((item) => (
                 <div
                   key={item?.itemName}
-                  className="bg-[#FDFDFD] shadow-lg border-[1px] border-gray-100 w-full md:w-[410px] h-full md:h-[200px] mt-10 rounded-lg flex items-center justify-between gap-5 px-3 "
+                  className="bg-[#FDFDFD] shadow-lg border-[1px] border-gray-100 w-full md:w-[410px] h-full md:h-[200px] mt-10 rounded-lg flex items-center justify-between gap-5 "
                 >
                   {/* text */}
-                  <div className="flex flex-col gap-3 justify-between">
+                  <div className="flex flex-col gap-3 justify-between px-2">
                     <p className="text-lg font-bold">{item?.itemName}</p>
                     <p className="text-gray-900 text-sm">
                       {" "}
@@ -68,7 +68,7 @@ const ItemShow = ({
 
                   {/* iamge */}
 
-                  <div className="w-[400px] md:w-[330px] relative h-[150px]">
+                  <div className="w-[180px] md:w-[200px] relative lg:h-[150px] h-[130px]">
                     <Image
                       src={item?.images?.files[0].secure_url || burgerImg}
                       alt="image"
