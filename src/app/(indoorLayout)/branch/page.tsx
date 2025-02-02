@@ -51,6 +51,7 @@ const BranchPage = () => {
     phone: "",
     email: "",
     vatNo: "",
+    binNo: "",
     isActive: false,
     address1: "",
     address2: "",
@@ -148,6 +149,11 @@ const BranchPage = () => {
           <Form.Group controlId="vatNo">
             <Form.ControlLabel>Vat Reg No:</Form.ControlLabel>
             <Form.Control name="vatNo" />
+          </Form.Group>
+          {/* bin */}
+          <Form.Group controlId="binNo">
+            <Form.ControlLabel>BIN:</Form.ControlLabel>
+            <Form.Control name="binNo" />
           </Form.Group>
           {/* is active */}
 

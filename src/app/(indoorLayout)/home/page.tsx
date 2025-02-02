@@ -8,10 +8,8 @@ const DashHomPage = () => {
   return (
     <div>
       <div>
-
         {data?.data?.branchWiseData?.map((item: any) => (
           <div key={item.branchName}>
-
             <h1 className="my-16 text-2xl text-blue-600 font-bold text-center ">
               {item.branchName}
             </h1>
@@ -43,7 +41,7 @@ const DashHomPage = () => {
               </div>
 
               <div className="bg-[#f5f52745] p-5 rounded-lg w-52 text-neutral-800 text-xl">
-                <p>Last 30 dasy total paid</p>
+                <p>Last 30 day&apos;s total paid</p>
                 <p className="font-semibold my-3 text-red-600 text-xl">
                   {item.lastMonthTotalPaid}
                 </p>
