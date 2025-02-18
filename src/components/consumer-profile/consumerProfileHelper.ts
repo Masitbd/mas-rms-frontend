@@ -56,7 +56,7 @@ export const profileModal = Schema.Model({
     }
     return true;
   }, "Please enter a valid 11-digit phone number"),
-  age: NumberType().min(0, "Age cannot be negative"),
+
   gender: StringType(),
 });
 

@@ -1,6 +1,6 @@
 import { useGetProfileListQuery } from "@/redux/api/profile/profile.api";
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
-import { Button, Form, Loader, Modal, SelectPicker } from "rsuite";
+import { Button, DatePicker, Form, Loader, Modal, SelectPicker } from "rsuite";
 import {
   genderOptions,
   initialProfileValue,
@@ -10,18 +10,26 @@ import Loading from "@/app/Loading";
 import { useUpdateUserProfileMutation } from "@/redux/api/users/user.api";
 import { useSession } from "next-auth/react";
 import Swal from "sweetalert2";
+import { IProfile } from "../users/Types&Defaults";
+import dobToAge from "dob-to-age";
 
 const ProfileInfoChanger = ({
   profileModalOpen,
   setProfileModalOpen,
+  additionalInfo,
 }: {
   profileModalOpen: boolean;
   setProfileModalOpen: React.Dispatch<SetStateAction<boolean>>;
+  additionalInfo?: boolean;
 }) => {
   const { update, data: SessionData } = useSession();
   const formRef = useRef<any>();
-  const { data, isLoading: profileDataLoading } =
-    useGetProfileListQuery(undefined);
+  const {
+    data,
+    isLoading: profileDataLoading,
+    isFetching,
+    refetch,
+  } = useGetProfileListQuery(undefined);
   const [profileData, setProfileData] = React.useState<any>();
 
   const [updateProfile, { isLoading: updateProfileLoading }] =
@@ -61,22 +69,55 @@ const ProfileInfoChanger = ({
     }
   };
 
+  const dobHandler = (v: string) => {
+    // Create a date object for 2024-11-30
+    const specificDate = new Date(v);
+
+    // Format the date into a custom string
+    const year = specificDate.getFullYear(); // Get the year (2024)
+    const month = String(specificDate.getMonth() + 1).padStart(2, "0"); // Get the month (11), pad if needed
+    const day = String(specificDate.getDate()).padStart(2, "0"); // Get the day (30)
+
+    // Combine the parts into a single numeric string
+    const formattedDate = `${year}-${month}-${day}`;
+    const age = dobToAge(formattedDate);
+    const ageData = (age?.count + " " + age?.unit) as string;
+
+    setProfileData({
+      ...profileData,
+      age: ageData,
+      dateOfBirth: v,
+    });
+  };
+
   useEffect(() => {
-    if (data?.data?.profile) {
+    if (data?.data?.profile && profileModalOpen) {
       setProfileData(JSON.parse(JSON?.stringify(data?.data?.profile)));
     }
-  }, [data, data?.data?.profile]);
+  }, [data, data?.data?.profile, isFetching, profileModalOpen]);
 
+  console.log(profileData);
   return (
     <div>
-      <Modal open={profileModalOpen} style={{ marginTop: "4rem" }} overflow>
+      <Modal
+        open={profileModalOpen}
+        style={{ marginTop: !additionalInfo ? "4rem" : "" }}
+        overflow
+      >
         <Modal.Body>
           <>
-            <div className="bg-[#FC8A06] text-center  font-semibold text-white rounded py-2 relative grid grid-cols-12 ">
+            <div
+              className={`${
+                !additionalInfo ? " bg-[#FC8A06]" : "bg-blue-600"
+              } text-center  font-semibold text-white rounded py-2 relative grid grid-cols-12 `}
+            >
               <div className="text-center col-span-11 text-lg">
                 Change Your Profile
               </div>
-              <div className="text-center rounded bg-red-600 mx-1 cursor-pointer">
+              <div
+                className="text-center rounded bg-red-600 mx-1 cursor-pointer"
+                onClick={() => handleClose()}
+              >
                 X
               </div>
             </div>
@@ -111,7 +152,55 @@ const ProfileInfoChanger = ({
                         </Form.HelpText>
                       </Form.Group>
                     </div>
-
+                    {additionalInfo && (
+                      <>
+                        <div>
+                          <Form.Group controlId="fatherName">
+                            <Form.ControlLabel className="block text-sm font-medium text-gray-700 mb-1">
+                              Father Name
+                            </Form.ControlLabel>
+                            <Form.Control
+                              name="fatherName"
+                              className="w-full px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <Form.HelpText className="text-xs text-gray-500 mt-1">
+                              Required
+                            </Form.HelpText>
+                          </Form.Group>
+                        </div>
+                        <div>
+                          <Form.Group controlId="motherName">
+                            <Form.ControlLabel className="block text-sm font-medium text-gray-700 mb-1">
+                              Mother Name
+                            </Form.ControlLabel>
+                            <Form.Control
+                              name="motherName"
+                              className="w-full px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <Form.HelpText className="text-xs text-gray-500 mt-1">
+                              Required
+                            </Form.HelpText>
+                          </Form.Group>
+                        </div>
+                        <div className="col-span-2">
+                          <Form.Group controlId="dateOfBirth">
+                            <Form.ControlLabel className="block text-sm font-medium text-gray-700 mb-1">
+                              Date of Birth
+                            </Form.ControlLabel>
+                            <Form.Control
+                              name="dateOfBirth"
+                              accepter={DatePicker}
+                              value={new Date(profileData?.dateOfBirth)}
+                              onChange={(e) => dobHandler(e)}
+                              block
+                            />
+                            <Form.HelpText className="text-xs text-gray-500 mt-1">
+                              Required
+                            </Form.HelpText>
+                          </Form.Group>
+                        </div>
+                      </>
+                    )}
                     {/* Email Field - Full width on mobile, spans 2 columns on desktop */}
                     <div className="md:col-span-2">
                       <Form.Group controlId="email">
@@ -153,7 +242,6 @@ const ProfileInfoChanger = ({
                         </Form.ControlLabel>
                         <Form.Control
                           name="age"
-                          type="number"
                           min={0}
                           className="w-full px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />

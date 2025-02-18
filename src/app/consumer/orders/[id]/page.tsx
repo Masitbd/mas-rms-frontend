@@ -67,11 +67,21 @@ const SingleOrder = ({ params }: { params: { id: string } }) => {
         <div className="flex w-full justify-between">
           <h2 className="text-2xl font-bold my-5">Order Status</h2>
           <Tag
-            color={`${data?.data?.status == "notPosted" ? "red" : "green"}`}
+            color={`${
+              data?.data?.status == "notPosted"
+                ? "yellow"
+                : data?.data?.status == "void"
+                ? "red"
+                : "green"
+            }`}
             size="sm"
             className="!h-6"
           >
-            {data?.data?.status == "notPosted" ? "Pending" : "Delivered"}
+            {data?.data?.status == "notPosted"
+              ? "Pending"
+              : data?.data?.status == "void"
+              ? "Cancelled"
+              : "Delivered"}
           </Tag>
         </div>
       </div>

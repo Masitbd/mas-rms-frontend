@@ -26,7 +26,7 @@ const Reviews = async () => {
             <Image src={ReviewManBg} fill className="z-10" alt="Text" />
           </div>
         </div>
-        <div className="lg:col-span-6  col-span-12 flex flex-col justify-end px-2 lg:px-0">
+        <div className="lg:col-span-6  col-span-12 flex flex-col justify-end px-2 lg:px-0 lg:text-left text-center">
           <h3 className="text-lg text-[#FC8A06] font-semibold ">
             What They Say
           </h3>
@@ -35,7 +35,7 @@ const Reviews = async () => {
           </h1>
 
           {/* Moovable  */}
-          <div className="mt-5">
+          <div className="mt-5 text-left">
             <Carousel className=" !bg-white !h-[18rem]" autoplay shape="bar">
               {posts.slice(0, 5).map((post: any, index: number) => (
                 <div

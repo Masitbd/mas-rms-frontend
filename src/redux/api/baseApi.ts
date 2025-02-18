@@ -34,5 +34,6 @@ export const baseApi = createApi({
     "single-delivery-address",
     "user-orders",
     "single-profile",
+    "cancellation-list",
   ],
 });

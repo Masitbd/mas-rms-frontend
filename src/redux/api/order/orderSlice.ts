@@ -120,6 +120,59 @@ const order = baseApi.injectEndpoints({
       }),
       providesTags: ["user-orders"],
     }),
+
+    postCancellationRequest: build.mutation({
+      query: (data: any) => ({
+        url: `/order/cancellation/new`,
+        method: "POST",
+        body: data,
+        data: data,
+      }),
+      invalidatesTags: ["order", "single-order", "user-orders"],
+    }),
+    getSingleCancellation: build.query({
+      query: (id: string) => ({
+        url: `/order/cancellation/single/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["single-order"],
+    }),
+    getAllCancellation: build.query({
+      query: (query) => ({
+        url: `/order/cancellation/all`,
+        method: "GET",
+        params: query,
+      }),
+      providesTags: ["cancellation-list"],
+    }),
+    approveCancellationRequest: build.mutation({
+      query: (data: { id: string; data: any }) => ({
+        url: `/order/cancellation/approve/${data.id}`,
+        method: "PATCH",
+        data: data.data,
+      }),
+      invalidatesTags: [
+        "order",
+        "single-order",
+        "user-orders",
+        "cancellation-list",
+        "single-order",
+      ],
+    }),
+    rejectCancellationRequest: build.mutation({
+      query: (data: { id: string; data: any }) => ({
+        url: `/order/cancellation/reject/${data.id}`,
+        method: "PATCH",
+        data: data.data,
+      }),
+      invalidatesTags: [
+        "order",
+        "single-order",
+        "user-orders",
+        "cancellation-list",
+        "single-order",
+      ],
+    }),
   }),
 });
 
@@ -137,6 +190,11 @@ export const {
   useDueCollectionMutation,
   useGetDueCollectionHistoryQuery,
   useGetUserOrdersQuery,
+  usePostCancellationRequestMutation,
+  useGetSingleCancellationQuery,
+  useGetAllCancellationQuery,
+  useApproveCancellationRequestMutation,
+  useRejectCancellationRequestMutation,
 } = order;
 
 export type IStatusChanger = ReturnType<typeof useStatusChangerMutation>[0];

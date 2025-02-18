@@ -80,6 +80,14 @@ const userApi = baseApi.injectEndpoints({
         data: data,
       }),
     }),
+    resetPassword: build.mutation({
+      query: (data) => ({
+        url: `/auth/reset-password`,
+        method: "POST",
+        body: data,
+        data: data,
+      }),
+    }),
   }),
 });
 
@@ -93,6 +101,7 @@ export const {
   useSignUpByUserMutation,
   useChangePasswordMutation,
   useForgetPasswordMutation,
+  useResetPasswordMutation,
 } = userApi;
 
 export type IUseCreateUserMutation = ReturnType<typeof useGetUserListQuery>;

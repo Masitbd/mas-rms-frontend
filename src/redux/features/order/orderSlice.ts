@@ -68,6 +68,7 @@ export type IOrder = {
   deliveryCharge: number;
   deliveryAddress?: TDeliveryAddress;
   platform: string;
+  createdAt?: string;
 };
 
 const initialState: IOrder = {

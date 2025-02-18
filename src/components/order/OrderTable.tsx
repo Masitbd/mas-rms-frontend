@@ -22,6 +22,8 @@ import CloseIcon from "@rsuite/icons/Close";
 import { ISelectPicker, sortOption, statusOption } from "./TypesAndDefaultes";
 import { TTableData } from "../Table/Table";
 import { IOrder } from "@/redux/features/order/orderSlice";
+import OrderStatusTagProvider from "./OrderStatusTagProvider";
+import { ENUM_ORDER_STATUS } from "@/enums/EnumOrderStatus";
 const OrderTable = () => {
   const { Cell, Column, ColumnGroup, HeaderCell } = Table;
   const [limit, setLimit] = useState(10);
@@ -150,9 +152,19 @@ const OrderTable = () => {
             </Column>
             <Column flexGrow={1}>
               <HeaderCell children="Status" flexGrow={1} />
-              <Cell dataKey="status" />
+              <Cell>
+                {(rowData) => {
+                  return OrderStatusTagProvider({
+                    status: rowData?.status as ENUM_ORDER_STATUS,
+                  });
+                }}
+              </Cell>
             </Column>
-            <Column flexGrow={2} align="center">
+            <Column flexGrow={1}>
+              <HeaderCell children="Platform" flexGrow={1} />
+              <Cell dataKey="platform" />
+            </Column>
+            <Column flexGrow={1} align="center">
               <HeaderCell children="... " flexGrow={1} />
               <Cell align="center">
                 {(rowdata) => {
@@ -165,13 +177,6 @@ const OrderTable = () => {
                           onClick={() => editHandler(rowdata as IOrder)}
                         >
                           <EditIcon />
-                        </Button>
-                        <Button
-                          appearance="primary"
-                          color="green"
-                          onClick={() => viewHandler(rowdata as IOrder)}
-                        >
-                          <ViewIcon />
                         </Button>
                       </div>
                     </>
