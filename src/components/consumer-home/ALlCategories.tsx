@@ -12,8 +12,8 @@ const ALlCategories = async () => {
 
   return (
     <div className="my-10 lg:my-20">
-      <div className="lg:text-4xl text-base font-bold px-4">Our Categories</div>
-      <div className=" overflow-y-scroll max-w-[100vw] lg:max-w-fit lg:w-full  scrollbar-hide mt-5 ">
+      <div className="lg:text-4xl text-2xl font-bold px-4">Our Categories</div>
+      <div className=" overflow-y-scroll max-w-[100vw] lg:max-w-full lg:w-full  scrollbar-hide mt-5 ">
         {/* item size and width */}
         <div
           className={`lg:grid flex flex-row justify-around grid-cols-12 gap-2

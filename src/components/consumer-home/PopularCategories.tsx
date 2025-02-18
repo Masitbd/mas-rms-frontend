@@ -16,15 +16,15 @@ const PopularCategories = async () => {
   }
 
   return (
-    <div className="my-10 lg:my-20 mx-auto">
-      <div className="lg:text-4xl text-base font-bold px-4">
+    <div className="my-10 lg:my-20 mx-auto w-full">
+      <div className="lg:text-4xl text-2xl font-bold px-4">
         Our Popular Categories
       </div>
-      <div className=" overflow-y-scroll max-w-[100vw] lg:max-w-fit  scrollbar-hide mt-5">
+      <div className=" overflow-y-scroll max-w-[100vw] lg:max-w-full  scrollbar-hide mt-5">
         {/* item size and width */}
         <div
           className={`lg:grid flex justify-around  grid-cols-12 lg:gap-2 gap-0.5  
-             lg:px-0 px-0.5 place-items-center gap-y-2 md:gap-y-5 !lg:w-full  min-w-fit`}
+             lg:px-0 px-5  gap-y-2 md:gap-y-5 !lg:w-full  min-w-fit place-items-center w-full`}
           id={"home-discount-item"}
         >
           {posts?.data?.map(

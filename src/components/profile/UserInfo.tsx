@@ -1,4 +1,5 @@
 import React from "react";
+import PasswordChangeForm from "../consumer-profile/PasswordChangeForm";
 
 const UserInfoGrid = ({
   address,
@@ -33,7 +34,7 @@ const UserInfoGrid = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6 relative">
       {userInfo.map(
         (item, index) =>
           item.value && ( // Only render if the value exists
@@ -43,6 +44,10 @@ const UserInfoGrid = ({
             </div>
           )
       )}
+
+      <div className="absolute bottom-1 right-1">
+        <PasswordChangeForm indoor={true} />
+      </div>
     </div>
   );
 };

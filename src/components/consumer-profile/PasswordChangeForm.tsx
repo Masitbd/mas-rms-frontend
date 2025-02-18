@@ -4,7 +4,7 @@ import { Button, Modal } from "rsuite";
 import { Form, Schema, Notification, toaster } from "rsuite";
 import Swal from "sweetalert2";
 
-const PasswordChangeForm = () => {
+const PasswordChangeForm = (props: { indoor?: boolean }) => {
   const formref = useRef<any>();
   const [changePassword, { isLoading }] = useChangePasswordMutation();
 
@@ -71,7 +71,11 @@ const PasswordChangeForm = () => {
         
         </Modal.Header> */}
         <>
-          <div className="bg-[#FC8A06] text-center  font-semibold text-white rounded py-2 relative grid grid-cols-12 ">
+          <div
+            className={`${
+              props.indoor ? "bg-[#3498ff]" : "bg-[#FC8A06]"
+            } text-center  font-semibold text-white rounded py-2 relative grid grid-cols-12 `}
+          >
             <div className="text-center col-span-11 text-lg">
               Change Password
             </div>

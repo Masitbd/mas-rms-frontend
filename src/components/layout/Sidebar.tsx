@@ -2,7 +2,7 @@
 import React from "react";
 import { Dropdown, Nav, Sidebar, Sidenav } from "rsuite";
 import Dashboard from "@rsuite/icons/legacy/Dashboard";
-
+import CloseIcon from "@rsuite/icons/Close";
 import AdminIcon from "@rsuite/icons/Admin";
 import GearCircle from "@rsuite/icons/legacy/GearCircle";
 import TableIcon from "@rsuite/icons/Table";
@@ -132,7 +132,14 @@ const DashSidebar = () => {
               >
                 Users
               </Nav.Item>
-
+              <Nav.Item
+                eventKey="15"
+                href="/cancellation"
+                as={NavLink}
+                icon={<CloseIcon />}
+              >
+                Order Cancellation
+              </Nav.Item>
               <Nav.Menu
                 eventKey="9"
                 trigger="hover"
@@ -224,7 +231,6 @@ const DashSidebar = () => {
                 >
                   Waiter wise Sales Details
                 </Nav.Item>
-                {/*  */}
               </Nav.Menu>
             </Nav>
           </Sidenav.Body>

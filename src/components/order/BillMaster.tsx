@@ -1,5 +1,6 @@
 /* eslint-disable react/no-children-prop */
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+
 import {
   IOrder,
   resetBill,
@@ -31,6 +32,8 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 import DueCollecton from "./DueCollecton";
 import DueCollection from "./DueCollecton";
 import { ENUM_USER } from "@/enums/EnumUser";
+import OrderVoid from "./OrderVoid";
+import { ENUM_ORDER_STATUS } from "@/enums/EnumOrderStatus";
 
 pdfMake.vfs = pdfFonts as unknown as { [file: string]: string };
 
@@ -230,6 +233,15 @@ const BillMaster = (props: { mode: string }) => {
                     ],
                     style: "infoText",
                   },
+                  bill?.deliveryAddress
+                    ? {
+                        text: [
+                          { text: "Delivery Address: ", bold: true },
+                          bill?.deliveryAddress?.name,
+                        ],
+                        style: "infoText",
+                      }
+                    : {},
                 ],
                 width: "60%",
               },
@@ -949,8 +961,9 @@ const BillMaster = (props: { mode: string }) => {
               onClick={() => submitHandler("save")}
               loading={orderPostLoading || orderUpdateLoading}
               disabled={
-                bill?.status == "posted" &&
-                session?.data?.user.role !== ENUM_USER.ADMIN
+                bill?.status == "posted" ||
+                (bill.status == ENUM_ORDER_STATUS.VOID &&
+                  session?.data?.user.role !== ENUM_USER.ADMIN)
               }
             >
               {props?.mode == ENUM_MODE.NEW ? "Save" : "Update"}
@@ -962,8 +975,9 @@ const BillMaster = (props: { mode: string }) => {
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("save&print")}
               disabled={
-                bill?.status == "posted" &&
-                session?.data?.user.role !== ENUM_USER.ADMIN
+                bill?.status == "posted" ||
+                (bill.status == ENUM_ORDER_STATUS.VOID &&
+                  session?.data?.user.role !== ENUM_USER.ADMIN)
               }
             >
               {props?.mode == ENUM_MODE.NEW ? "Save & Print" : "Update & Print"}
@@ -974,8 +988,9 @@ const BillMaster = (props: { mode: string }) => {
               style={{ backgroundColor: "#003CFF" }}
               onClick={() => submitHandler("exit")}
               disabled={
-                bill?.status == "posted" &&
-                session?.data?.user.role !== ENUM_USER.ADMIN
+                bill?.status == "posted" ||
+                (bill.status == ENUM_ORDER_STATUS.VOID &&
+                  session?.data?.user.role !== ENUM_USER.ADMIN)
               }
               loading={orderPostLoading || orderUpdateLoading}
             >
@@ -989,8 +1004,9 @@ const BillMaster = (props: { mode: string }) => {
               children={"Print"}
               onClick={() => handlePrint(bill?._id as string)}
               disabled={
-                bill?.status == "posted" &&
-                session?.data?.user.role !== ENUM_USER.ADMIN
+                bill?.status == "posted" ||
+                (bill.status == ENUM_ORDER_STATUS.VOID &&
+                  session?.data?.user.role !== ENUM_USER.ADMIN)
               }
               loading={orderPostLoading || orderUpdateLoading}
             />
@@ -1013,19 +1029,26 @@ const BillMaster = (props: { mode: string }) => {
                 changeStatusLoading || orderUpdateLoading || orderPostLoading
               }
               disabled={
-                bill?.status == "posted" &&
-                session?.data?.user.role !== ENUM_USER.ADMIN
+                bill?.status == "posted" ||
+                (bill.status == ENUM_ORDER_STATUS.VOID &&
+                  session?.data?.user.role !== ENUM_USER.ADMIN)
               }
             />
             <DueCollection mode={props.mode as ENUM_MODE} order={bill} />
 
+            {props?.mode !== ENUM_MODE.NEW && (
+              <OrderVoid
+                id={bill?._id as string}
+                status={bill?.status as ENUM_ORDER_STATUS}
+              />
+            )}
             <Button
               color="red"
               size="lg"
               appearance="primary"
               onClick={() => cancelHandler()}
             >
-              Cancel
+              Back
             </Button>
           </div>
         </div>

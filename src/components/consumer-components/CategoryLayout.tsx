@@ -92,18 +92,20 @@ const CategoryLayout = ({ categoryId }: { categoryId: string }) => {
         </Link>
         <div className="flex-1 overflow-x-auto scrollbar-hide">
           <Nav
-            appearance="pills"
             activeKey={activeKey}
             className="mx-auto w-auto flex-nowrap"
+            appearance="default"
           >
             {categorys?.data?.map((item: { _id: string; name: string }) => (
               <Nav.Item
                 key={item._id}
-                onClick={() => handleItemClick(item._id)}
-                eventKey={item._id}
-                className={`whitespace-nowrap ${
-                  activeKey === item._id ? "bg-[#FC8A06]" : ""
-                }`}
+                onClick={() => handleItemClick(item._id?.toString())}
+                eventKey={item._id?.toString()}
+                className={`whitespace-nowrap  font-bold uppercase !rounded-full  ${
+                  activeKey !== item._id
+                    ? "!bg-[#FC8A06] !text-white"
+                    : "!bg-white !text-black"
+                } hover:!text-black`}
               >
                 {isLoading ? "Loading.." : item.name}
               </Nav.Item>

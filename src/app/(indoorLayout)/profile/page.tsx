@@ -1,12 +1,14 @@
 "use client";
 import Loading from "@/app/Loading";
+import ProfileInfoChanger from "@/components/consumer-profile/ProfileInfoChanger";
 import UserInfoGrid from "@/components/profile/UserInfo";
 import { useGetProfileListQuery } from "@/redux/api/profile/profile.api";
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, Button } from "rsuite";
 
 const Profile = () => {
   const { data, isLoading, isFetching } = useGetProfileListQuery(undefined);
+  const [profileInfoOpen, setProfileInfoOpen] = useState(false);
   const userInfoData = data?.data;
   if (isLoading || isFetching) {
     return (
@@ -22,7 +24,9 @@ const Profile = () => {
       </div>
       <div className="rounded bg-white  border border-stone-200 mt-5 p-5 flex items-center relative">
         <div className="absolute top-5 right-5">
-          <Button appearance="ghost">Edit</Button>
+          <Button appearance="ghost" onClick={() => setProfileInfoOpen(true)}>
+            Edit
+          </Button>
         </div>
         <div>
           <Avatar size="xxl" className="rounded-full " circle />
@@ -38,6 +42,13 @@ const Profile = () => {
             {data?.data?.profile?.address}
           </div>
         </div>
+      </div>
+      <div>
+        <ProfileInfoChanger
+          profileModalOpen={profileInfoOpen}
+          setProfileModalOpen={setProfileInfoOpen}
+          additionalInfo={true}
+        />
       </div>
       <div className="rounded bg-white  border border-stone-200 mt-5 p-5 ">
         <div className="text-xl font-semibold">Personal Information</div>
