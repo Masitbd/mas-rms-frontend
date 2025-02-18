@@ -55,3 +55,8 @@ export const imageUploader = async (
     return null;
   }
 };
+
+export const consumptionSortOption = [
+  { label: "Created At", value: "createdAt" },
+  { label: "Price", value: "price" },
+];

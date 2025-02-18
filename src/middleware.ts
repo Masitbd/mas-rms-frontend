@@ -9,6 +9,21 @@ const unprotectedRoutes = [
   "/consumer/category",
   "/",
 ];
+
+const managerRoutes = [
+  "/table",
+  "/customer",
+  "/menu-group",
+  "/items",
+  "/waiter",
+  "/raw-material-setup",
+  "/consumption",
+  "/order",
+  "/users",
+  "/cancellation",
+];
+
+const otherUserRoutes = ["/customer", "/items", "'/consumption", "/order"];
 export default async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
@@ -34,6 +49,7 @@ export default async function middleware(req: NextRequest) {
     return response;
   }
 
+  // initial landing redirect
   if (req.nextUrl.pathname == "/" && token?.data?.user?.role) {
     if (token?.data?.user?.role == "user") {
       return NextResponse.redirect(`${req.nextUrl.origin}/consumer/home`);
@@ -44,9 +60,38 @@ export default async function middleware(req: NextRequest) {
       return NextResponse.redirect(`${req.nextUrl.origin}/welcome-page`);
     }
   }
+
   if (req.nextUrl.pathname == "/") {
     return NextResponse.redirect(`${req.nextUrl.origin}/consumer/home`);
   }
+
+  //Allowing admin and super admin to access all routes
+
+  if (
+    token?.data?.user?.role == ENUM_USER.SUPER_ADMIN ||
+    token?.data?.user?.role == ENUM_USER.ADMIN
+  ) {
+    return NextResponse.next();
+  }
+
+  // Allowing manager to access manager routes
+  if (managerRoutes.includes(req.nextUrl.pathname)) {
+    if (token?.data?.user?.role == ENUM_USER.MANAGER) {
+      return NextResponse.next();
+    } else {
+      return NextResponse.redirect(`${req.nextUrl.origin}/unauthorized`);
+    }
+  }
+
+  // Allowing user to access other user routes
+  if (otherUserRoutes.includes(req.nextUrl.pathname)) {
+    if (token?.data?.user?.role !== ENUM_USER.USER) {
+      return NextResponse.next();
+    } else {
+      return NextResponse.redirect(`${req.nextUrl.origin}/unauthorized`);
+    }
+  }
+
   return NextResponse.next();
 }
 

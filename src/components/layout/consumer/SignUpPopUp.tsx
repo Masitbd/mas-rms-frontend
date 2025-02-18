@@ -26,7 +26,7 @@ const SignUpPopUp = (props: {
             </h3>
             <h4 className="my-4">Login Or Signup To Continue</h4>
             <div className="w-full grid grid-cols-1 gap-3 mb-4">
-              <Button
+              {/* <Button
                 appearance="primary"
                 color="blue"
                 className="w-full"
@@ -40,7 +40,7 @@ const SignUpPopUp = (props: {
                 }
               >
                 &nbsp; Continue with Facebook
-              </Button>
+              </Button> */}
               <Button
                 onClick={() => signIn("google")}
                 appearance="default"

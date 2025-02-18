@@ -1,7 +1,14 @@
 /* eslint-disable react/no-children-prop */
 "use client";
-import React from "react";
-import { Button, Pagination, Table } from "rsuite";
+import React, { useState } from "react";
+import {
+  Button,
+  Input,
+  InputGroup,
+  Pagination,
+  SelectPicker,
+  Table,
+} from "rsuite";
 import TrashIcon from "@rsuite/icons/Trash";
 import EditIcon from "@rsuite/icons/Edit";
 import ViewIcon from "@rsuite/icons/EyeClose";
@@ -20,9 +27,19 @@ import {
 import { useRouter } from "next/navigation";
 import { ENUM_USER } from "@/enums/EnumUser";
 import { useSession } from "next-auth/react";
+import useQueryBuilder from "@/helpers/QueryBUilder";
+import { NavLink } from "../layout/Navlink";
+import SearchIcon from "@rsuite/icons/Search";
+import CloseIcon from "@rsuite/icons/Close";
+import { consumptionSortOption } from "./ConsumptionHelper";
+import { ISelectPicker } from "../order/TypesAndDefaultes";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RawMaterialConsumptionTable = () => {
+  const [limit, setLimit] = useState(10);
+  const { addField, deleteField, query } = useQueryBuilder();
+  const [activePage, setActivePage] = useState(1);
+
   const session = useSession();
   const userRole = session?.data?.user?.role;
   const router = useRouter();
@@ -31,7 +48,7 @@ const RawMaterialConsumptionTable = () => {
     data: menuItemData,
     isLoading: menuItemLoading,
     isFetching: menuItemFetching,
-  } = useGetConsumptionQuery(undefined);
+  } = useGetConsumptionQuery({ limit, page: activePage, ...query });
   const [get, { isLoading: getLoading, isFetching: fetchLoding }] =
     useLazyGetRawMaterialQuery();
   const [remove, { isLoading: deleteLoading }] = useDeleteConsumptionMutation();
@@ -71,8 +88,53 @@ const RawMaterialConsumptionTable = () => {
       router.push(`/consumption/new?mode=view&id=${payload?._id}`);
     }
   };
+
   return (
     <div>
+      <div>
+        <div className="my-5 grid grid-cols-12 gap-2">
+          <Button
+            appearance="primary"
+            color="blue"
+            as={NavLink}
+            href={`/consumption/new?mode=new`}
+            style={{ backgroundColor: "#194BEE" }}
+            size="lg"
+          >
+            Add New
+          </Button>
+          <InputGroup className="col-span-3">
+            <Input
+              placeholder="search"
+              onChange={(v) => addField("searchTerm", v)}
+              value={query?.searchTerm ?? ""}
+            />
+            <InputGroup.Addon style={{ backgroundColor: "white" }}>
+              <CloseIcon
+                className="text-xs cursor-pointer hover:text-xl "
+                color="red"
+                onClick={() => deleteField("searchTerm")}
+              />
+            </InputGroup.Addon>
+            <InputGroup.Addon>
+              <SearchIcon />
+            </InputGroup.Addon>
+          </InputGroup>
+          {/* 
+          <SelectPicker
+            placeholder={"Sort By"}
+            size="lg"
+            className="col-span-2"
+            data={consumptionSortOption.map((so: ISelectPicker) => ({
+              label: so.label,
+              value: so.value,
+            }))}
+            cleanable
+            onChange={(v) => addField("sort", v)}
+            onClean={() => deleteField("sort")}
+          /> */}
+        </div>
+      </div>
       <Table
         data={menuItemData?.data}
         autoHeight
@@ -138,23 +200,25 @@ const RawMaterialConsumptionTable = () => {
           </Cell>
         </Column>
       </Table>
-      {/* <Pagination
-        layout={["total", "-", "limit", "|", "pager", "skip"]}
-        size={"md"}
-        prev={true}
-        next={true}
-        first={true}
-        last={true}
-        ellipsis={true}
-        boundaryLinks={true}
-        total={menuItemData?.ment?.total} */}
-      {/* // limit={limit}
-        // limitOptions={limitOptions}
-        // maxButtons={maxButtons}
-        // activePage={activePage}
-        // onChangePage={setActivePage}
-        // onChangeLimit={setLimit} */}
-      {/* /> */}
+      <div className="my-5">
+        <Pagination
+          layout={["total", "-", "limit", "|", "pager", "skip"]}
+          size={"md"}
+          prev={true}
+          next={true}
+          first={true}
+          last={true}
+          ellipsis={true}
+          boundaryLinks={true}
+          total={menuItemData?.meta?.total}
+          limit={limit}
+          limitOptions={[10, 20, 50]}
+          maxButtons={5}
+          activePage={activePage}
+          onChangePage={setActivePage}
+          onChangeLimit={setLimit}
+        />
+      </div>
     </div>
   );
 };

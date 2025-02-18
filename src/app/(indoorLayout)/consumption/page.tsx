@@ -10,17 +10,7 @@ const Consumption = () => {
       <div className="text-center text-[#194BEE] text-2xl font-bold font-roboto">
         Raw Material Consumption
       </div>
-      <div className="mt-5">
-        <Button
-          appearance="primary"
-          color="blue"
-          as={NavLink}
-          href={`/consumption/new?mode=new`}
-          style={{ backgroundColor: "#194BEE" }}
-        >
-          Add New
-        </Button>
-      </div>
+
       <div className="mt-2.5">
         <RawMaterialConsumptionTable />
       </div>

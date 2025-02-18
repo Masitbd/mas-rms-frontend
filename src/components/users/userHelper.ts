@@ -46,7 +46,7 @@ export const deleteUser = async (uuid: string, fn: IUserDeleteMutation[0]) => {
 export const userDataFormatter = (
   data: IuserFormData,
   mode: string
-): (IUserPost | IProfile) & { branch?: string } => {
+): (IUserPost | IProfile) & { branch?: string; role?: string } => {
   const profileData: IProfile & { branch?: string } = {
     name: data?.name,
     phone: data?.phone,
@@ -75,7 +75,11 @@ export const userDataFormatter = (
     profileData.uuid = data?.uuid;
     profileData.branch = data?.branch as keyof IProfile;
   }
-  return profileData;
+
+  return {
+    ...profileData,
+    ...(data?.role ? { role: data?.role } : {}),
+  };
 };
 
 const successHandler = (message: string) => {
