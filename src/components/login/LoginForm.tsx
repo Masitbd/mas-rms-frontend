@@ -4,8 +4,7 @@ import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { Button, Form, InputGroup } from "rsuite";
 import FormControl from "rsuite/esm/FormControl";
-import { config } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -17,6 +16,8 @@ import { ILoginData, model } from "./ModalsAndTypes";
 import ForgetPassword from "../consumer-profile/ForgetPassword";
 import { NavLink } from "../layout/Navlink";
 import Link from "next/link";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
 const LoginForm = () => {
