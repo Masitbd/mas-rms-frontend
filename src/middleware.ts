@@ -76,7 +76,11 @@ export default async function middleware(req: NextRequest) {
 
   // Allowing manager to access manager routes
   if (managerRoutes.includes(req.nextUrl.pathname)) {
-    if (token?.data?.user?.role == ENUM_USER.MANAGER) {
+    if (
+      token?.data?.user?.role == ENUM_USER.MANAGER ||
+      token?.data?.user?.role == ENUM_USER.CASHIER ||
+      token?.data?.user?.role == ENUM_USER.ACCOUNTANT
+    ) {
       return NextResponse.next();
     } else {
       return NextResponse.redirect(`${req.nextUrl.origin}/unauthorized`);
