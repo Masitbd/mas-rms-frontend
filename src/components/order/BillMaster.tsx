@@ -130,17 +130,21 @@ const BillMaster = (props: { mode: string }) => {
 
   const handlePrint = async (id: string) => {
     try {
-      // Changing status
-      const result = await changeStatus({
-        id: id,
-        data: { status: "posted" },
-      }).unwrap();
-      if (result?.success) {
-        if (result?.data) {
-          dispatch(updateBillDetails(result?.data));
+      if (
+        session?.data?.user?.role !== ENUM_USER.ADMIN &&
+        session?.data?.user?.role !== ENUM_USER.SUPER_ADMIN
+      ) {
+        // Changing status
+        const result = await changeStatus({
+          id: id,
+          data: { status: "posted" },
+        }).unwrap();
+        if (result?.success) {
+          if (result?.data) {
+            dispatch(updateBillDetails(result?.data));
+          }
         }
       }
-
       // Generating pdf data
 
       const Data = await getFullOrderData(id).unwrap();
@@ -482,7 +486,7 @@ const BillMaster = (props: { mode: string }) => {
       //? Laser Print
 
       const doc: TDocumentDefinitions = {
-        pageSize: "A4", // Set page size to A4
+        pageSize: "A5", // Set page size to A4
         pageMargins: [40, 40, 40, 80], // Adjust margins for A4
         content: [
           {
@@ -589,7 +593,7 @@ const BillMaster = (props: { mode: string }) => {
           },
           {
             table: {
-              widths: [300, 50, 50, 50],
+              widths: [140, 50, 50, 50],
               headerRows: 1,
               body: [
                 [
@@ -783,6 +787,9 @@ const BillMaster = (props: { mode: string }) => {
             bold: true,
             color: "green",
             margin: [0, 2, 0, 2],
+          },
+          footerText: {
+            fontSize: 8,
           },
         },
       };
@@ -1004,9 +1011,12 @@ const BillMaster = (props: { mode: string }) => {
               children={"Print"}
               onClick={() => handlePrint(bill?._id as string)}
               disabled={
-                bill?.status == "posted" ||
-                (bill.status == ENUM_ORDER_STATUS.VOID &&
-                  session?.data?.user.role !== ENUM_USER.ADMIN)
+                (bill?.status == "posted" ||
+                  bill.status == ENUM_ORDER_STATUS.VOID) &&
+                !(
+                  session?.data?.user.role === ENUM_USER.ADMIN ||
+                  session?.data?.user.role === ENUM_USER.SUPER_ADMIN
+                )
               }
               loading={orderPostLoading || orderUpdateLoading}
             />
