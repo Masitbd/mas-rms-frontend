@@ -537,6 +537,7 @@ const BillMaster = (props: { mode: string }) => {
                     ],
                     style: "infoText",
                   },
+
                   {
                     text: [{ text: "Bill No.: ", bold: true }, bill.billNo],
                     style: "infoText",
@@ -626,7 +627,7 @@ const BillMaster = (props: { mode: string }) => {
                   {
                     text: "",
                     border: [false, false, false, true],
-                    style: { alignment: "center", fontSize: 12, bold: true },
+                    style: { alignment: "center", fontSize: 8, bold: true },
                   },
                 ],
               ],
@@ -696,7 +697,7 @@ const BillMaster = (props: { mode: string }) => {
                 ],
               ],
             },
-            margin: [0, 10],
+            margin: [0, 5],
           },
           {
             columns: [
@@ -725,12 +726,22 @@ const BillMaster = (props: { mode: string }) => {
           {
             text: `In Word: ${numberToWord.convert(bill.netPayable)}`,
             style: {
-              fontSize: 10,
+              fontSize: 8,
               bold: true,
               alignment: "left",
             },
             margin: [0, 10],
           },
+          (bill?.remark?.length > 0
+            ? {
+                text: `Remark: ${bill?.remark}`,
+                style: {
+                  fontSize: 10,
+                  bold: true,
+                  alignment: "left",
+                },
+              }
+            : {}) as string,
 
           // footer
         ],
@@ -772,18 +783,18 @@ const BillMaster = (props: { mode: string }) => {
         },
 
         styles: {
-          infoText: { fontSize: 10, margin: [0, 2, 0, 2] }, // Adjusted font size and spacing
+          infoText: { fontSize: 8, margin: [0, 2, 0, 2] }, // Adjusted font size and spacing
           header: {
             bold: true,
             alignment: "center",
-            fontSize: 24,
+            fontSize: 20,
           },
           subHeader: {
             alignment: "center",
-            fontSize: 12,
+            fontSize: 10,
           },
           totalText: {
-            fontSize: 14,
+            fontSize: 8,
             bold: true,
             color: "green",
             margin: [0, 2, 0, 2],

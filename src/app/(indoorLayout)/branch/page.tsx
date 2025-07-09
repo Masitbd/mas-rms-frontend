@@ -33,6 +33,7 @@ export type FormBranchDataType = {
   availability: string;
   division: string;
   city: string;
+  binNo: string;
 };
 
 const BranchPage = () => {

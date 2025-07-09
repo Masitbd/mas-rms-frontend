@@ -48,6 +48,7 @@ export const BranchEditAndViewModal = ({
     phone: "",
     email: "",
     vatNo: "",
+    binNo: "",
     isActive: false,
     address1: "",
     address2: "",
@@ -79,6 +80,7 @@ export const BranchEditAndViewModal = ({
       deliveryLocations: event.deliveryLocations,
       division: event.division,
       city: event.city,
+      binNo: event.binNo,
     });
   };
 
@@ -159,6 +161,10 @@ export const BranchEditAndViewModal = ({
               <Form.Group controlId="vatNo">
                 <Form.ControlLabel>Vat Reg No:</Form.ControlLabel>
                 <Form.Control name="vatNo" />
+              </Form.Group>
+              <Form.Group controlId="binNo">
+                <Form.ControlLabel>Bin NO.</Form.ControlLabel>
+                <Form.Control name="binNo" />
               </Form.Group>
               <Form.Group controlId="division">
                 <Form.ControlLabel>Division</Form.ControlLabel>
