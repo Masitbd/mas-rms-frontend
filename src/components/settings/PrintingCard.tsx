@@ -1,4 +1,3 @@
-import { Row, Select } from "@/app/(indoorLayout)/setting/page";
 import {
   useGetPrintingModeQuery,
   useUpdatePrintingModeMutation,
@@ -7,6 +6,7 @@ import { Save } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button, SelectPicker } from "rsuite";
 import Swal from "sweetalert2";
+import { Row } from "./SettingRow";
 
 const PrintingCard = () => {
   const [printMode, setPrintMode] = useState("a4");

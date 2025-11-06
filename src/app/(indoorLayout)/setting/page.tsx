@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import PrintingCard from "@/components/settings/PrintingCard";
 import SettingsHeader from "@/components/settings/Header";
+import { Row } from "@/components/settings/SettingRow";
+import { Select } from "@/components/settings/SettingSellect";
 
 /**
  * Modern, production-ready Settings panel
@@ -52,20 +54,6 @@ const SectionCard: React.FC<{
   </div>
 );
 
-export const Row: React.FC<{
-  label: string;
-  hint?: string;
-  control: React.ReactNode;
-}> = ({ label, hint, control }) => (
-  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
-    <div className="sm:w-64">
-      <div className="font-medium">{label}</div>
-      {hint && <div className="text-sm text-zinc-500 mt-0.5">{hint}</div>}
-    </div>
-    <div className="flex-1">{control}</div>
-  </div>
-);
-
 const Toggle: React.FC<{
   checked: boolean;
   onChange: (v: boolean) => void;
@@ -95,30 +83,6 @@ const Toggle: React.FC<{
     />
     {label && <span className="sr-only">{label}</span>}
   </button>
-);
-
-export const Select: React.FC<{
-  value: string;
-  onChange: (v: string) => void;
-  options: { label: string; value: string }[];
-}> = ({ value, onChange, options }) => (
-  <div className="relative">
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full appearance-none rounded-xl border border-zinc-200  bg-white  px-3 py-2 pr-9 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    >
-      {options.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
-    <ChevronRight
-      className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rotate-90 opacity-50"
-      size={18}
-    />
-  </div>
 );
 
 const ColorDot: React.FC<{
@@ -154,11 +118,7 @@ const SearchBox: React.FC<{ value: string; onChange: (v: string) => void }> = ({
   </div>
 );
 
-export default function SettingsPanel({
-  onApply,
-}: {
-  onApply?: (values: Record<string, unknown>) => void;
-}) {
+const SettingsPanel = () => {
   const [active, setActive] = useState<string>("account");
   const [query, setQuery] = useState("");
 
@@ -216,10 +176,6 @@ export default function SettingsPanel({
     const q = query.toLowerCase();
     return categories.filter((c) => c.label.toLowerCase().includes(q));
   }, [query]);
-
-  const handleApply = () => {
-    if (onApply) onApply(values);
-  };
 
   return (
     <>
@@ -571,4 +527,6 @@ export default function SettingsPanel({
       </div>
     </>
   );
-}
+};
+
+export default SettingsPanel;
