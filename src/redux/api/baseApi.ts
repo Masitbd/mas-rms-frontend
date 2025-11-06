@@ -13,7 +13,6 @@ export const baseApi = createApi({
     "custmerList",
     "menuGroupList",
     "itemCategory",
-
     "user-list",
     "waiterList",
     "raw-material",
@@ -25,7 +24,6 @@ export const baseApi = createApi({
     "active-table-list",
     "active-table-list-details",
     "single-user",
-
     "reports",
     "waiterList",
     "branch",
@@ -35,5 +33,6 @@ export const baseApi = createApi({
     "user-orders",
     "single-profile",
     "cancellation-list",
+    "cash-memo-type",
   ],
 });

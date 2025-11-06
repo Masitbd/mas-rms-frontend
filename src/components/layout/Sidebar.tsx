@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import UserInfoIcon from "@rsuite/icons/UserInfo";
 import { useSession } from "next-auth/react";
 import { ENUM_USER } from "@/enums/EnumUser";
+import SettingHorizontalIcon from "@rsuite/icons/SettingHorizontal";
 
 const DashSidebar = () => {
   const navigate = useRouter();
@@ -140,6 +141,15 @@ const DashSidebar = () => {
               >
                 Order Cancellation
               </Nav.Item>
+              <Nav.Item
+                eventKey="20"
+                href="/setting"
+                as={NavLink}
+                icon={<SettingHorizontalIcon />}
+              >
+                Setting
+              </Nav.Item>
+
               <Nav.Menu
                 eventKey="9"
                 trigger="hover"
