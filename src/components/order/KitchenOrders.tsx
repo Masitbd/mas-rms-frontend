@@ -10,6 +10,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import pdfMake from "pdfmake/build/pdfmake";
 import { useAppSelector } from "@/lib/hooks";
 import { TDocumentDefinitions } from "pdfmake/interfaces";
+import { printPdfBlobSameTab } from "./OrderHelpers";
 pdfMake.vfs = pdfFonts as unknown as { [file: string]: string };
 
 const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
@@ -71,7 +72,7 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
                 },
                 {
                   text: [
-                    { text: "waiter Name ", bold: true },
+                    { text: "waiter Name: ", bold: true },
                     order?.waiterName,
                   ],
                   style: "infoText",
@@ -111,7 +112,7 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
             headerRows: 1,
             body: [
               [
-                { text: "Item Code", bold: true },
+                { text: "Code", bold: true },
                 { text: "Name", bold: true },
                 { text: "Qty", bold: true },
               ],
@@ -129,7 +130,7 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
         },
       ],
       styles: {
-        infoText: { fontSize: 8, margin: [0, 1, 0, 1] }, // Smaller font and tighter spacing
+        infoText: { fontSize: 9, margin: [0, 1, 0, 1] }, // Smaller font and tighter spacing
         barcodeText: { fontSize: 4, bold: true }, // Reduced barcode font size
         header: {
           bold: true,
@@ -143,7 +144,11 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
       },
     };
 
-    pdfMake.createPdf(docDefinition as unknown as TDocumentDefinitions).print();
+    pdfMake
+      .createPdf(docDefinition as unknown as TDocumentDefinitions)
+      .getBlob((result) => {
+        printPdfBlobSameTab(result);
+      });
   };
 
   return (

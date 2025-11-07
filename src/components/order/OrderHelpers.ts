@@ -5,6 +5,8 @@ import { IStatusChanger } from "@/redux/api/order/orderSlice";
 import { IOrder, updateBillDetails } from "@/redux/features/order/orderSlice";
 import { AppDispatch } from "@/redux/store";
 import Swal from "sweetalert2";
+import { PosPrinterDocProvider } from "./PosPrinterDocProvider";
+import { LaserPrintingDocProvider } from "./LeserPrintingDocProvider";
 export const changeOrderStatus = async (
   id: string,
   status: string,
@@ -55,3 +57,73 @@ export const isDueCollectionButtonVisible = (
 
   return false;
 };
+
+export const InvoiceDocProvider = (mode: any, bill: any, session: any) => {
+  if (mode == "pos") {
+    return PosPrinterDocProvider(bill, session);
+  } else {
+    return LaserPrintingDocProvider(bill, session);
+  }
+};
+
+export function printPdfBlobSameTab(pdfBlob: Blob) {
+  const blobUrl = URL.createObjectURL(pdfBlob);
+
+  const iframe = document.createElement("iframe");
+  // Keep it invisible but present in the DOM
+  iframe.style.position = "fixed";
+  iframe.style.right = "0";
+  iframe.style.bottom = "0";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "0";
+  iframe.src = blobUrl;
+
+  const cleanUp = () => {
+    URL.revokeObjectURL(blobUrl);
+    iframe.remove();
+  };
+
+  const triggerPrint = () => {
+    const w = iframe.contentWindow as Window | null;
+    if (!w) {
+      cleanUp();
+      return;
+    }
+
+    const after = () => setTimeout(cleanUp, 300);
+
+    // Use separate guards (not `else if`) so TS doesn't narrow to `never`
+    if ("onafterprint" in w) {
+      (w as Window & { onafterprint: (() => void) | null }).onafterprint =
+        after;
+    }
+
+    if (typeof w.matchMedia === "function") {
+      const mql: MediaQueryList = w.matchMedia("print");
+      const onChange = (e: MediaQueryListEvent) => {
+        if (!e.matches) after();
+      };
+
+      if ("addEventListener" in mql) {
+        mql.addEventListener("change", onChange);
+      } else if ("addListener" in mql) {
+        // Older API (cast for TS)
+        (
+          mql as unknown as {
+            addListener: (cb: (e: MediaQueryListEvent) => void) => void;
+          }
+        ).addListener(onChange);
+      }
+    }
+
+    // Small delay helps some PDF viewers fully initialize
+    setTimeout(() => {
+      w.focus();
+      w.print();
+    }, 100);
+  };
+
+  iframe.addEventListener("load", () => setTimeout(triggerPrint, 200));
+  document.body.appendChild(iframe);
+}
