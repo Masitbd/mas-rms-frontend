@@ -159,7 +159,7 @@ const DashSidebar = () => {
               >
                 <Nav.Item
                   eventKey="9-1"
-                  href="/reports/daily-sales-report"
+                  href="/reports/daily-sales-report-v2"
                   as={NavLink}
                 >
                   Daily Sales Reports

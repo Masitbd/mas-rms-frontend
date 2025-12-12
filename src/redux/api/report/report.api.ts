@@ -91,7 +91,7 @@ const reportsApi = baseApi.injectEndpoints({
       providesTags: ["reports"],
     }),
     getWaiterWiseSaleStatementReports: build.query({
-      query: (args) => ({
+      query: (args: any) => ({
         url: "/reports/waiter-wise-sales/statement",
         method: "GET",
         params: args,
@@ -111,8 +111,10 @@ const reportsApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useLazyGetDailySalesSatementReportQuery,
   useGetDailySalesSatementReportQuery,
   useGetDailySalesSatementSummeryQuery,
+  useLazyGetDailySalesSatementSummeryQuery,
   useGetItemWiseSalesReportsQuery,
   useGetMenuItemsReportsQuery,
   useGetMenuItemsConsumptionReportsQuery,
