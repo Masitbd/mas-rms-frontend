@@ -365,15 +365,15 @@ export function printSalesReportPdf(
                   text: `Total Discount: ${totals.discountAmount}`,
                   style: "summaryItem",
                 },
+                {
+                  text: `Total Paid: ${totals.totalPaid}`,
+                  style: "summaryItem",
+                },
               ],
               border: [false, false, false, false],
             },
             {
               stack: [
-                {
-                  text: `Total Paid: ${totals.totalPaid}`,
-                  style: "summaryItem",
-                },
                 { text: `Total Due: ${totals.totalDue}`, style: "summaryItem" },
                 {
                   text: `Lunch Amount: ${totals.totalLunch}`,
