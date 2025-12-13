@@ -89,6 +89,7 @@ const DailySalesSummery = () => {
           dateWiseSummary={reportData?.data?.result[0]?.dateWiseSummary}
           paymentModeSummary={reportData?.data?.result[0]?.paymentModeSummary}
           loading={reportDataFetching || reportLoading}
+          branch={reportData?.data?.branchInfo}
         />
       }
       isData={true}
