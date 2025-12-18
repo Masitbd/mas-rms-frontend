@@ -30,6 +30,14 @@ const reportsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reports"],
     }),
+    getItemWiseSalesReports_v2: build.query({
+      query: (args) => ({
+        url: "/reports/itemwise-sales-v2",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
     //
     getMenuItemsReports: build.query({
       query: (args) => ({
@@ -125,4 +133,6 @@ export const {
   useGetWaiterWiseSaleStatementReportsQuery,
   useGetWaiterWiseSalesReportsQuery,
   useGetDashboardStaticsDataQuery,
+  useGetItemWiseSalesReports_v2Query,
+  useLazyGetItemWiseSalesReports_v2Query,
 } = reportsApi;

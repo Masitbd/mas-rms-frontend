@@ -1,13 +1,13 @@
 "use client";
-import DailySalesSummeryTable_V2 from "@/components/reports/DailySalesSummeryTable-v2";
+import ItemWiseSalesReportTable_v2 from "@/components/reports/ItemWiseSalesReportTable_v2";
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ReportTemplate } from "@/components/reports/ReportTemplate";
 import { useGetBranchQuery } from "@/redux/api/branch/branch.api";
-import { useLazyGetDailySalesSatementSummeryQuery } from "@/redux/api/report/report.api";
+import { useLazyGetItemWiseSalesReports_v2Query } from "@/redux/api/report/report.api";
 import { formatDate } from "@/utils/formateDate";
 import React, { useState } from "react";
 
-const DailySalesSummery = () => {
+const ItemWiseSales_V2 = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [branch, setBranch] = useState<string | null>(null);
@@ -29,7 +29,9 @@ const DailySalesSummery = () => {
       isFetching: reportDataFetching,
       data: reportData,
     },
-  ] = useLazyGetDailySalesSatementSummeryQuery();
+  ] = useLazyGetItemWiseSalesReports_v2Query();
+
+  console.log(reportData);
   const handleLast7DaysRange = () => {
     const end = new Date();
     const start = new Date();
@@ -83,14 +85,12 @@ const DailySalesSummery = () => {
       onThisMonthRange={handleThisMonthRange}
       onSearch={handleSearch}
       onClear={handleClear}
-      header=" Daily Sales Summery"
+      header="Item Wise Sales Summery"
       subHeader="Track sales by date range and branch"
       dataComponent={
-        <DailySalesSummeryTable_V2
-          dateWiseSummary={reportData?.data?.result[0]?.dateWiseSummary}
-          paymentModeSummary={reportData?.data?.result[0]?.paymentModeSummary}
+        <ItemWiseSalesReportTable_v2
+          data={reportData?.data ?? []}
           loading={reportDataFetching || reportLoading}
-          branch={reportData?.data?.branchInfo}
         />
       }
       isData={true}
@@ -98,4 +98,4 @@ const DailySalesSummery = () => {
   );
 };
 
-export default DailySalesSummery;
+export default ItemWiseSales_V2;
