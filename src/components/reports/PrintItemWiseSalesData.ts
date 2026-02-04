@@ -1,6 +1,3 @@
-// pdfMake function only (call it from your button onClick)
-// Example: onClick={() => printItemWiseSalesReportPdf(data)}
-
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { ItemWiseSalesResponse } from "./ItemWiseSalesReportType";
@@ -12,41 +9,55 @@ import {
 
 (pdfMake as any).vfs = (pdfFonts as any).pdfMake?.vfs;
 
-/**
- * Generates and downloads a PDF for Item Wise Sales Report.
- * @param data ItemWiseSalesResponse[]
- * @param opts optional settings (fileName, currency, locale, openInsteadOfDownload)
- */
 export function printItemWiseSalesReportPdf(
-  data: ItemWiseSalesResponse[],
-  from: string,
-  to: string,
+  data: ItemWiseSalesResponse[] | null | undefined,
+  from: string | Date,
+  to: string | Date,
   opts?: {
     fileName?: string;
     currency?: string; // e.g. "BDT"
     locale?: string; // e.g. "en-BD"
+    // keep your old behavior
     openInsteadOfDownload?: boolean;
+    // optional "reference-style" action
+    action?: "open" | "download" | "print";
   },
 ) {
-  const fromDate = new Date(from?.toString() ?? Date()).toLocaleDateString(
-    "en-GB",
-  );
+  const safeData: ItemWiseSalesResponse[] = Array.isArray(data) ? data : [];
 
-  const toDate = new Date(to?.toString() ?? Date()).toLocaleDateString("en-GB");
   const locale = opts?.locale ?? "en-BD";
   const currency = opts?.currency ?? "BDT";
+
+  const formatDateLabel = (v: string | Date) => {
+    if (v instanceof Date) return v.toLocaleDateString("en-GB");
+    const d = new Date(String(v ?? ""));
+    if (!Number.isNaN(d.getTime())) return d.toLocaleDateString("en-GB");
+    return String(v ?? "");
+  };
+
+  const fromDate = formatDateLabel(from);
+  const toDate = formatDateLabel(to);
+  const dateRangeText = fromDate && toDate ? `${fromDate} – ${toDate}` : "";
+
+  const resolvedAction: "open" | "download" | "print" =
+    opts?.action ?? (opts?.openInsteadOfDownload ? "open" : "download");
 
   const money = (n: number) =>
     new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
       maximumFractionDigits: 0,
-    }).format(Number(n || 0));
+    }).format(Number(n ?? 0) || 0);
 
   const num = (n: number) =>
     new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(
-      Number(n || 0),
+      Number(n ?? 0) || 0,
     );
+
+  const safeText = (v: any, fallback = "") =>
+    (v === null || v === undefined ? fallback : String(v)).trim() || fallback;
+
+  const asNumber = (v: any) => Number(v ?? 0) || 0;
 
   const line = () => ({
     canvas: [
@@ -63,53 +74,66 @@ export function printItemWiseSalesReportPdf(
     margin: [0, 8, 0, 8] as [number, number, number, number],
   });
 
-  const safeText = (v: any, fallback = "") =>
-    (v === null || v === undefined ? fallback : String(v)).trim() || fallback;
-
-  const asNumber = (v: any) => Number(v ?? 0) || 0;
-
   const content: any[] = [];
 
-  // Title
-  content.push(
-    { text: "Item Wise Sales Report", style: "title", alignment: "center" },
-    {
-      text: ` ${fromDate} - ${toDate}`,
-      style: "muted",
-      margin: [0, 0, 0, 10],
-      alignment: "center",
-    },
-  );
+  if (!safeData.length) {
+    // --- HEADER (like your reference) ---
+    content.push(
+      {
+        text: "Item Wise Sales Report",
+        style: "title",
+        alignment: "center",
+        margin: [0, 0, 0, 2],
+      },
+      dateRangeText
+        ? {
+            text: dateRangeText,
+            style: "subtitle",
+            alignment: "center",
+            margin: [0, 0, 0, 10],
+          }
+        : { text: "", margin: [0, 0, 0, 10] },
+      {
+        text: "No data found.",
+        style: "noData",
+        alignment: "center",
+        margin: [0, 20, 0, 20],
+      },
+    );
 
-  if (!Array.isArray(data) || data.length === 0) {
-    content.push({ text: "No data found.", style: "muted" });
-
-    const docDefinition = {
+    const docDefinition: any = {
       pageSize: "A4",
-      pageMargins: [24, 24, 24, 40],
+      pageMargins: [20, 20, 20, 20],
       content,
       styles: {
-        title: { fontSize: 16, bold: true, color: "#111827" },
+        header: { fontSize: 18, bold: true },
+        title: { fontSize: 16, bold: true },
+        subtitle: { fontSize: 10, color: "#555555" },
+
         h1: { fontSize: 12, bold: true, color: "#111827" },
         h2: { fontSize: 10, bold: true, color: "#111827" },
+
         muted: { fontSize: 9, color: "#6B7280" },
         small: { fontSize: 9, color: "#111827" },
-        tableHeader: { fontSize: 9, bold: true, color: "#111827" },
+
+        tableHeader: { fontSize: 8, bold: true, color: "#111827" },
+        noData: { fontSize: 9, italics: true, color: "#6b7280" },
       },
-      defaultStyle: { fontSize: 9 },
+      defaultStyle: { fontSize: 8 },
     };
 
-    const fileName =
-      opts?.fileName ?? `item-wise-sales-report_${Date.now()}.pdf`;
-
     const pdf = (pdfMake as any).createPdf(docDefinition);
-    if (opts?.openInsteadOfDownload) pdf.open();
-    else pdf.download(fileName);
+    if (resolvedAction === "print") pdf.print();
+    else if (resolvedAction === "download")
+      pdf.download(
+        opts?.fileName ?? `item-wise-sales-report_${Date.now()}.pdf`,
+      );
+    else pdf.open();
     return;
   }
 
-  // Body
-  data.forEach((branchBlock, bIdx) => {
+  // --- BODY (per branch, each branch starts with header like reference) ---
+  safeData.forEach((branchBlock, bIdx) => {
     const branchName = safeText(
       branchBlock?.branchInfo?.name,
       "No Branch Name",
@@ -122,24 +146,54 @@ export function printItemWiseSalesReportPdf(
       branchBlock?.branchInfo?.phone,
       "No Phone No.",
     );
+    const branchVatNo = safeText((branchBlock as any)?.branchInfo?.vatNo, "");
 
-    // Branch header
+    // === HEADER (centered like your Daily Sales reference) ===
     content.push(
       {
         text: branchName,
-        style: "h1",
-        margin: [0, 8, 0, 2],
+        style: "header",
         alignment: "center",
+        margin: [0, 0, 0, 2],
       },
-      { text: branchAddress, style: "muted", alignment: "center" },
-      { text: branchPhone, style: "muted", alignment: "center" },
+      {
+        text: branchAddress,
+        alignment: "center",
+        margin: [0, 0, 0, 2],
+      },
+      {
+        text: `Phone: ${branchPhone}`,
+        alignment: "center",
+        margin: [0, 0, 0, 1],
+      },
+      branchVatNo
+        ? {
+            text: `VAT Registration No: ${branchVatNo}`,
+            alignment: "center",
+            margin: [0, 0, 0, 4],
+          }
+        : { text: "", margin: [0, 0, 0, 4] },
+      {
+        text: "Item Wise Sales Report",
+        style: "title",
+        alignment: "center",
+        margin: [0, 0, 0, 2],
+      },
+      dateRangeText
+        ? {
+            text: dateRangeText,
+            style: "subtitle",
+            alignment: "center",
+            margin: [0, 0, 0, 10],
+          }
+        : { text: "", margin: [0, 0, 0, 10] },
       line(),
     );
 
     const reportRows = branchBlock?.result ?? [];
 
     // Menu groups
-    reportRows.forEach((menuGroupBlock, mgIdx) => {
+    reportRows.forEach((menuGroupBlock) => {
       const menuGroup = safeText(menuGroupBlock?.menuGroup, "Menu Group");
 
       const grouped = groupItemsByCategory(menuGroupBlock?.items ?? []);
@@ -147,32 +201,30 @@ export function printItemWiseSalesReportPdf(
       const grandTotalQty = asNumber(grouped?.grandTotalQty);
       const grandTotalAmount = asNumber(grouped?.grandTotalAmount);
 
-      // Menu group header
       content.push({
         text: menuGroup.toUpperCase(),
         style: "h2",
         margin: [0, 6, 0, 6],
       });
 
-      // Category sections
-      categories.forEach((cat) => {
+      // Categories
+      categories.forEach((cat: any) => {
         const categoryName = safeText(cat?.category?.name, "No Category");
         const items: SalesItem[] = (cat?.items ?? []) as any;
 
         const totalItem = items.length;
-        const totalQty = items.reduce((sum, it) => sum + asNumber(it?.qty), 0);
+        const totalQty = items.reduce(
+          (sum, it: any) => sum + asNumber(it?.qty),
+          0,
+        );
         const totalAmount = items.reduce(
-          (sum, it) => sum + asNumber(it?.qty) * asNumber(it?.rate),
+          (sum, it: any) => sum + asNumber(it?.qty) * asNumber(it?.rate),
           0,
         );
 
         content.push({
           columns: [
-            {
-              text: categoryName.toUpperCase(),
-              style: "small",
-              bold: true,
-            },
+            { text: categoryName.toUpperCase(), style: "small", bold: true },
             {
               text: `${num(totalItem)} records`,
               style: "muted",
@@ -182,7 +234,6 @@ export function printItemWiseSalesReportPdf(
           margin: [0, 4, 0, 4],
         });
 
-        // Items table
         const tableBody = [
           [
             { text: "Item Code", style: "tableHeader" },
@@ -191,14 +242,14 @@ export function printItemWiseSalesReportPdf(
             { text: "Rate", style: "tableHeader", alignment: "right" },
             { text: "Amount", style: "tableHeader", alignment: "right" },
           ],
-          ...items.map((it) => {
+          ...items.map((it: any) => {
             const qty = asNumber(it?.qty);
             const rate = asNumber(it?.rate);
             const amount = qty * rate;
 
             return [
-              { text: safeText((it as any)?.itemCode, "-"), style: "small" },
-              { text: safeText((it as any)?.itemName, "-"), style: "small" },
+              { text: safeText(it?.itemCode, "-"), style: "small" },
+              { text: safeText(it?.itemName, "-"), style: "small" },
               { text: num(qty), style: "small", alignment: "right" },
               { text: num(rate), style: "small", alignment: "right" },
               { text: num(amount), style: "small", alignment: "right" },
@@ -225,7 +276,6 @@ export function printItemWiseSalesReportPdf(
           margin: [0, 0, 0, 4],
         });
 
-        // Category totals
         content.push({
           columns: [
             { text: `Total Item: ${num(totalItem)}`, style: "muted" },
@@ -258,11 +308,10 @@ export function printItemWiseSalesReportPdf(
         margin: [0, 6, 0, 6],
       });
 
-      // Divider after menu group
       content.push(line());
     });
 
-    // Branch grand totals (based on your helper)
+    // Branch grand totals
     const { totalAmount, totalItem, totalQuantity } =
       calculateTotalForItemWiseSalesReport(reportRows ?? []);
 
@@ -306,14 +355,14 @@ export function printItemWiseSalesReportPdf(
       margin: [0, 0, 0, 12],
     });
 
-    // Page break between branches (except last)
-    if (bIdx < data.length - 1) content.push({ text: "", pageBreak: "after" });
+    if (bIdx < safeData.length - 1)
+      content.push({ text: "", pageBreak: "after" });
   });
 
-  const docDefinition = {
+  const docDefinition: any = {
     pageSize: "A4",
-    pageOrientation: "portrait",
-    pageMargins: [24, 24, 24, 40],
+    pageMargins: [20, 20, 20, 20],
+    content,
     footer: (currentPage: number, pageCount: number) => ({
       columns: [
         { text: "Item Wise Sales Report", style: "muted" },
@@ -323,25 +372,29 @@ export function printItemWiseSalesReportPdf(
           alignment: "right",
         },
       ],
-      margin: [24, 0, 24, 0],
+      margin: [20, 0, 20, 0],
     }),
-    content,
     styles: {
-      title: { fontSize: 16, bold: true, color: "#111827" },
+      header: { fontSize: 18, bold: true },
+      title: { fontSize: 16, bold: true },
+      subtitle: { fontSize: 10, color: "#555555" },
+
       h1: { fontSize: 12, bold: true, color: "#111827" },
       h2: { fontSize: 10, bold: true, color: "#111827" },
+
       muted: { fontSize: 9, color: "#6B7280" },
-      small: { fontSize: 9, color: "#111827" },
-      tableHeader: { fontSize: 9, bold: true, color: "#111827" },
+      small: { fontSize: 8, color: "#111827" },
+
+      tableHeader: { fontSize: 8, bold: true, color: "#111827" },
+      noData: { fontSize: 9, italics: true, color: "#6b7280" },
     },
-    defaultStyle: { fontSize: 9 },
+    defaultStyle: { fontSize: 8 },
   };
 
+  const pdf = (pdfMake as any).createPdf(docDefinition);
   const fileName = opts?.fileName ?? `item-wise-sales-report_${Date.now()}.pdf`;
 
-  const pdf = (pdfMake as any).createPdf(docDefinition);
-
-  // download by default; you can choose open() to print from browser UI
-  if (opts?.openInsteadOfDownload) pdf.open();
-  else pdf.download(fileName);
+  if (resolvedAction === "print") pdf.print();
+  else if (resolvedAction === "download") pdf.download(fileName);
+  else pdf.open();
 }
