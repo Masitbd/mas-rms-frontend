@@ -181,7 +181,7 @@ const DashSidebar = () => {
                 </Nav.Item>
                 <Nav.Item
                   eventKey="9-4"
-                  href="/reports/item-wise-sales"
+                  href="/reports/item-wise-sales-v2"
                   as={NavLink}
                 >
                   Item Wise Sales Statement

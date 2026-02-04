@@ -30,8 +30,6 @@ const ItemWiseSales_V2 = () => {
       data: reportData,
     },
   ] = useLazyGetItemWiseSalesReports_v2Query();
-
-  console.log(reportData);
   const handleLast7DaysRange = () => {
     const end = new Date();
     const start = new Date();
@@ -91,6 +89,8 @@ const ItemWiseSales_V2 = () => {
         <ItemWiseSalesReportTable_v2
           data={reportData?.data ?? []}
           loading={reportDataFetching || reportLoading}
+          from={startDate as unknown as string}
+          to={endDate as unknown as string}
         />
       }
       isData={true}

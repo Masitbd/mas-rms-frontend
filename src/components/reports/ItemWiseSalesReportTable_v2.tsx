@@ -1,6 +1,6 @@
 import React from "react";
 import { ItemWiseSalesResponse } from "./ItemWiseSalesReportType";
-import { Table } from "rsuite";
+import { Button, Table } from "rsuite";
 import {
   calculateTotalForItemWiseSalesReport,
   groupItemsByCategory,
@@ -8,7 +8,8 @@ import {
 } from "./itemWiseSalesReportHelper";
 
 // ! Total card
-import { Boxes, Hash, Banknote } from "lucide-react";
+import { Boxes, Hash, Banknote, Printer } from "lucide-react";
+import { printItemWiseSalesReportPdf } from "./PrintItemWiseSalesData";
 
 type Totals = {
   totalItem: number;
@@ -105,9 +106,13 @@ export function TotalsCard({
 const ItemWiseSalesReportTable_v2 = ({
   data,
   loading,
+  from,
+  to,
 }: {
   loading: boolean;
   data: ItemWiseSalesResponse[];
+  from: string;
+  to: string;
 }) => {
   const { Cell, Column, ColumnGroup, HeaderCell } = Table;
   return data?.map((d) => {
@@ -184,12 +189,12 @@ const ItemWiseSalesReportTable_v2 = ({
                                   <Cell dataKey="rate" />
                                 </Column>
                                 <Column flexGrow={2}>
-                                  <HeaderCell>Bill No</HeaderCell>
+                                  <HeaderCell>Total</HeaderCell>
                                   <Cell>
                                     {(rowData: SalesItem) => {
                                       const rate = Number(rowData?.rate ?? 0);
                                       const Quantity = Number(
-                                        rowData?.qty ?? 0
+                                        rowData?.qty ?? 0,
                                       );
                                       const total = rate * Quantity;
                                       return (
@@ -217,7 +222,7 @@ const ItemWiseSalesReportTable_v2 = ({
                                   </span>{" "}
                                   {el?.items?.reduce(
                                     (v, v1) => v + v1.qty,
-                                    0
+                                    0,
                                   ) ?? 0}
                                 </span>
 
@@ -228,7 +233,7 @@ const ItemWiseSalesReportTable_v2 = ({
                                   {(
                                     el?.items?.reduce(
                                       (v, v1) => v + v1?.qty * v1?.rate,
-                                      0
+                                      0,
                                     ) ?? 0
                                   ).toLocaleString("en-BD", {
                                     maximumFractionDigits: 0,
@@ -307,6 +312,22 @@ const ItemWiseSalesReportTable_v2 = ({
                 title: `${d?.branchInfo?.name} Grand Total`,
                 currency: "BDT",
               })}
+            </div>
+            <div className="flex justify-end w-full mt-5">
+              <Button
+                className=""
+                appearance="primary"
+                color="blue"
+                size="md"
+                startIcon={<Printer />}
+                onClick={() =>
+                  printItemWiseSalesReportPdf(data, from, to, {
+                    openInsteadOfDownload: true,
+                  })
+                }
+              >
+                Print
+              </Button>
             </div>
           </div>
         </div>
