@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
+import WaiterWiseSalesReportTable_v2 from "@/components/reports/WaiterWiseSalesReportTable_v2";
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ReportTemplate } from "@/components/reports/ReportTemplate";
 import { useGetBranchQuery } from "@/redux/api/branch/branch.api";
-import { useLazyGetMenuItemsConsumptionReportsQuery } from "@/redux/api/report/report.api";
+import { useLazyGetWaiterWiseSalesReport_v2Query } from "@/redux/api/report/report.api";
 import { formatDate } from "@/utils/formateDate";
-import { FC, useState } from "react";
-import { MenuItemConsumptionView_v2 } from "@/components/reports/MenuItemConsumptionView_v2";
+import React, { useState } from "react";
 
-const MenuItemConsumptionPage: FC = () => {
+const WaiterWiseSales_V2 = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [branch, setBranch] = useState<string | null>(null);
@@ -17,9 +17,13 @@ const MenuItemConsumptionPage: FC = () => {
   } = useGetBranchQuery(undefined);
 
   const [
-    getReport,
-    { isLoading: reportLoading, isFetching: reportFetching, data: reportData },
-  ] = useLazyGetMenuItemsConsumptionReportsQuery();
+    getData,
+    {
+      isLoading: reportLoading,
+      isFetching: reportDataFetching,
+      data: reportData,
+    },
+  ] = useLazyGetWaiterWiseSalesReport_v2Query();
 
   const handleTodayRange = () => {
     const today = new Date();
@@ -48,10 +52,8 @@ const MenuItemConsumptionPage: FC = () => {
     startDate && (query.startDate = formatDate(startDate));
     endDate && (query.endDate = formatDate(endDate));
     branch && (query.branch = branch);
-
-    if (startDate || endDate || branch) {
-      await getReport(query);
-    }
+    
+    await getData(query);
   };
 
   const handleClear = () => {
@@ -70,7 +72,7 @@ const MenuItemConsumptionPage: FC = () => {
           label: d?.name,
           value: d?._id,
         };
-      })}
+      }) || []}
       onStartDateChange={setStartDate}
       onEndDateChange={setEndDate}
       onBranchChange={setBranch}
@@ -79,14 +81,14 @@ const MenuItemConsumptionPage: FC = () => {
       onThisMonthRange={handleThisMonthRange}
       onSearch={handleSearch}
       onClear={handleClear}
-      header="Menu Item Consumption Report"
-      subHeader="Track menu item consumption by date range and branch"
+      header="Waiter Wise Sales Summary"
+      subHeader="Track sales performance by waiter and branch"
       dataComponent={
-        <MenuItemConsumptionView_v2
-          loading={reportFetching || reportLoading}
+        <WaiterWiseSalesReportTable_v2
           data={reportData?.data ?? []}
-          startDate={startDate}
-          endDate={endDate}
+          loading={reportDataFetching || reportLoading}
+          from={startDate ? formatDate(startDate) : ""}
+          to={endDate ? formatDate(endDate) : ""}
         />
       }
       isData={!!reportData?.data}
@@ -94,4 +96,4 @@ const MenuItemConsumptionPage: FC = () => {
   );
 };
 
-export default MenuItemConsumptionPage;
+export default WaiterWiseSales_V2;

@@ -113,7 +113,14 @@ const reportsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reports"],
     }),
-
+    getWaiterWiseSalesReport_v2: build.query({
+      query: (args: any) => ({
+        url: "/reports/waiter-wise-sales-v2",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
     //
   }),
 });
@@ -126,13 +133,17 @@ export const {
   useGetItemWiseSalesReportsQuery,
   useGetMenuItemsReportsQuery,
   useGetMenuItemsConsumptionReportsQuery,
+  useLazyGetMenuItemsConsumptionReportsQuery,
   useGetMenuItemsConsumpitonCostingReportsQuery,
   useGetRawMaterialsConsumptionReportsQuery,
   useGetItemWiseRawMaterialsConsumptionReportsQuery,
   useGetDueStatementReportsQuery,
+  useLazyGetDueStatementReportsQuery,
   useGetWaiterWiseSaleStatementReportsQuery,
   useGetWaiterWiseSalesReportsQuery,
   useGetDashboardStaticsDataQuery,
   useGetItemWiseSalesReports_v2Query,
   useLazyGetItemWiseSalesReports_v2Query,
+  useGetWaiterWiseSalesReport_v2Query,
+  useLazyGetWaiterWiseSalesReport_v2Query,
 } = reportsApi;
