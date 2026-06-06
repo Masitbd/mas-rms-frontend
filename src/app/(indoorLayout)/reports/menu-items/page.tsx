@@ -1,86 +1,123 @@
 "use client";
 
+import React, { FC, useState, useEffect } from "react";
 import MenuGroupItemTable from "@/components/reports/MenuGroupTable";
+import { ReportTemplate } from "@/components/reports/ReportTemplate";
 import { useGetBranchQuery } from "@/redux/api/branch/branch.api";
-import { useGetMenuItemsReportsQuery } from "@/redux/api/report/report.api";
+import { useLazyGetMenuItemsReportsQuery } from "@/redux/api/report/report.api";
+import { formatDate } from "@/utils/formateDate";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { Form, Loader, SelectPicker } from "rsuite";
-import { IFormValues } from "../daily-sales-report/page";
 
-const MenuItemsPage = () => {
-  const { data: branchs, isLoading: branchLoading } =
-    useGetBranchQuery(undefined);
+const MenuItemsPage: FC = () => {
+  const session = useSession();
+  const userBranch = session?.data?.user?.branch;
 
-  const [formValue, setFormValue] = useState<IFormValues>({
-    branch: "",
-    startDate: null,
-    endDate: null,
-  });
-  const handleChange = (value: Record<string, any>) => {
-    setFormValue({
-      branch: value.branch,
-      startDate: value.startDate || null,
-      endDate: value.endDate || null,
-    });
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [branch, setBranch] = useState<string | null>(null);
+
+  // Fetch branches for selection
+  const { data: branchData } = useGetBranchQuery(undefined);
+
+  // Lazy query to fetch menu items report
+  const [
+    getReport,
+    { isLoading: reportLoading, isFetching: reportFetching, data: reportData },
+  ] = useLazyGetMenuItemsReportsQuery();
+
+  // Set default branch from session
+  useEffect(() => {
+    if (userBranch) {
+      setBranch(userBranch);
+    }
+  }, [userBranch]);
+
+  // Automatically trigger fetch if branch is pre-selected by session
+  useEffect(() => {
+    if (branch) {
+      const query: { startDate?: string; endDate?: string; branch?: string } =
+        {};
+      if (startDate) query.startDate = formatDate(startDate);
+      if (endDate) query.endDate = formatDate(endDate);
+      query.branch = branch;
+      getReport(query);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [branch]);
+
+  const handleTodayRange = () => {
+    const today = new Date();
+    setStartDate(today);
+    setEndDate(today);
   };
 
-  const session = useSession();
-  const queryParams: Record<string, any> = {};
-  if (formValue.branch) queryParams.branch = formValue.branch;
-  const handleSubmit = async (
-    formValue: Record<string, any> | null,
-    event?: React.FormEvent<HTMLFormElement>
-  ) => {
-    if (formValue) {
-      refetch();
+  const handleLast7DaysRange = () => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 6);
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const handleThisMonthRange = () => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const handleSearch = async () => {
+    const query: { startDate?: string; endDate?: string; branch?: string } = {};
+    if (startDate) query.startDate = formatDate(startDate);
+    if (endDate) query.endDate = formatDate(endDate);
+    if (branch) query.branch = branch;
+
+    await getReport(query);
+  };
+
+  const handleClear = () => {
+    setStartDate(null);
+    setEndDate(null);
+    if (!userBranch) {
+      setBranch(null);
     }
   };
 
-  const { data, isLoading, refetch } = useGetMenuItemsReportsQuery(queryParams);
-
-  if (isLoading) {
-    return <Loader />;
-  }
+  const isDataPresent = !!reportData?.data;
 
   return (
-    <div>
-      <h2 className="text-center text-xl font-semibold mt-5 px-5 py-2 bg-blue-600 text-gray-100 w-full max-w-80 mx-auto rounded-xl">
-        Menu group Item
-      </h2>
-      <Form
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        formValue={formValue}
-        className="grid grid-cols-3 gap-10 justify-center  w-full"
-      >
-        {!session.data?.user?.branch && (
-          <Form.Group controlId="branch">
-            <Form.ControlLabel>Branch</Form.ControlLabel>
-            <SelectPicker
-              data={
-                branchs?.data?.map((branch: { name: string; _id: string }) => ({
-                  label: branch.name,
-                  value: branch._id,
-                })) || []
-              }
-              placeholder="Select a branch"
-              style={{ width: 250 }}
-              value={formValue.branch} // Current selected value
-              onChange={(value) =>
-                setFormValue((prev) => ({ ...prev, branch: value }))
-              }
-              loading={branchLoading} // Show loading spinner while fetching data
-            />
-          </Form.Group>
-        )}
-      </Form>
-      <div className="mt-10">
-        {data && data?.data && (
-          <MenuGroupItemTable isLoading={isLoading} data={data.data} />
-        )}
-      </div>
-    </div>
+    <ReportTemplate
+      startDate={startDate}
+      endDate={endDate}
+      selectedBranch={branch}
+      hideBranchSelect={!!userBranch}
+      branches={
+        branchData?.data?.map((d: { name: string; _id: string }) => ({
+          label: d?.name,
+          value: d?._id,
+        })) || []
+      }
+      onStartDateChange={setStartDate}
+      onEndDateChange={setEndDate}
+      onBranchChange={setBranch}
+      onTodayRange={handleTodayRange}
+      onLast7DaysRange={handleLast7DaysRange}
+      onThisMonthRange={handleThisMonthRange}
+      onSearch={handleSearch}
+      onClear={handleClear}
+      header="Menu group Item"
+      subHeader="Track menu group items by branch and date range"
+      dataComponent={
+        <MenuGroupItemTable
+          isLoading={reportFetching || reportLoading}
+          data={reportData?.data}
+          startDate={startDate}
+          endDate={endDate}
+        />
+      }
+      isData={isDataPresent}
+    />
   );
 };
 

@@ -228,7 +228,7 @@ const DashSidebar = () => {
                 {/*  */}
                 <Nav.Item
                   eventKey="10"
-                  href="/reports/waiter-wise-sales"
+                  href="/reports/waiter-wise-sales-v2"
                   as={NavLink}
                 >
                   Waiter wise Sales

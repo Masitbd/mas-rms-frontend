@@ -12,6 +12,7 @@ export interface DailySalesFilterProps {
   endDate: Date | null;
   selectedBranch: string | null;
   branches: BranchOption[];
+  hideBranchSelect?: boolean;
 
   onStartDateChange: (date: Date | null) => void;
   onEndDateChange: (date: Date | null) => void;
@@ -32,6 +33,7 @@ export const ReportTemplate: FC<DailySalesFilterProps> = ({
   endDate,
   selectedBranch,
   branches,
+  hideBranchSelect = false,
   onStartDateChange,
   onEndDateChange,
   onBranchChange,
@@ -98,16 +100,18 @@ export const ReportTemplate: FC<DailySalesFilterProps> = ({
           </div>
 
           {/* Branch */}
-          <div className="flex flex-col gap-3 md:w-72">
-            <p className="text-sm font-semibold text-slate-900">Branch</p>
-            <BranchSelect
-              label="Branch"
-              data={branches}
-              value={selectedBranch}
-              onChange={onBranchChange}
-              placeholder="Search branches..."
-            />
-          </div>
+          {!hideBranchSelect && (
+            <div className="flex flex-col gap-3 md:w-72">
+              <p className="text-sm font-semibold text-slate-900">Branch</p>
+              <BranchSelect
+                label="Branch"
+                data={branches}
+                value={selectedBranch}
+                onChange={onBranchChange}
+                placeholder="Search branches..."
+              />
+            </div>
+          )}
 
           {/* Actions */}
           <div className="mt-2 flex items-center gap-2 md:mt-12 pt-1  md:self-start">
