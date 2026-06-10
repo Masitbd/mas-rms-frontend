@@ -16,7 +16,7 @@ pdfMake.vfs = pdfFonts as unknown as { [file: string]: string };
 const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
   const bill = useAppSelector((state) => state?.order);
   const [selectedOrder, setSelectedOrder] = useState<KitchenOrderData | null>(
-    null
+    null,
   );
 
   const handleViewButtonClick = (order: KitchenOrderData) => {
@@ -30,6 +30,7 @@ const KitchenOrders = ({ order }: { order: KitchenOrderData }) => {
   const handlePrint = () => {
     const docDefinition = {
       pageSize: { width: 227, height: "auto" }, // Credit card size in mm
+      pageOrientation: "portrait",
       pageMargins: [2, 2, 2, 2], // Very small margins
       content: [
         {

@@ -11,7 +11,7 @@ export const changeOrderStatus = async (
   id: string,
   status: string,
   fn: IStatusChanger,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
 ) => {
   try {
     await Swal.fire({
@@ -45,7 +45,7 @@ export const changeOrderStatus = async (
 export const isDueCollectionButtonVisible = (
   mode: ENUM_MODE,
   userRole: ENUM_USER,
-  order: IOrder
+  order: IOrder,
 ) => {
   if (mode == ENUM_MODE.UPDATE && userRole == ENUM_USER.ADMIN) {
     return true;
@@ -79,9 +79,22 @@ export function printPdfBlobSameTab(pdfBlob: Blob) {
   iframe.style.border = "0";
   iframe.src = blobUrl;
 
+  let isCleanedUp = false;
+
   const cleanUp = () => {
+    // Flag to prevent double cleanup
+    if (isCleanedUp) return;
+    isCleanedUp = true;
     URL.revokeObjectURL(blobUrl);
-    iframe.remove();
+    if (iframe.parentNode) {
+      iframe.remove();
+    }
+  };
+
+  // Fallback cleanup: when the main window regains focus (i.e., print dialog closes)
+  const fallbackCleanUp = () => {
+    window.removeEventListener("focus", fallbackCleanUp);
+    setTimeout(cleanUp, 500); // Small delay to ensure the dialog fully closes
   };
 
   const triggerPrint = () => {
@@ -93,34 +106,48 @@ export function printPdfBlobSameTab(pdfBlob: Blob) {
 
     const after = () => setTimeout(cleanUp, 300);
 
-    // Use separate guards (not `else if`) so TS doesn't narrow to `never`
-    if ("onafterprint" in w) {
-      (w as Window & { onafterprint: (() => void) | null }).onafterprint =
-        after;
-    }
-
-    if (typeof w.matchMedia === "function") {
-      const mql: MediaQueryList = w.matchMedia("print");
-      const onChange = (e: MediaQueryListEvent) => {
-        if (!e.matches) after();
-      };
-
-      if ("addEventListener" in mql) {
-        mql.addEventListener("change", onChange);
-      } else if ("addListener" in mql) {
-        // Older API (cast for TS)
-        (
-          mql as unknown as {
-            addListener: (cb: (e: MediaQueryListEvent) => void) => void;
-          }
-        ).addListener(onChange);
+    // Wrap in try-catch to prevent cross-origin DOMExceptions caused by PDF viewers
+    try {
+      if ("onafterprint" in w) {
+        (w as Window & { onafterprint: (() => void) | null }).onafterprint =
+          after;
       }
+
+      if (typeof w.matchMedia === "function") {
+        const mql: MediaQueryList = w.matchMedia("print");
+        const onChange = (e: MediaQueryListEvent) => {
+          if (!e.matches) after();
+        };
+
+        if ("addEventListener" in mql) {
+          mql.addEventListener("change", onChange);
+        } else if ("addListener" in mql) {
+          // Older API (cast for TS)
+          (
+            mql as unknown as {
+              addListener: (cb: (e: MediaQueryListEvent) => void) => void;
+            }
+          ).addListener(onChange);
+        }
+      }
+    } catch (error) {
+      // If the PDF viewer restricts access, fall back to main window focus event
+      console.warn(
+        "Cross-origin restricted by PDF viewer. Using focus fallback for cleanup.",
+      );
+      window.addEventListener("focus", fallbackCleanUp);
     }
 
     // Small delay helps some PDF viewers fully initialize
     setTimeout(() => {
-      w.focus();
-      w.print();
+      try {
+        w.focus();
+        w.print();
+      } catch (printError) {
+        // If security prevents printing altogether, clean up immediately
+        console.error("Print command failed", printError);
+        cleanUp();
+      }
     }, 100);
   };
 
