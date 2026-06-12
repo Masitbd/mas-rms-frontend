@@ -109,7 +109,7 @@ export const PosPrinterDocProvider = (bill: any, session: any) => {
   const PER_ROW = 18; // each item row height
   const EST_HEIGHT = Math.max(
     BASE + PER_ROW * Math.max(itemRows.length, 1),
-    520
+    520,
   ); // min height
   const PAGE_HEIGHT = EST_HEIGHT;
 
@@ -225,7 +225,7 @@ export const PosPrinterDocProvider = (bill: any, session: any) => {
                 : []),
               ...(safe(
                 bill?.deliveryAddress?.name ?? bill?.deliveryAddress,
-                ""
+                "",
               ).trim()
                 ? [
                     {
@@ -233,7 +233,7 @@ export const PosPrinterDocProvider = (bill: any, session: any) => {
                         { text: "Delivery Address: ", bold: true },
                         safe(
                           bill?.deliveryAddress?.name ?? bill?.deliveryAddress,
-                          "—"
+                          "—",
                         ),
                       ],
                       style: "infoText",
@@ -424,7 +424,7 @@ export const PosPrinterDocProvider = (bill: any, session: any) => {
         fontSize: 7,
         bold: true,
         alignment: "center",
-        color: "#6b7280",
+        color: "black",
         margin: [0, 2, 0, 0],
       },
     ],
@@ -440,18 +440,18 @@ export const PosPrinterDocProvider = (bill: any, session: any) => {
       subHeader: {
         alignment: "center",
         fontSize: 8,
-        color: "#4b5563",
+        color: "black",
         lineHeight: 1.2,
       },
       th: { fontSize: 8, bold: true, color: "#111827" },
-      rowLabel: { fontSize: 8, color: "#4b5563" },
+      rowLabel: { fontSize: 8, color: "black" },
       rowValue: {
         fontSize: 8,
         bold: true,
         color: "#111827",
         alignment: "right",
       },
-      footerText: { fontSize: 7, color: "#6b7280" },
+      footerText: { fontSize: 7, color: "black" },
     },
 
     defaultStyle: { fontSize: 8 },

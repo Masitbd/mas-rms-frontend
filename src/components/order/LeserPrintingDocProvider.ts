@@ -131,7 +131,7 @@ export const LaserPrintingDocProvider = (bill: any, session: any) => {
           {
             text: safe(bill?.branch?.name, "Your Store"),
             style: "header",
-            color: "#111827",
+            color: "black",
           },
           ...(safe(bill?.branch?.address1, "").trim()
             ? [{ text: bill.branch.address1, style: "subHeader" }]
@@ -415,7 +415,7 @@ export const LaserPrintingDocProvider = (bill: any, session: any) => {
       subHeader: { fontSize: 9, color: "#4b5563", lineHeight: 1.2 },
       th: { fontSize: 9, bold: true, color: "#111827" },
       infoText: { fontSize: 9, color: "#111827" },
-      rowLabel: { fontSize: 9, color: "#4b5563" },
+      rowLabel: { fontSize: 9, color: "black" },
       rowValue: {
         fontSize: 9,
         bold: true,
