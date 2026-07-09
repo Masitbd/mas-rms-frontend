@@ -129,7 +129,15 @@ const reportsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reports"],
     }),
-    //
+    //For getting kitchen order cost
+    getKitchenOrdersCost: build.query({
+      query: (args: any) => ({
+        url: "/reports/kitchen-orders-cost",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["reports"],
+    }),
   }),
 });
 
@@ -160,4 +168,6 @@ export const {
   useGetWaiterWiseSalesReport_v2Query,
   useLazyGetWaiterWiseSalesReport_v2Query,
   useGetRawMaterialsConsumptionQuery,
+  useGetKitchenOrdersCostQuery,
+  useLazyGetKitchenOrdersCostQuery,
 } = reportsApi;

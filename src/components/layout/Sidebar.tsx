@@ -219,6 +219,14 @@ const DashSidebar = () => {
                 </Nav.Item>
                 {/*  */}
                 <Nav.Item
+                  eventKey="8-9"
+                  href="/reports/kitchen-order-cost"
+                  as={NavLink}
+                >
+                  Kitchen Order Cost
+                </Nav.Item>
+                {/*  */}
+                <Nav.Item
                   eventKey="8-0"
                   href="/reports/due-sales-statement"
                   as={NavLink}
