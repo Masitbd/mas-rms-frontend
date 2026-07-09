@@ -262,8 +262,8 @@ export const KitchenOrderCostTable: React.FC<TKitchenOrderCostTableProps> = ({
             body: [
               [
                 { text: "Order Date", style: "tableHeader" },
-                { text: "KOT No.", style: "tableHeader" },
                 { text: "Bill No.", style: "tableHeader" },
+                { text: "KOT No.", style: "tableHeader" },
                 { text: "Table", style: "tableHeader" },
                 { text: "Waiter", style: "tableHeader" },
                 { text: "Status", style: "tableHeader", alignment: "center" },
@@ -283,8 +283,8 @@ export const KitchenOrderCostTable: React.FC<TKitchenOrderCostTableProps> = ({
                     : "N/A",
                   style: "tableCell",
                 },
-                { text: order.kitchenOrderNo || "—", style: "tableCellBold" },
                 { text: order.billNo || "—", style: "tableCell" },
+                { text: order.kitchenOrderNo || "—", style: "tableCellBold" },
                 { text: order.tableName || "—", style: "tableCell" },
                 { text: order.waiterName || "—", style: "tableCell" },
                 {
@@ -571,8 +571,8 @@ export const KitchenOrderCostTable: React.FC<TKitchenOrderCostTableProps> = ({
               <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-700 border-b border-slate-100">
                 <tr>
                   <th className="px-6 py-4">Order Date</th>
-                  <th className="px-6 py-4">KOT No.</th>
                   <th className="px-6 py-4">Bill No.</th>
+                  <th className="px-6 py-4">KOT No.</th>
                   <th className="px-6 py-4">Table</th>
                   <th className="px-6 py-4">Waiter</th>
                   <th className="px-6 py-4 text-center">Status</th>
@@ -603,11 +603,11 @@ export const KitchenOrderCostTable: React.FC<TKitchenOrderCostTableProps> = ({
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 font-semibold text-slate-900">
-                          {order.kitchenOrderNo || "—"}
-                        </td>
                         <td className="px-6 py-4 text-slate-600">
                           {order.billNo || "—"}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-slate-900">
+                          {order.kitchenOrderNo || "—"}
                         </td>
                         <td className="px-6 py-4 text-slate-600">
                           {order.tableName ? (

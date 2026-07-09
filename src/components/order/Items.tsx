@@ -60,9 +60,14 @@ const Items = () => {
       state?.items?.length &&
       state.items.find((i) => i?.item?._id == item?._id);
 
+    if (item == null) {
+      toaster.push(<Message type="error">!Please select an item</Message>);
+      return;
+    }
+
     if (qty < 1) {
       toaster.push(
-        <Message type="error">!Quantity should be greater than 0</Message>
+        <Message type="error">!Quantity should be greater than 0</Message>,
       );
       return;
     }
@@ -227,7 +232,7 @@ const Items = () => {
                           type="number"
                           onChange={(v) =>
                             dispatch(
-                              changeQty({ ...rowData?.item, qty: Number(v) })
+                              changeQty({ ...rowData?.item, qty: Number(v) }),
                             )
                           }
                           className="col-span-2 [&::-webkit-inner-spin-button]:appearance-none text-center"
@@ -265,7 +270,7 @@ const Items = () => {
                           setItemDiscount({
                             item: rowData?.item,
                             discount: Number(v),
-                          })
+                          }),
                         )
                       }
                       value={rowData?.discount}
